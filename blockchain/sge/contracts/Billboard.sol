@@ -1,118 +1,111 @@
 // SPDX-License-Identifier: GPL-3.0
+pragma experimental ABIEncoderV2;
+pragma solidity >=0.4.21 <0.7.0;
 
-pragma solidity ^0.8.0;
-/** 
- * @title Ballot
- * @dev Implements voting process along with vote delegation
- */
-
- struct Offer {
-        uint price;
-        uint expirationTime; //expiration time
-        uint kwh;
+contract Billboard {
+    struct Offer {
+        string id;
+        uint256 price;
+        uint256 expirationTime; //expiration time
+        uint256 kWh;
         address owner; //maybe it should return without the owner.
         bool active;
     }
+    mapping(string => Offer) private offers;
+    string[] public offerIds;
 
-contract Billboard {
+    function _addOffer(
+        string memory id,
+        uint256 price,
+        uint256 exp,
+        uint256 kWh
+    ) public returns (bool) {
+        offers[id] = Offer({
+            id: id,
+            price: price,
+            expirationTime: exp,
+            kWh: kWh,
+            owner: msg.sender,
+            active: true
+        });
+        offerIds.push(id);
 
-    Offer[] public offers;
-
-    function _filterOffers() internal {
-        for (uint i = 0; i < offers.length; i++) {
-            if(offers[i].expirationTime > block.timestamp) {
-                offers[i] = offers[offers.length - 1];
-                offers.pop();
-            }
-        }
-    }
-
-    function _getOffers() public returns (Offer[] memory) {
-        _filterOffers();
-        return offers;
-    }
-
-    function _getIndex(address owner) view  private returns (uint256) {
-        uint index = offers.length;
-        for (uint i = 0; i < offers.length; i++) {
-            if(owner == offers[i].owner) {
-                return i;
-            }
-        }
-        return index;
-    }
-    // you can oinly have one offer.
-    function _addOffer(uint _price, uint _expirationTime, uint _kwh) public returns (bool) {
-        //uint index = _getIndex(msg.sender);
-        //if (index == offers.length) {
-        //    return false;
-        // }
-        offers.push(Offer({price: _price, expirationTime: _expirationTime, kwh: _kwh, owner: msg.sender, active: true}));
         return true;
     }
 
-    function _removeOffer() public returns (bool) {
-        uint _index = _getIndex(msg.sender);
-        if (_index == offers.length) {
-            return false;
-        }
-        offers[_index] = offers[offers.length - 1];
-        offers.pop();
+    function _removeOffer(string memory id) public returns (bool) {
+        Offer memory offer = offers[id];
+        require(msg.sender == offer.owner);
+        delete offers[id];
         return true;
+    }
+
+    function _buyOffer(string memory id) public returns (address) {
+        Offer memory offer = offers[id];
+        require(msg.sender != offer.owner, "Owner cannot buy own offer");
+        SupplyContract sc = new SupplyContract({
+            _buyer: msg.sender,
+            _seller: offer.owner,
+            _amount: offer.kWh,
+            _price: offer.price
+        });
+        return address(sc);
+    }
+
+    function _getOffer(string memory id) public view returns (Offer memory) {
+        return offers[id];
+    }
+    /* TODO: fix
+    function _getOffers() public view returns (Offer[] memory) {
+        Offer[] memory offersReturn = new Offer[](offerIds.length);
+        for (uint i = 0; i <= offerIds.length; i++) {
+            offersReturn[i] = offers[offerIds[i]];
+        }
+
+        return offersReturn;
     } 
+    */
+
+    function _getOfferIDs() public view returns (string[] memory) {
+        return offerIds;
+    }
 }
 
-contract Producer {
+contract SupplyContract {
+    address private buyer;
+    address private seller;
+    uint256 private amount; // Wh
+    uint256 private price; // Euro cents
+    uint256 timestamp; // Unix
 
-    event transmitPower(address indexed oldOwner, address indexed newOwner, uint kwh, uint price);
-    Billboard private myBillboard;
-
-    Offer offer;
-    address private owner;
-    
-
-    modifier isOwner() {
-        require(msg.sender == owner);
-        _;
+    constructor(
+        address _buyer,
+        address _seller,
+        uint256 _amount,
+        uint256 _price
+    ) public {
+        buyer = _buyer;
+        seller = _seller;
+        amount = _amount;
+        price = _price;
+        timestamp = block.timestamp;
     }
 
-    constructor(uint _price, uint _expirationTime, uint _kwh, address billboardAdress) {
-        owner = msg.sender;
-        offer = Offer({price: _price, expirationTime: _expirationTime, kwh: _kwh, owner: owner, active: true});
-        myBillboard = Billboard(billboardAdress);
+    function getBuyer() public view returns (address) {
+        return buyer;
     }
 
-    function getOffer() external view returns(Offer memory) {
-       return offer;
+    function getSeller() public view returns (address) {
+        return seller;
     }
 
-    function addToBillboard() public isOwner {
-        myBillboard._addOffer(offer.price, offer.expirationTime, offer.kwh);
+    function getAmount() public view returns (uint256) {
+        require((msg.sender == buyer) || (msg.sender == seller));
+        return amount;
     }
 
-    function buyOffer() public {
-        offer.active = false;
-        removeFromBillboard();
-        emit transmitPower(owner, msg.sender, offer.kwh, offer.price);
-    }
-
-    function removeFromBillboard() private isOwner {
-        myBillboard._removeOffer();
-    }
-
-    function setPrice( uint256 _price) private isOwner {
-        offer.price = _price;
-    }
-
-    function setExpirationTime( uint256 _expirationTime) private isOwner {
-        offer.expirationTime = _expirationTime;
-    }
-
-    function setKwh( uint256 _kwh) private isOwner {
-        offer.kwh = _kwh;
-    }
-
-    function setActive(bool _active) private isOwner {
-        offer.active = _active;
+    function getPrice() public view returns (uint256) {
+        require((msg.sender == buyer) || (msg.sender == seller));
+        return price;
     }
 }
