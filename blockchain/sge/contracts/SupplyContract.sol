@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
-pragma solidity ^0.5.0;
-pragma experimental ABIEncoderV2; // only for testing
+pragma solidity ^0.8.9;
+
+// pragma experimental ABIEncoderV2; // only for testing
 
 contract SupplyContract {
     address private buyer;
@@ -9,8 +10,7 @@ contract SupplyContract {
     uint private price; // Euro cents
     uint timestamp; // Unix
 
-    constructor(address _buyer, address _seller, uint _amount, uint _price) 
-public {
+    constructor(address _buyer, address _seller, uint _amount, uint _price) payable {
         buyer = _buyer;
         seller = _seller;
         amount = _amount;
@@ -36,4 +36,3 @@ public {
         return price;
     }
 }
-
