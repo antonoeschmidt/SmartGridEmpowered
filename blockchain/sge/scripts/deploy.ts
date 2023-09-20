@@ -47,20 +47,11 @@ async function deploySupplyContract() {
     await sc.waitForDeployment();
 
     console.log(
-        `SupplyContract with ${ethers.formatEther(lockedAmount)}ETH deployed to ${
-            sc.target
-        }`
+        `SupplyContract with ${ethers.formatEther(lockedAmount)}ETH deployed to ${sc.target}`
     );
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-// deployLock().catch((error) => {
-//     console.error(error);
-//     process.exitCode = 1;
-// });
-
 deploySupplyContract().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
+    console.error(error);
+    process.exitCode = 1;
 });

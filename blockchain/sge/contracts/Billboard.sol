@@ -6,15 +6,15 @@ contract Billboard {
     struct Offer {
         string id;
         uint256 price;
-        uint256 expirationTime; //expiration time
+        uint256 expirationTime;
         uint256 kWh;
-        address owner; //maybe it should return without the owner.
+        address owner;
         bool active;
     }
     mapping(string => Offer) private offers;
     string[] public offerIds;
 
-    function _addOffer(
+    function addOffer(
         string memory id,
         uint256 price,
         uint256 exp,
@@ -29,18 +29,17 @@ contract Billboard {
             active: true
         });
         offerIds.push(id);
-
         return true;
     }
 
-    function _removeOffer(string memory id) public returns (bool) {
+    function removeOffer(string memory id) public returns (bool) {
         Offer memory offer = offers[id];
         require(msg.sender == offer.owner);
         delete offers[id];
         return true;
     }
 
-    function _buyOffer(string memory id) public returns (address) {
+    function buyOffer(string memory id) public returns (address) {
         Offer memory offer = offers[id];
         require(msg.sender != offer.owner, "Owner cannot buy own offer");
         SupplyContract sc = new SupplyContract({
@@ -52,21 +51,21 @@ contract Billboard {
         return address(sc);
     }
 
-    function _getOffer(string memory id) public view returns (Offer memory) {
+    function getOffer(string memory id) public view returns (Offer memory) {
         return offers[id];
     }
-    /* TODO: fix
-    function _getOffers() public view returns (Offer[] memory) {
+
+    function getOffers() public view returns (Offer[] memory) {
         Offer[] memory offersReturn = new Offer[](offerIds.length);
-        for (uint i = 0; i <= offerIds.length; i++) {
-            offersReturn[i] = offers[offerIds[i]];
+        for (uint i = 0; i < offerIds.length; i++) {
+            string storage offerId = offerIds[i];
+            Offer storage offer = offers[offerId];
+            offersReturn[i] = offer;
         }
-
         return offersReturn;
-    } 
-    */
+    }
 
-    function _getOfferIDs() public view returns (string[] memory) {
+    function getOfferIDs() public view returns (string[] memory) {
         return offerIds;
     }
 }
