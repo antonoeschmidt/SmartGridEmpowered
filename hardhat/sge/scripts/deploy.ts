@@ -51,7 +51,33 @@ async function deploySupplyContract() {
     );
 }
 
+async function deployMarket() {
+    /**
+     * Arguments needed
+     * @param none
+     **/
+
+    const lockedAmount = ethers.parseEther("0.001");
+
+    const sc = await ethers.deployContract("Market", {
+        value: lockedAmount,
+    });
+
+    await sc.waitForDeployment();
+
+    console.log(
+        `Market with ${ethers.formatEther(lockedAmount)}ETH deployed to ${sc.target}`
+    );
+}
+
+
+// DEPLOYS
 deploySupplyContract().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+});
+
+deployMarket().catch((error) => {
     console.error(error);
     process.exitCode = 1;
 });

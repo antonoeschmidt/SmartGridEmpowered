@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma experimental ABIEncoderV2;
-pragma solidity >=0.4.21 <0.7.0;
+// pragma experimental ABIEncoderV2;
+pragma solidity ^0.8.9;
 
 contract SmartMeter {
     address owner;
@@ -9,7 +9,7 @@ contract SmartMeter {
     uint256 lastDataSent;
     uint256 transmissionInterval = 15 minutes;
 
-    constructor() public {
+    constructor() payable {
         owner = msg.sender;
         totalConsumption = 0;
         totalProduction = 0;

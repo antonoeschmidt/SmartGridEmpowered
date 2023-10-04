@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
-pragma experimental ABIEncoderV2;
-pragma solidity >=0.4.21 <0.7.0;
+// pragma experimental ABIEncoderV2;
+pragma solidity ^0.8.9;
 
-contract Billboard {
+contract Market {
     struct Offer {
         string id;
         uint256 price;
@@ -13,6 +13,8 @@ contract Billboard {
     }
     mapping(string => Offer) private offers;
     string[] public offerIds;
+
+    constructor() payable {}
 
     function addOffer(
         string memory id,
@@ -82,7 +84,7 @@ contract SupplyContract {
         address _seller,
         uint256 _amount,
         uint256 _price
-    ) public {
+    ) payable {
         buyer = _buyer;
         seller = _seller;
         amount = _amount;
