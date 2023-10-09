@@ -1,0 +1,14 @@
+.home-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    /* align-items: center; */
+    gap: 15px;
+    padding: 1em;
+}
+
+.row {
+    display: flex;
+    gap: 15px;
+    width: 75%;
+}

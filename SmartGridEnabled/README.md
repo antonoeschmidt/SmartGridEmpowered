@@ -1,4 +1,4 @@
-# GDRP Project
+# SGE
 This project will develop a prototype for data storage on blockchain
 ### To run & install
 1. Run local ganache instance

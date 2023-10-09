@@ -1,0 +1,12 @@
+.pick-accounts-component {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex-grow: 1;
+    min-height: 150px;
+    background-color: white;
+    border-radius: 20px;
+    padding: 1em;
+    max-width: 50%;
+    text-align: center;
+}
