@@ -5,7 +5,7 @@ import MainPage from "./pages/MainPage/MainPage";
 import HomePage from "./pages/HomePage/HomePage";
 import EthereumContext, {
     useEthereumContext,
-} from "./components/contexts/ethereumContext";
+} from "./contexts/ethereumContext";
 import MarketplacePage from "./pages/MarketplacePage/MarketplacePage";
 
 const App = () => {

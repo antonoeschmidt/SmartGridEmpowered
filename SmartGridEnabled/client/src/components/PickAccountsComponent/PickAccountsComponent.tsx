@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import "./PickAccountsComponent.css";
 import { MenuItem, Select } from "@mui/material";
-import EthereumContext from "../contexts/ethereumContext";
+import EthereumContext from "../../contexts/ethereumContext";
 import { getAccounts, getWeb3 } from "../../utils/web3";
 
 const PickAccountsComponent = () => {
