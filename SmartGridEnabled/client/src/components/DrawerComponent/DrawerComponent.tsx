@@ -9,9 +9,8 @@ import {
     ListItemIcon,
     ListItemText,
 } from "@mui/material";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import LogoutIcon from "@mui/icons-material/Logout";
+import StoreIcon from '@mui/icons-material/Store';
 
 const DrawerComponent = () => {
     const navigate = useNavigate();
@@ -38,16 +37,10 @@ const DrawerComponent = () => {
                         <ListItemText primary={"Dashboard"} />
                     </ListItemButton>
                 </ListItem>
-                <ListItem key={"requests"} disablePadding>
-                    <ListItemButton onClick={() => navigate("/requests")}>
-                        <ListItemIcon>{<InboxIcon />}</ListItemIcon>
-                        <ListItemText primary={"Requests"} />
-                    </ListItemButton>
-                </ListItem>
-                <ListItem key={"logout"} disablePadding id="sign-out-button">
-                    <ListItemButton>
-                        <ListItemIcon>{<LogoutIcon />}</ListItemIcon>
-                        <ListItemText primary={"Sign out"} />
+                <ListItem key={"marketplace"} disablePadding>
+                    <ListItemButton onClick={() => navigate("/marketplace")}>
+                        <ListItemIcon>{<StoreIcon />}</ListItemIcon>
+                        <ListItemText primary={"Marketplace"} />
                     </ListItemButton>
                 </ListItem>
             </List>

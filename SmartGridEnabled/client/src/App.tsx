@@ -1,25 +1,27 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
-import { getAccounts, getWeb3 } from "./utils/web3";
 import MainPage from "./pages/MainPage/MainPage";
 import HomePage from "./pages/HomePage/HomePage";
+import EthereumContext, {
+    useEthereumContext,
+} from "./components/contexts/ethereumContext";
+import MarketplacePage from "./pages/MarketplacePage/MarketplacePage";
 
 const App = () => {
-    useEffect(() => {
-        let web3 = getWeb3();
-        getAccounts(web3).then((accounts) => {
-            console.log(accounts);
-        });
-    }, []);
+    const ethereumContextValue = useEthereumContext();
+   
     return (
-        <BrowserRouter>
-            <Routes>
-                <Route path="/" element={<MainPage />}>
-                    <Route path="/" element={<HomePage />} />
-                </Route>
-            </Routes>
-        </BrowserRouter>
+        <EthereumContext.Provider value={ethereumContextValue}>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<MainPage />}>
+                        <Route path="/" element={<HomePage />} />
+                        <Route path="/marketplace" element={<MarketplacePage />} />
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </EthereumContext.Provider>
     );
 };
 

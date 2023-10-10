@@ -1,21 +1,47 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import "./PickAccountsComponent.css";
 import { MenuItem, Select } from "@mui/material";
+import EthereumContext from "../contexts/ethereumContext";
+import { getAccounts, getWeb3 } from "../../utils/web3";
 
 const PickAccountsComponent = () => {
+    const { accounts, setAccounts, currentAccount, setCurrentAccount } =
+        useContext(EthereumContext);
+
+    useEffect(() => {
+        if (accounts) return;
+        let web3 = getWeb3();
+        getAccounts(web3).then((accounts) => {
+            console.log(accounts);
+            setAccounts(accounts);
+        });
+    }, [setAccounts, accounts]);
+
     return (
-        <div className="pick-accounts-component">
-            <h3>Choose Account</h3>
+        <div className="home-item-component pick-account">
+            <p>Choose Account</p>
             <Select
-                id="demo-simple-select"
-                value={10}
+                className="pick-account-selector"
+                value={currentAccount}
                 label="Age"
-                onChange={() => {}}
+                onChange={(e) => {
+                    setCurrentAccount(e.target.value);
+                }}
             >
-                <MenuItem value={10}>Ten</MenuItem>
-                <MenuItem value={20}>Twenty</MenuItem>
-                <MenuItem value={30}>Thirty</MenuItem>
+                {accounts &&
+                    accounts.map((account: string, index: number) => {
+                        return (
+                            <MenuItem key={index} value={account}>
+                                Account {index + 1}
+                            </MenuItem>
+                        );
+                    })}
             </Select>
+            {currentAccount && <p className="light-text">
+                Current account:
+                <br />
+                {currentAccount}
+            </p>}
         </div>
     );
 };

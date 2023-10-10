@@ -1,3 +1,10 @@
 .App {
   text-align: center;
 }
+
+.light-text {
+  font-style: italic; /* Set the font style to italic */
+  color: #888; /* Choose a light color for the text */
+  font-size: 14px; /* Set the font size */
+  font-weight: normal;
+}

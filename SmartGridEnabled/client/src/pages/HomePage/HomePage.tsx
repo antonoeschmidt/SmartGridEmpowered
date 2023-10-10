@@ -5,9 +5,10 @@ import PickAccountsComponent from "../../components/PickAccountsComponent/PickAc
 const HomePage = () => {
     return (
         <div className="home-container">
-            <h1>Hej</h1>
+            <h1>Dashboard</h1>
             <div className="row">
                 <PickAccountsComponent />
+                <div className="home-item-component"><p>Current usage</p></div>
             </div>
         </div>
     );

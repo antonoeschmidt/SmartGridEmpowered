@@ -10,5 +10,18 @@
 .row {
     display: flex;
     gap: 15px;
-    width: 75%;
+    /* width: 75%; */
+}
+
+.home-item-component {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    min-height: 150px;
+    background-color: white;
+    border-radius: 20px;
+    padding: 1em;
+    text-align: center;
+    align-items: center;
+    overflow: hidden;
 }
