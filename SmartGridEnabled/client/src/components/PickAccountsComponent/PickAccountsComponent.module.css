@@ -1,19 +1,12 @@
-.home-container {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    /* align-items: center; */
-    gap: 15px;
-    padding: 1em;
+.pickAccount  {
+    max-width: 33%;
 }
 
-.row {
-    display: flex;
-    gap: 15px;
-    /* width: 75%; */
+.pickAccountSelector {
+    width: 50%;
 }
 
-.home-item-component {
+.item {
     display: flex;
     flex-direction: column;
     flex-grow: 1;

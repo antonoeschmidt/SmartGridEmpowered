@@ -1,9 +1,9 @@
-.main-container {
+.container {
     display: flex;
     height: 100vh;
 }
 
-.main-content {
+.content {
     display: flex;
     flex-grow: 1;
     background-color: #edede985;

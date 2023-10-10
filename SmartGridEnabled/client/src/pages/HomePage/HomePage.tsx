@@ -1,14 +1,14 @@
 import React from "react";
-import "./HomePage.css";
+import styles from "./HomePage.module.css";
 import PickAccountsComponent from "../../components/PickAccountsComponent/PickAccountsComponent";
 
 const HomePage = () => {
     return (
-        <div className="home-container">
+        <div className={styles.container}>
             <h1>Dashboard</h1>
-            <div className="row">
+            <div className={styles.row}>
                 <PickAccountsComponent />
-                <div className="home-item-component"><p>Current usage</p></div>
+                <div className={styles.item}><p>Current usage</p></div>
             </div>
         </div>
     );

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from "react";
-import "./PickAccountsComponent.css";
 import { MenuItem, Select } from "@mui/material";
 import EthereumContext from "../../contexts/ethereumContext";
 import { getAccounts, getWeb3 } from "../../utils/web3";
+import styles from "./PickAccountsComponent.module.css";
 
 const PickAccountsComponent = () => {
     const { accounts, setAccounts, currentAccount, setCurrentAccount } =
@@ -18,10 +18,10 @@ const PickAccountsComponent = () => {
     }, [setAccounts, accounts]);
 
     return (
-        <div className="home-item-component pick-account">
+        <div className={`${styles.item} ${styles.pickAccount}`}>
             <p>Choose Account</p>
             <Select
-                className="pick-account-selector"
+                className={styles.pickAccountSelector}
                 value={currentAccount}
                 label="Age"
                 onChange={(e) => {
@@ -37,11 +37,13 @@ const PickAccountsComponent = () => {
                         );
                     })}
             </Select>
-            {currentAccount && <p className="light-text">
-                Current account:
-                <br />
-                {currentAccount}
-            </p>}
+            {currentAccount && (
+                <p className="light-text">
+                    Current account:
+                    <br />
+                    {currentAccount}
+                </p>
+            )}
         </div>
     );
 };

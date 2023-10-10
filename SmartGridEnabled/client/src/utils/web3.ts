@@ -1,4 +1,6 @@
 import Web3 from "web3";
+import SuppleContract from "../contracts/SupplyContract.json"
+
 
 export const getWeb3 = (): Web3 => {
     try {
@@ -31,3 +33,13 @@ export const getAccounts = async (web3: Web3): Promise<string[]> => {
         console.error(error)        
     }
 };
+
+
+export const supplyContractInstance = (address, web3) => {
+    if (!address || !web3) {
+        return;
+    }
+    let contract = new web3.eth.Contract(SuppleContract.abi, address)
+
+    return contract;
+}
