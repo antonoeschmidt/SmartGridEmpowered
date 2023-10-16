@@ -11,8 +11,18 @@ contract Market {
         address owner;
         bool active;
     }
+    struct SupplyContractDTO {
+        address buyer;
+        address seller;
+        uint256 amount;
+        uint256 price;
+        uint256 timestamp;
+    }
     mapping(string => Offer) private offers;
     string[] public offerIds;
+    
+    mapping(address => SupplyContractDTO) private supplyContracts;
+    address[] public supplyContractAddresses;
 
     constructor() payable {}
 
@@ -44,12 +54,27 @@ contract Market {
     function buyOffer(string memory id) public returns (address) {
         Offer memory offer = offers[id];
         require(msg.sender != offer.owner, "Owner cannot buy own offer");
+        
+        address buyer = msg.sender;
+        address seller = offer.owner;
+        uint amount = offer.kWh;
+        uint price = offer.price;
+
         SupplyContract sc = new SupplyContract({
-            _buyer: msg.sender,
-            _seller: offer.owner,
-            _amount: offer.kWh,
-            _price: offer.price
+            _buyer: buyer,
+            _seller: seller,
+            _amount: amount,
+            _price: price
         });
+
+        supplyContracts[address(sc)] = SupplyContractDTO({
+            buyer: buyer,
+            seller: seller,
+            amount: amount,
+            price: price,
+            timestamp: block.timestamp
+        });
+        supplyContractAddresses.push(address(sc));
         return address(sc);
     }
 
@@ -69,6 +94,24 @@ contract Market {
 
     function getOfferIDs() public view returns (string[] memory) {
         return offerIds;
+    }
+
+    function getSupplyContract(address scAddress) public view returns (SupplyContractDTO memory) {
+        return supplyContracts[scAddress];
+    }
+
+    function getSupplyContracts() public view returns (SupplyContractDTO[] memory) {
+        SupplyContractDTO[] memory supplyContractsReturn = new SupplyContractDTO[](supplyContractAddresses.length);
+        for (uint i = 0; i < supplyContractAddresses.length; i++) {
+            address scAddress = supplyContractAddresses[i];
+            SupplyContractDTO storage sc = supplyContracts[scAddress];
+            supplyContractsReturn[i] = sc;
+        }
+        return supplyContractsReturn;
+    }
+
+    function getSupplyContractAddresses() public view returns (address[] memory) {
+        return supplyContractAddresses;
     }
 }
 

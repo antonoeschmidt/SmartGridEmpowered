@@ -10,14 +10,14 @@ import {
     ListItemText,
 } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import StoreIcon from '@mui/icons-material/Store';
+import StoreIcon from "@mui/icons-material/Store";
 
 const DrawerComponent = () => {
     const navigate = useNavigate();
 
     return (
         <Drawer
-        className="drawer-component"
+            className="drawer-component"
             sx={{
                 minWidth: "240px",
                 "& .MuiDrawer-paper": {
@@ -28,7 +28,6 @@ const DrawerComponent = () => {
             variant="permanent"
             anchor="left"
         >
-            {/* <img style={{width: "240px"}} src="/sge_logo.png" alt="/logo192.png" /> */}
             <Divider />
             <List>
                 <ListItem key={"home"} disablePadding>

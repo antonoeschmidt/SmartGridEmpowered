@@ -1,25 +1,27 @@
 import React, { useContext, useEffect } from "react";
 import { MenuItem, Select } from "@mui/material";
 import EthereumContext from "../../contexts/ethereumContext";
-import { getAccounts, getWeb3 } from "../../utils/web3";
 import styles from "./PickAccountsComponent.module.css";
 
 const PickAccountsComponent = () => {
-    const { accounts, setAccounts, currentAccount, setCurrentAccount } =
-        useContext(EthereumContext);
+    const {
+        ethereumInstance,
+        accounts,
+        setAccounts,
+        currentAccount,
+        setCurrentAccount,
+    } = useContext(EthereumContext);
 
     useEffect(() => {
-        if (accounts) return;
-        let web3 = getWeb3();
-        getAccounts(web3).then((accounts) => {
+        ethereumInstance.getAccounts().then((accounts) => {
             console.log(accounts);
             setAccounts(accounts);
         });
-    }, [setAccounts, accounts]);
+    }, [ethereumInstance, setAccounts]);
 
     return (
         <div className={`${styles.item} ${styles.pickAccount}`}>
-            <p>Choose Account</p>
+            <h3>Choose Account</h3>
             <Select
                 className={styles.pickAccountSelector}
                 value={currentAccount}

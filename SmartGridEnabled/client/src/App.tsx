@@ -10,7 +10,7 @@ import MarketplacePage from "./pages/MarketplacePage/MarketplacePage";
 
 const App = () => {
     const ethereumContextValue = useEthereumContext();
-   
+
     return (
         <EthereumContext.Provider value={ethereumContextValue}>
             <BrowserRouter>

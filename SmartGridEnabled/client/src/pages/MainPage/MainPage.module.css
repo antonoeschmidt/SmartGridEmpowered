@@ -1,10 +1,8 @@
 .container {
     display: flex;
-    height: 100vh;
 }
 
 .content {
     display: flex;
     flex-grow: 1;
-    background-color: #edede985;
 }
