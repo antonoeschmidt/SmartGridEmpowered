@@ -11,19 +11,10 @@ contract Market {
         address owner;
         bool active;
     }
-    struct SupplyContractDTO {
-        address buyer;
-        address seller;
-        uint256 amount;
-        uint256 price;
-        uint256 timestamp;
-    }
+
     mapping(string => Offer) private offers;
     string[] public offerIds;
     
-    mapping(address => SupplyContractDTO) private supplyContracts;
-    address[] public supplyContractAddresses;
-
     constructor() payable {}
 
     function addOffer(
@@ -66,15 +57,6 @@ contract Market {
             _amount: amount,
             _price: price
         });
-
-        supplyContracts[address(sc)] = SupplyContractDTO({
-            buyer: buyer,
-            seller: seller,
-            amount: amount,
-            price: price,
-            timestamp: block.timestamp
-        });
-        supplyContractAddresses.push(address(sc));
         return address(sc);
     }
 
@@ -95,24 +77,6 @@ contract Market {
     function getOfferIDs() public view returns (string[] memory) {
         return offerIds;
     }
-
-    function getSupplyContract(address scAddress) public view returns (SupplyContractDTO memory) {
-        return supplyContracts[scAddress];
-    }
-
-    function getSupplyContracts() public view returns (SupplyContractDTO[] memory) {
-        SupplyContractDTO[] memory supplyContractsReturn = new SupplyContractDTO[](supplyContractAddresses.length);
-        for (uint i = 0; i < supplyContractAddresses.length; i++) {
-            address scAddress = supplyContractAddresses[i];
-            SupplyContractDTO storage sc = supplyContracts[scAddress];
-            supplyContractsReturn[i] = sc;
-        }
-        return supplyContractsReturn;
-    }
-
-    function getSupplyContractAddresses() public view returns (address[] memory) {
-        return supplyContractAddresses;
-    }
 }
 
 contract SupplyContract {
@@ -121,6 +85,15 @@ contract SupplyContract {
     uint256 private amount; // Wh
     uint256 private price; // Euro cents
     uint256 timestamp; // Unix
+
+    struct SupplyContractDTO {
+        address scAddress;
+        address buyer;
+        address seller;
+        uint256 price;
+        uint256 amount;
+        uint256 timestamp;
+    }
 
     constructor(
         address _buyer,
@@ -151,5 +124,30 @@ contract SupplyContract {
     function getPrice() public view returns (uint256) {
         require((msg.sender == buyer) || (msg.sender == seller));
         return price;
+    }
+
+    function getInfo() public view returns (SupplyContractDTO memory) {
+        uint256 priceDTO;
+        uint256 amountDTO;
+
+        if ((msg.sender == buyer) || (msg.sender == seller)) {
+            priceDTO = price;
+            amountDTO = amount;
+        } else {
+            priceDTO = 0;
+            amountDTO = 0;
+        }        
+
+        SupplyContractDTO memory scDTO = SupplyContractDTO({
+            scAddress: address(this),
+            buyer: buyer,
+            seller: seller,
+            price: priceDTO,
+            amount: amountDTO,
+            timestamp: timestamp
+        });
+
+        return scDTO;
+
     }
 }

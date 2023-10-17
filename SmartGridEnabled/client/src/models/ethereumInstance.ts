@@ -1,8 +1,8 @@
 import Web3 from "web3";
 import SupplyContract from "../contracts/SupplyContract.json";
 import Market from "../contracts/Market.json";
-import { Offer } from "./models";
-import { offerParser } from "../utils/parsers";
+import { OfferDTO, SupplyContractDTO } from "./models";
+import { supplyContractParser, offerParser } from "../utils/parsers";
 
 export class EthereumInstance {
     web3: Web3;
@@ -62,7 +62,7 @@ export class EthereumInstance {
                 data: SupplyContract.bytecode,
                 // @ts-ignore
                 arguments: [
-                    "0x9E0F9eFA6Be40005e33dce6e1440DDBD125CfAB1",
+                    sender,
                     "0x9E0F9eFA6Be40005e33dce6e1440DDBD125CfAB1",
                     1,
                     1,
@@ -137,7 +137,7 @@ export class EthereumInstance {
         return { marketAddresses, supplyContractAddresses };
     };
 
-    addOffer = async (offer: Offer, market: string, account: string) => {
+    addOffer = async (offer: OfferDTO, market: string, account: string) => {
         let marketInstance = this.marketInstance(market);
         try {
             let res = await marketInstance.methods
@@ -167,4 +167,19 @@ export class EthereumInstance {
             console.error(error);
         }
     };
+
+    getSupplyContracts = async (supplyContracts: string[]) => {
+        let sc: SupplyContractDTO[] = []
+        try {
+            for (let i = 0; i < supplyContracts.length; i++){
+                const supplyContractInstance = this.supplyContractInstance(supplyContracts[i]);
+                let res = await supplyContractInstance.methods.getInfo().call()
+                sc.push(supplyContractParser({...res, id: supplyContracts[i]}))
+            }
+        } catch (error) {
+            console.error(error)
+        }
+
+        return sc;
+    }
 }

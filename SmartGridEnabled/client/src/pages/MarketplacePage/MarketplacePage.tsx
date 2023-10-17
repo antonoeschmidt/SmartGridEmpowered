@@ -4,67 +4,17 @@ import {
     offerColumns,
     supplyContractColumns,
 } from "../../models/dataGridColumns";
-import { GridRowsProp } from "@mui/x-data-grid";
 import styles from "./MarketplacePage.module.css";
 import EthereumContext from "../../contexts/ethereumContext";
 import AddOfferComponent from "../../components/AddOfferComponent/AddOfferComponent";
-import { Offer } from "../../models/models";
+import { OfferDTO, SupplyContractDTO } from "../../models/models";
 
 const MarketplacePage = () => {
-    const { ethereumInstance, currentMarket } = useContext(EthereumContext);
-    const [offers, setOffers] = useState<Offer[]>();
-
-    const supplyContracts: GridRowsProp = [
-        {
-            id: 1,
-            buyer: "0xCD077dC9892C3F153Ae9f182d73FfD8be448eD95",
-            seller: "0xCD077dC9892C3F153Ae9f182d73FfD8be448eD95",
-            amount: 1,
-            price: "100",
-            createdAt: "100",
-        },
-        {
-            id: 2,
-            buyer: "0xCD077dC9892C3F153Ae9f182d73FfD8be448eD95",
-            seller: "0xCD077dC9892C3F153Ae9f182d73FfD8be448eD95",
-            amount: 200,
-            price: "100",
-            createdAt: "100",
-        },
-        {
-            id: 3,
-            buyer: "0xCD077dC9892C3F153Ae9f182d73FfD8be448eD95",
-            seller: "0xCD077dC9892C3F153Ae9f182d73FfD8be448eD95",
-            amount: 5,
-            price: "100",
-            createdAt: "100",
-        },
-        {
-            id: 4,
-            buyer: "0xCD077dC9892C3F153Ae9f182d73FfD8be448eD95",
-            seller: "0xCD077dC9892C3F153Ae9f182d73FfD8be448eD95",
-            amount: 5,
-            price: "100",
-            createdAt: "100",
-        },
-        {
-            id: 5,
-            buyer: "0xCD077dC9892C3F153Ae9f182d73FfD8be448eD95",
-            seller: "0xCD077dC9892C3F153Ae9f182d73FfD8be448eD95",
-            amount: 5,
-            price: "100",
-            createdAt: "100",
-        },
-        {
-            id: 6,
-            buyer: "0xCD077dC9892C3F153Ae9f182d73FfD8be448eD95",
-            seller: "0xCD077dC9892C3F153Ae9f182d73FfD8be448eD95",
-            amount: 5,
-            price: "100",
-            createdAt: "100",
-        },
-    ];
-
+    const { ethereumInstance, currentMarket, supplyContracts } =
+        useContext(EthereumContext);
+    const [offers, setOffers] = useState<OfferDTO[]>();
+    const [supplyContractsDTO, setSupplyContractsDTO] = useState<SupplyContractDTO[]>();
+    
     useEffect(() => {
         if (offers || !currentMarket) return;
         ethereumInstance
@@ -74,7 +24,14 @@ const MarketplacePage = () => {
                 setOffers(data);
             })
             .catch((err) => console.log(err));
-    }, [currentMarket, ethereumInstance, offers]);
+
+        ethereumInstance.getSupplyContracts(supplyContracts)
+        .then((data) => {
+            console.log(data);
+            setSupplyContractsDTO(data)
+        })
+        .catch((err) => console.error(err))
+    }, [currentMarket, ethereumInstance, offers, supplyContracts]);
 
     return (
         <div className={styles.container}>
@@ -90,10 +47,10 @@ const MarketplacePage = () => {
                     </div>
                     <div className={styles.item}>
                         <h3>Supply Contracts</h3>
-                        <DataTable
-                            rows={supplyContracts}
+                        {supplyContractsDTO && (<DataTable
+                            rows={supplyContractsDTO}
                             columns={supplyContractColumns}
-                        />
+                        />)}
                     </div>
                 </>
             ) : (

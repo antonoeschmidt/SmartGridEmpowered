@@ -3,7 +3,7 @@ import styles from "./AddOfferComponent.module.css";
 import { Button, TextField } from "@mui/material";
 import EthereumContext from "../../contexts/ethereumContext";
 import { v4 as uuidv4 } from "uuid";
-import { Offer } from "../../models/models";
+import { OfferDTO } from "../../models/models";
 
 const AddOfferComponent = () => {
     const { ethereumInstance, currentAccount, currentMarket } =
@@ -17,7 +17,7 @@ const AddOfferComponent = () => {
             return;
         }
 
-        let newOffer: Offer = {
+        let newOffer: OfferDTO = {
             id: uuidv4(),
             price: price,
             amount: amount,

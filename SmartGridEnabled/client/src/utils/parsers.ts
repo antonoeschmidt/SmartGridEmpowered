@@ -1,4 +1,4 @@
-import { Offer } from "../models/models";
+import { OfferDTO, SupplyContractDTO } from "../models/models";
 
 export const dateFormatter = (dateString: string) => {
     const date = new Date(dateString);
@@ -7,7 +7,7 @@ export const dateFormatter = (dateString: string) => {
     )}`;
 };
 
-export const offerParser = (d: any): Offer => {
+export const offerParser = (d: any): OfferDTO => {
     return {
         id: d.id,
         amount: Number(d.kWh),
@@ -15,5 +15,17 @@ export const offerParser = (d: any): Offer => {
         expriration: Number(d.expirationTime),
         owner: d.owner,
         active: d.active,
-    } as Offer;
+    } as OfferDTO;
+};
+
+export const supplyContractParser = (d: any): SupplyContractDTO => {
+    return {
+        id: d.id,
+        address: d.scAddress,
+        buyer: d.buyer,
+        seller: d.seller,
+        price: Number(d.price),
+        amount: Number(d.amount),
+        timestamp: Number(d.timestamp)
+    } as SupplyContractDTO;
 };
