@@ -99,9 +99,8 @@ export class EthereumInstance {
             const block = await this.web3.eth.getBlock(i, true); // Get block details
             if (block && block.transactions) {
                 for (let j = 0; j < block.transactions.length; j++) {
-                    let tx = block.transactions[j];
+                    let tx = block.transactions[j] as any;
                     let receipt = await this.web3.eth.getTransactionReceipt(
-                        // @ts-ignore
                         tx.hash
                     );
 
@@ -163,6 +162,22 @@ export class EthereumInstance {
         try {
             let res = await marketInstance.methods.getOffers().call() as any[]
             return res.map((d) => offerParser(d))
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    buyOffer = async (market: string, id: string, account: string) => {
+        const marketInstance = this.marketInstance(market);
+        try {
+            const res = await marketInstance.methods.buyOffer(
+                // @ts-ignore
+                id
+                ).send({ from: account,
+                    gas: "1500000",
+                    gasPrice: "30000000000" }); //
+
+            console.log('res', res);
         } catch (error) {
             console.error(error);
         }

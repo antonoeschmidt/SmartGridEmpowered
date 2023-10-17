@@ -1,5 +1,6 @@
 import React from "react";
 import { DataGrid } from '@mui/x-data-grid';
+import { Button } from "@mui/material";
 
 type DataTableProps = {
   rows: any;
@@ -13,6 +14,7 @@ const DataTable = (props: DataTableProps) => {
         rows={props.rows}
         columns={props.columns}
       />
+      <Button>Buy</Button>
     </div>
   );
 };

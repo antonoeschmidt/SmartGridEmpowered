@@ -1,19 +1,22 @@
 import { createContext, useState } from "react";
 import { EthereumInstance } from "../models/ethereumInstance";
+import { Offer } from "../models/models";
 
 export type EthereumContextType = {
     ethereumInstance: EthereumInstance;
-    setEthereumInstance: (d: any) => void;
+    setEthereumInstance: React.Dispatch<React.SetStateAction<any>>
     accounts: string[];
-    setAccounts: (accounts: string[]) => void;
+    setAccounts: React.Dispatch<React.SetStateAction<string[]>>
     currentAccount: string;
-    setCurrentAccount: (account: string) => void;
+    setCurrentAccount: React.Dispatch<React.SetStateAction<string>>
     currentMarket: string;
-    setCurrentMarket: (address: string) => void;
+    setCurrentMarket: React.Dispatch<React.SetStateAction<string>>
     markets: string[];
-    setMarkets: (markets: string[]) => void;
+    setMarkets: React.Dispatch<React.SetStateAction<string[]>>
     supplyContracts: string[];
-    setSupplyContracts: (addresses: string[]) => void;
+    setSupplyContracts: React.Dispatch<React.SetStateAction<string[]>>
+    offers: Offer[];
+    setOffers: React.Dispatch<React.SetStateAction<Offer[]>>
 };
 
 export const useEthereumContext = (): EthereumContextType => {
@@ -21,6 +24,7 @@ export const useEthereumContext = (): EthereumContextType => {
     const [currentAccount, setCurrentAccount] = useState<string>("");
     const [currentMarket, setCurrentMarket] = useState<string>("");
     const [markets, setMarkets] = useState<string[]>();
+    const [offers, setOffers] = useState<Offer[]>()
     const [ethereumInstance, setEthereumInstance] = useState<EthereumInstance>(
         new EthereumInstance()
     );
@@ -39,6 +43,8 @@ export const useEthereumContext = (): EthereumContextType => {
         setMarkets,
         supplyContracts,
         setSupplyContracts,
+        offers,
+        setOffers
     };
 };
 

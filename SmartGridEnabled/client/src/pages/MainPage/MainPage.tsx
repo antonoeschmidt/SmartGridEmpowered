@@ -5,7 +5,7 @@ import DrawerComponent from "../../components/DrawerComponent/DrawerComponent";
 import EthereumContext from "../../contexts/ethereumContext";
 
 const MainPage = () => {
-    const { setMarkets, ethereumInstance, markets, setSupplyContracts } =
+    const { setMarkets, ethereumInstance, markets, setSupplyContracts, setCurrentMarket } =
         useContext(EthereumContext);
 
     useEffect(() => {
@@ -16,8 +16,10 @@ const MainPage = () => {
             .then(({marketAddresses, supplyContractAddresses}) => {
                 console.log("Scan completed.");
                 setMarkets(marketAddresses);
-                setSupplyContracts(supplyContractAddresses)
-
+                setSupplyContracts(supplyContractAddresses);
+                if (marketAddresses.length > 0) {
+                    setCurrentMarket(marketAddresses[0]);
+                }
             })
             .catch((error) => {
                 console.error("Error:", error);

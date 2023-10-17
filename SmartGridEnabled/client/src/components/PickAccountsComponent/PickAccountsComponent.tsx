@@ -16,6 +16,7 @@ const PickAccountsComponent = () => {
         ethereumInstance.getAccounts().then((accounts) => {
             console.log(accounts);
             setAccounts(accounts);
+            accounts.length > 0 && setCurrentAccount(accounts[0]);
         });
     }, [ethereumInstance, setAccounts]);
 
