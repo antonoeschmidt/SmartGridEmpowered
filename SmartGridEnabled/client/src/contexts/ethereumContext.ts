@@ -1,5 +1,6 @@
 import { createContext, useState } from "react";
 import { EthereumInstance } from "../models/ethereumInstance";
+import { OfferDTO } from "../models/models";
 
 export type EthereumContextType = {
     ethereumInstance: EthereumInstance;
@@ -14,6 +15,8 @@ export type EthereumContextType = {
     setMarkets: (markets: string[]) => void;
     supplyContracts: string[];
     setSupplyContracts: (addresses: string[]) => void;
+    offers: OfferDTO[];
+    setOffers: (addresses: OfferDTO[]) => void;
 };
 
 export const useEthereumContext = (): EthereumContextType => {
@@ -25,6 +28,7 @@ export const useEthereumContext = (): EthereumContextType => {
         new EthereumInstance()
     );
     const [supplyContracts, setSupplyContracts] = useState<string[]>();
+    const [offers, setOffers] = useState<OfferDTO[]>();
 
     return {
         ethereumInstance,
@@ -39,6 +43,8 @@ export const useEthereumContext = (): EthereumContextType => {
         setMarkets,
         supplyContracts,
         setSupplyContracts,
+        offers,
+        setOffers
     };
 };
 

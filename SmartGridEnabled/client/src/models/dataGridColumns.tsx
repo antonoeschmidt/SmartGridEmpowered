@@ -1,3 +1,4 @@
+import { Button } from "@mui/material";
 import { GridColDef } from "@mui/x-data-grid/models/colDef/gridColDef";
 
 export const supplyContractColumns: GridColDef[] = [
@@ -25,3 +26,10 @@ export const offerColumns: GridColDef[] = [
     },
     { field: "active", headerName: "Active", width: 150 },
 ];
+
+export const buyOfferColumns = (buyOnClick: (id: string) => void): GridColDef[] => [...offerColumns, {
+  field: "Buy", headerName: "buy", width: 150, 
+  renderCell: (params) => {
+    // you will find row info in params
+    return <Button color="primary" variant="contained" onClick={e => buyOnClick(params.rowNode.id as string)}>Click</Button>
+ }}];

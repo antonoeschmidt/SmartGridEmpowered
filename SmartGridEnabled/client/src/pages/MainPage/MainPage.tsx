@@ -9,15 +9,13 @@ const MainPage = () => {
         useContext(EthereumContext);
 
     useEffect(() => {
-        if (markets) return;
-
+        if (markets) return
         ethereumInstance
             .scanBlocksForContractCreations()
-            .then(({marketAddresses, supplyContractAddresses}) => {
+            .then(({ marketAddresses, supplyContractAddresses }) => {
                 console.log("Scan completed.");
                 setMarkets(marketAddresses);
-                setSupplyContracts(supplyContractAddresses)
-
+                setSupplyContracts(supplyContractAddresses);
             })
             .catch((error) => {
                 console.error("Error:", error);
