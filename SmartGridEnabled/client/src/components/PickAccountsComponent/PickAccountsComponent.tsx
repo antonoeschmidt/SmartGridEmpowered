@@ -5,20 +5,11 @@ import styles from "./PickAccountsComponent.module.css";
 
 const PickAccountsComponent = () => {
     const {
-        ethereumInstance,
         accounts,
-        setAccounts,
         currentAccount,
         setCurrentAccount,
     } = useContext(EthereumContext);
 
-    useEffect(() => {
-        ethereumInstance.getAccounts().then((accounts) => {
-            console.log(accounts);
-            setAccounts(accounts);
-            accounts.length > 0 && setCurrentAccount(accounts[0]);
-        });
-    }, [ethereumInstance, setAccounts]);
 
     return (
         <div className={`${styles.item} ${styles.pickAccount}`}>
