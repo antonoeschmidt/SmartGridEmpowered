@@ -9,7 +9,6 @@ import { GridRowsProp } from "@mui/x-data-grid";
 import styles from "./MarketplacePage.module.css";
 import EthereumContext from "../../contexts/ethereumContext";
 import AddOfferComponent from "../../components/AddOfferComponent/AddOfferComponent";
-import { Offer } from "../../models/models";
 
 const MarketplacePage = () => {
     const { ethereumInstance, currentMarket, currentAccount, offers, setOffers } = useContext(EthereumContext);
@@ -66,18 +65,15 @@ const MarketplacePage = () => {
     ];
 
     useEffect(() => {
-        // if (offers) return
         if (!currentMarket) return;
         ethereumInstance.getOffers(currentMarket)
         .then((data) =>  {
-            console.log("useEffectOffers", data) 
             setOffers(data)
         })
         .catch((err) => console.log(err))  
     }, [currentMarket, ethereumInstance])
 
     const buyOffer = (market: string, account: string) => (id: string) => {
-        console.log("buy offer");
         ethereumInstance.buyOffer(market, id, account).then(res => console.log('res', res));
     }
     

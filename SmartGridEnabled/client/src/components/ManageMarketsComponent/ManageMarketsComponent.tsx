@@ -18,7 +18,7 @@ const ManageMarketsComponent = () => {
         let marketAddress = await ethereumInstance.deployMarket(currentAccount);
         setNewMarketCreated(true);
         setCurrentMarket(marketAddress);
-        setMarkets(markets ? [...markets, marketAddress] : [marketAddress])
+        setMarkets(existingMarkets =>  [...existingMarkets, marketAddress]);
     };
 
     return (

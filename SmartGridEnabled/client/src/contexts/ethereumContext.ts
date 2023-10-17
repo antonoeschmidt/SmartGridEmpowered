@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { EthereumInstance } from "../models/ethereumInstance";
 import { Offer } from "../models/models";
 
@@ -29,6 +29,42 @@ export const useEthereumContext = (): EthereumContextType => {
         new EthereumInstance()
     );
     const [supplyContracts, setSupplyContracts] = useState<string[]>();
+
+    useEffect(() => {
+        // if (markets) return;
+
+        ethereumInstance
+            .scanBlocksForContractCreations()
+            .then(({marketAddresses, supplyContractAddresses}) => {
+                console.log("Scan completed.");
+                setMarkets(marketAddresses);
+                setSupplyContracts(supplyContractAddresses);
+                if (marketAddresses.length > 0) {
+                    setCurrentMarket(marketAddresses[0]);
+                }
+            })
+            .catch((error) => {
+                console.error("Error:", error);
+            });
+    }, [ethereumInstance, setMarkets, setSupplyContracts]);
+
+    useEffect(() => {
+        console.log("her", markets, currentAccount);
+        if (markets.length < 1 && currentAccount) {
+            console.log('deploy');
+            ethereumInstance.deployMarket(currentAccount).then(market => setCurrentMarket(market));
+        } else if (markets && !currentMarket) {
+            setCurrentMarket(markets[0]);
+        }
+    }, [markets, currentAccount]);
+
+    useEffect(() => {
+        ethereumInstance.getAccounts().then((accounts) => {
+            console.log(accounts);
+            setAccounts(accounts);
+            accounts.length > 0 && setCurrentAccount(accounts[0]);
+        });
+    }, [ethereumInstance, setAccounts]);
 
     return {
         ethereumInstance,
