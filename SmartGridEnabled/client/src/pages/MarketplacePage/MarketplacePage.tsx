@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import DataTable from "../../components/DataTable/DataTable";
 import {
+    buyOfferColumns,
     offerColumns,
     supplyContractColumns,
 } from "../../models/dataGridColumns";
@@ -85,8 +86,15 @@ const MarketplacePage = () => {
             <h1>Marketplace</h1>
             <AddOfferComponent />
             <div className={styles.item}>
-                <h3>Offers</h3>
-                {offers && (<DataTable rows={offers} columns={offerColumns(buyOffer(currentMarket, currentAccount))} />)} 
+                <h3>Other offers</h3>
+                    {offers && (<DataTable rows={offers.filter(offer => offer.owner != currentAccount)}  columns={buyOfferColumns(buyOffer(currentMarket, currentAccount))} />)} 
+            </div>
+            <div className={styles.item}>
+                <h3>Own offers</h3>
+                <DataTable
+                    rows={offers.filter(offer => offer.owner === currentAccount)}
+                    columns={offerColumns}
+                />
             </div>
             <div className={styles.item}>
                 <h3>Supply Contracts</h3>
@@ -95,6 +103,7 @@ const MarketplacePage = () => {
                     columns={supplyContractColumns}
                 />
             </div>
+            
         </div>
     );
 };

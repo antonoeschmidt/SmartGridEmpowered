@@ -14,7 +14,7 @@ export const supplyContractColumns: GridColDef[] = [
   },
 ];
 
-export const offerColumns = (buyOnClick: (id: string) => void): GridColDef[] => [
+export const offerColumns: GridColDef[] = [
   { field: "owner", headerName: "Seller", width: 370 },
   { field: "amount", headerName: "Amount (Wh)", width: 150 },
   { field: "price", headerName: "Price (€ cents)", width: 150 },
@@ -25,11 +25,11 @@ export const offerColumns = (buyOnClick: (id: string) => void): GridColDef[] => 
     editable: false,
   },
   { field: "active", headerName: "Active", width: 150 },
-  { field: "Buy", headerName: "buy", width: 150, 
+];
+
+export const buyOfferColumns = (buyOnClick: (id: string) => void): GridColDef[] => [...offerColumns, {
+  field: "Buy", headerName: "buy", width: 150, 
   renderCell: (params) => {
     // you will find row info in params
     return <Button color="primary" variant="contained" onClick={e => buyOnClick(params.rowNode.id as string)}>Click</Button>
- }  
- },
-  
-];
+ }}];

@@ -20,11 +20,11 @@ export type EthereumContextType = {
 };
 
 export const useEthereumContext = (): EthereumContextType => {
-    const [accounts, setAccounts] = useState<string[]>();
+    const [accounts, setAccounts] = useState<string[]>([]);
     const [currentAccount, setCurrentAccount] = useState<string>("");
     const [currentMarket, setCurrentMarket] = useState<string>("");
-    const [markets, setMarkets] = useState<string[]>();
-    const [offers, setOffers] = useState<Offer[]>()
+    const [markets, setMarkets] = useState<string[]>([]);
+    const [offers, setOffers] = useState<Offer[]>([])
     const [ethereumInstance, setEthereumInstance] = useState<EthereumInstance>(
         new EthereumInstance()
     );
