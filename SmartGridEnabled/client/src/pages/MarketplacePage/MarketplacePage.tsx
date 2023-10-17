@@ -12,8 +12,8 @@ import { Offer } from "../../models/models";
 
 const MarketplacePage = () => {
     const { ethereumInstance, currentMarket } = useContext(EthereumContext);
-    const [offers, setOffers] = useState<Offer[]>()
-    
+    const [offers, setOffers] = useState<Offer[]>();
+
     const supplyContracts: GridRowsProp = [
         {
             id: 1,
@@ -66,30 +66,39 @@ const MarketplacePage = () => {
     ];
 
     useEffect(() => {
-        if (offers) return
-        ethereumInstance.getOffers(currentMarket)
-        .then((data) =>  {
-            console.log(data) 
-            setOffers(data)
-        })
-        .catch((err) => console.log(err))  
-    }, [currentMarket, ethereumInstance, offers])
-    
+        if (offers || !currentMarket) return;
+        ethereumInstance
+            .getOffers(currentMarket)
+            .then((data) => {
+                console.log(data);
+                setOffers(data);
+            })
+            .catch((err) => console.log(err));
+    }, [currentMarket, ethereumInstance, offers]);
+
     return (
         <div className={styles.container}>
             <h1>Marketplace</h1>
-            <AddOfferComponent />
-            <div className={styles.item}>
-                <h3>Offers</h3>
-                {offers && (<DataTable rows={offers} columns={offerColumns} />)} 
-            </div>
-            <div className={styles.item}>
-                <h3>Supply Contracts</h3>
-                <DataTable
-                    rows={supplyContracts}
-                    columns={supplyContractColumns}
-                />
-            </div>
+            {currentMarket ? (
+                <>
+                    <AddOfferComponent />
+                    <div className={styles.item}>
+                        <h3>Offers</h3>
+                        {offers && (
+                            <DataTable rows={offers} columns={offerColumns} />
+                        )}
+                    </div>
+                    <div className={styles.item}>
+                        <h3>Supply Contracts</h3>
+                        <DataTable
+                            rows={supplyContracts}
+                            columns={supplyContractColumns}
+                        />
+                    </div>
+                </>
+            ) : (
+                <> Please choose a Market to view the Marketplace</>
+            )}
         </div>
     );
 };

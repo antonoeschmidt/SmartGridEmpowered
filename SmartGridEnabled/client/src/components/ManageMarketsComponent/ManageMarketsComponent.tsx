@@ -26,6 +26,7 @@ const ManageMarketsComponent = () => {
             <h3>Manage markets</h3>
             <div className={styles.buttons}>
                 <Button
+                    disabled={!currentAccount}
                     variant="contained"
                     color="primary"
                     style={{ maxHeight: "3em" }}
