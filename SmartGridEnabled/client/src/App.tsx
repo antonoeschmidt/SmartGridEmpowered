@@ -2,7 +2,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 import MainPage from "./pages/MainPage/MainPage";
-import HomePage from "./pages/HomePage/HomePage";
+import HomePage from "./pages/DashboardPage/DashboardPage";
 import EthereumContext, {
     useEthereumContext,
 } from "./contexts/ethereumContext";
