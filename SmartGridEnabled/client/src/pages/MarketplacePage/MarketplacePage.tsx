@@ -8,13 +8,18 @@ import {
 import styles from "./MarketplacePage.module.css";
 import EthereumContext from "../../contexts/ethereumContext";
 import AddOfferComponent from "../../components/AddOfferComponent/AddOfferComponent";
-import { OfferDTO, SupplyContractDTO } from "../../models/models";
-import { Button } from "@mui/material";
+import { SupplyContractDTO } from "../../models/models";
 
 const MarketplacePage = () => {
-    const { ethereumInstance, currentMarket, supplyContracts, currentAccount } =
-        useContext(EthereumContext);
-    const [offers, setOffers] = useState<OfferDTO[]>();
+    const {
+        ethereumInstance,
+        currentMarket,
+        supplyContracts,
+        setSupplyContracts,
+        currentAccount,
+        offers,
+        setOffers,
+    } = useContext(EthereumContext);
     const [supplyContractsDTO, setSupplyContractsDTO] =
         useState<SupplyContractDTO[]>();
 
@@ -26,7 +31,10 @@ const MarketplacePage = () => {
                 setOffers(data);
             })
             .catch((err) => console.log(err));
+    }, [currentMarket, ethereumInstance, offers, setOffers]);
 
+    useEffect(() => {
+        console.log("Fetch Supply");
         ethereumInstance
             .getSupplyContracts(supplyContracts)
             .then((data) => {
@@ -34,30 +42,32 @@ const MarketplacePage = () => {
                 setSupplyContractsDTO(data);
             })
             .catch((err) => console.error(err));
-    }, [currentMarket, ethereumInstance, offers, supplyContracts]);
+    }, [ethereumInstance, supplyContracts]);
 
-    const buyOffer = (market: string, account: string) => (id: string) => {
-        ethereumInstance
-            .buyOffer(market, id, account)
-            .then((res) => console.log("res", res));
+    const buyOffer = (market: string, account: string) => async (id: string) => {
+        const address = await ethereumInstance.buyOffer(market, id, account);
+        const newSC = await ethereumInstance.getSupplyContractInfo(address)
+        setSupplyContracts(prevState => [...prevState, address])
+        setSupplyContractsDTO(prevState => [...prevState, newSC])
     };
-
-    const handleClick = () => {
-        ethereumInstance.deploySupplyContract(currentAccount)
-        .then((res) => {
-            console.log(res);
-        })
-        .catch((err) => console.error(err));
-
-    }
 
     return (
         <div className={styles.container}>
-            <Button variant="outlined" onClick={() => handleClick()}>Deploy</Button>
             <h1>Marketplace</h1>
             {currentMarket ? (
                 <>
                     <AddOfferComponent />
+                    <div className={styles.item}>
+                        <h3>Own offers</h3>
+                        {offers && (
+                            <DataTable
+                                rows={offers.filter(
+                                    (offer) => offer.owner === currentAccount
+                                )}
+                                columns={offerColumns}
+                            />
+                        )}
+                    </div>
                     <div className={styles.item}>
                         <h3>Other offers</h3>
                         {offers && (
@@ -72,22 +82,13 @@ const MarketplacePage = () => {
                         )}
                     </div>
                     <div className={styles.item}>
-                        <h3>Own offers</h3>
-                        {offers && (
-                        <DataTable
-                            rows={offers.filter(
-                                (offer) => offer.owner === currentAccount
-                            )}
-                            columns={offerColumns}
-                        />)}
-                    </div>
-                    <div className={styles.item}>
                         <h3>Supply Contracts</h3>
-                    {supplyContractsDTO && (
-                        <DataTable
-                            rows={supplyContractsDTO}
-                            columns={supplyContractColumns}
-                        />)}
+                        {supplyContractsDTO && (
+                            <DataTable
+                                rows={supplyContractsDTO}
+                                columns={supplyContractColumns}
+                            />
+                        )}
                     </div>
                 </>
             ) : (

@@ -1,4 +1,4 @@
-export interface OfferDTO {
+export type OfferDTO = {
     id: string;
     price: number;
     expriration: number;

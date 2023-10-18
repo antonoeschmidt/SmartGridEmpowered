@@ -14,9 +14,9 @@ export type EthereumContextType = {
     markets: string[];
     setMarkets: (markets: string[]) => void;
     supplyContracts: string[];
-    setSupplyContracts: (addresses: string[]) => void;
+    setSupplyContracts: React.Dispatch<React.SetStateAction<string[]>>
     offers: OfferDTO[];
-    setOffers: (addresses: OfferDTO[]) => void;
+    setOffers: React.Dispatch<React.SetStateAction<OfferDTO[]>>
 };
 
 export const useEthereumContext = (): EthereumContextType => {

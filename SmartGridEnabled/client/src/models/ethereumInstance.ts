@@ -55,18 +55,13 @@ export class EthereumInstance {
         return new this.web3.eth.Contract(Market.abi, address);
     };
 
-    deploySupplyContract = async (sender: string) => {
+    deploySupplyContract = async (sender: string, sc: SupplyContractDTO) => {
         let newContract = new this.web3.eth.Contract(SupplyContract.abi);
         let res = await newContract
             .deploy({
                 data: SupplyContract.bytecode,
                 // @ts-ignore
-                arguments: [
-                    sender,
-                    "0x9E0F9eFA6Be40005e33dce6e1440DDBD125CfAB1",
-                    1,
-                    1,
-                ],
+                arguments: [sc.buyer, sc.seller, sc.amount, sc.price],
             })
             .send({
                 from: sender,
@@ -139,19 +134,21 @@ export class EthereumInstance {
     addOffer = async (offer: OfferDTO, market: string, account: string) => {
         let marketInstance = this.marketInstance(market);
         try {
-            let res = await marketInstance.methods
-            .addOffer(
+            await marketInstance.methods
+                .addOffer(
                     // @ts-ignore
                     offer.id,
                     offer.price,
                     offer.expriration,
                     offer.amount
                 )
-                .send({ from: account,
+                .send({
+                    from: account,
                     gas: "1500000",
-                    gasPrice: "30000000000" });
-            
-            console.log(res)
+                    gasPrice: "30000000000",
+                });
+
+            return offer;
         } catch (error) {
             console.error(error);
         }
@@ -160,40 +157,61 @@ export class EthereumInstance {
     getOffers = async (market: string) => {
         let marketInstance = this.marketInstance(market);
         try {
-            let res = await marketInstance.methods.getOffers().call() as any[]
-            return res.map((d) => offerParser(d))
+            let res = (await marketInstance.methods
+                .getOffers()
+                .call()) as any[];
+            return res.map((d) => offerParser(d));
         } catch (error) {
             console.error(error);
         }
     };
 
     getSupplyContracts = async (supplyContracts: string[]) => {
-        let sc: SupplyContractDTO[] = []
+        let scList: SupplyContractDTO[] = [];
         try {
-            for (let i = 0; i < supplyContracts.length; i++){
-                const supplyContractInstance = this.supplyContractInstance(supplyContracts[i]);
-                let res = await supplyContractInstance.methods.getInfo().call()
-                sc.push(supplyContractParser({...res, id: supplyContracts[i]}))
+            for (let i = 0; i < supplyContracts.length; i++) {
+                let sc = await this.getSupplyContractInfo(supplyContracts[i]);
+
+                scList.push(sc);
             }
-        } catch (error) {
-            console.error(error)
-        }
-
-        return sc;
-    }
-    buyOffer = async (market: string, id: string, account: string) => {
-        const marketInstance = this.marketInstance(market);
-        try {
-            const res = await marketInstance.methods.buyOffer(
-                // @ts-ignore
-                id
-                ).send({ from: account,
-                    gas: "1500000",
-                    gasPrice: "30000000000" }); //
-
-            console.log('res', res);
         } catch (error) {
             console.error(error);
         }
+
+        return scList;
+    };
+    buyOffer = async (market: string, id: string, account: string) => {
+        const marketInstance = this.marketInstance(market);
+        try {
+            await marketInstance.methods
+                // @ts-ignore
+                .buyOffer(id)
+                .send({
+                    from: account,
+                    gas: "1500000",
+                    gasPrice: "30000000000",
+                });
+
+            let address = (await marketInstance.methods
+                .getLatestSupplyContract()
+                .call()) as unknown as string;
+
+            let supplyContractInstance = this.supplyContractInstance(address);
+            let supplyContractInfo = supplyContractParser(
+                await supplyContractInstance.methods.getInfo().call()
+            );
+
+            return await this.deploySupplyContract(account, supplyContractInfo);
+
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    getSupplyContractInfo = async (address: string) => {
+        const supplyContractInstance = this.supplyContractInstance(address);
+        let res = await supplyContractInstance.methods.getInfo().call();
+
+        return supplyContractParser({ ...res, id: address });
     };
 }

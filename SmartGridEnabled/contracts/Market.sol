@@ -14,6 +14,7 @@ contract Market {
 
     mapping(string => Offer) private offers;
     string[] public offerIds;
+    address public lastestSupplyChainAddress;
     
     constructor() payable {}
 
@@ -57,6 +58,8 @@ contract Market {
             _amount: amount,
             _price: price
         });
+        lastestSupplyChainAddress = address(sc);
+
         return address(sc);
     }
 
@@ -76,6 +79,10 @@ contract Market {
 
     function getOfferIDs() public view returns (string[] memory) {
         return offerIds;
+    }
+
+    function getLatestSupplyContract() public view returns(address) {
+        return lastestSupplyChainAddress;
     }
 }
 

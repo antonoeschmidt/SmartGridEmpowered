@@ -13,11 +13,12 @@ const PickAccountsComponent = () => {
     } = useContext(EthereumContext);
 
     useEffect(() => {
+        if (accounts) return;
         ethereumInstance.getAccounts().then((accounts) => {
-            console.log(accounts);
             setAccounts(accounts);
+            if (!currentAccount)setCurrentAccount(accounts[0])
         });
-    }, [ethereumInstance, setAccounts]);
+    }, [accounts, currentAccount, ethereumInstance, setAccounts, setCurrentAccount]);
 
     return (
         <div className={`${styles.item} ${styles.pickAccount}`}>

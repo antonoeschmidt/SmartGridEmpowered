@@ -6,8 +6,9 @@ import { v4 as uuidv4 } from "uuid";
 import { OfferDTO } from "../../models/models";
 
 const AddOfferComponent = () => {
-    const { ethereumInstance, currentAccount, currentMarket, setOffers } = useContext(EthereumContext);
-    const [amount, setAmount] = useState<number>(10)
+    const { ethereumInstance, currentAccount, currentMarket, setOffers } =
+        useContext(EthereumContext);
+    const [amount, setAmount] = useState<number>(10);
     const [price, setPrice] = useState<number>(10);
 
     const addNewOffer = () => {
@@ -15,25 +16,31 @@ const AddOfferComponent = () => {
             alert("Please select an account before creating new offer!");
             return;
         }
-
         let newOffer: OfferDTO = {
             id: uuidv4(),
             price: price,
             amount: amount,
             expriration: 100000,
-            owner: "",
+            owner: currentAccount,
             active: true,
         };
-        ethereumInstance.addOffer(newOffer, currentMarket, currentAccount);
+        ethereumInstance
+            .addOffer(newOffer, currentMarket, currentAccount)
+            .then((offer) => {
+                console.log(offer);
+                setOffers((prev) => [...prev, newOffer]);
+            });
     };
 
     const getOffers = () => {
-        ethereumInstance.getOffers(currentMarket).then((data) => {
-            console.log(data); 
-            setOffers(data);
-                })
-        .catch((err) => console.log(err));
-    }
+        ethereumInstance
+            .getOffers(currentMarket)
+            .then((data) => {
+                console.log(data);
+                setOffers(data);
+            })
+            .catch((err) => console.log(err));
+    };
 
     return (
         <div className={`${styles.item}`}>
