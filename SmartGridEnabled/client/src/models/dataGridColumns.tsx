@@ -28,8 +28,8 @@ export const offerColumns: GridColDef[] = [
 ];
 
 export const buyOfferColumns = (buyOnClick: (id: string) => void): GridColDef[] => [...offerColumns, {
-  field: "Buy", headerName: "buy", width: 150, 
+  field: "Buy", headerName: "", width: 150, 
   renderCell: (params) => {
     // you will find row info in params
-    return <Button color="primary" variant="contained" onClick={e => buyOnClick(params.rowNode.id as string)}>Click</Button>
+    return <Button color="primary" variant="contained" onClick={e => buyOnClick(params.rowNode.id as string)}>Buy</Button>
  }}];

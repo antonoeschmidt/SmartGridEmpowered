@@ -34,7 +34,6 @@ const MarketplacePage = () => {
     }, [currentMarket, ethereumInstance, offers, setOffers]);
 
     useEffect(() => {
-        console.log("Fetch Supply");
         ethereumInstance
             .getSupplyContracts(supplyContracts)
             .then((data) => {

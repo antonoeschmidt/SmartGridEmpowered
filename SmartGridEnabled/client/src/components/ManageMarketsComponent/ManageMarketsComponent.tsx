@@ -14,12 +14,13 @@ const ManageMarketsComponent = () => {
 
     const [newMarketCreated, setNewMarketCreated] = useState(false);
 
-    const newMarketClick = async () => {
+    const newMarket = (async () => {
+        if (!currentAccount) return;
         let marketAddress = await ethereumInstance.deployMarket(currentAccount);
         setNewMarketCreated(true);
         setCurrentMarket(marketAddress);
-        setMarkets(markets ? [...markets, marketAddress] : [marketAddress])
-    };
+        setMarkets(markets ? [...markets, marketAddress] : [marketAddress]);
+    });
 
     return (
         <div className={`${styles.item} ${styles.pickAccount}`}>
@@ -30,11 +31,10 @@ const ManageMarketsComponent = () => {
                     variant="contained"
                     color="primary"
                     style={{ maxHeight: "3em" }}
-                    onClick={() => newMarketClick()}
+                    onClick={() => newMarket()}
                 >
                     New Market
                 </Button>
-
             </div>
             {newMarketCreated && (
                 <p className="light-text">New market created!</p>
