@@ -35,19 +35,27 @@ const MarketplacePage = () => {
 
     useEffect(() => {
         ethereumInstance
-            .getSupplyContracts(supplyContracts)
+            .getSupplyContracts(supplyContracts, currentAccount)
             .then((data) => {
                 console.log(data);
                 setSupplyContractsDTO(data);
             })
             .catch((err) => console.error(err));
-    }, [ethereumInstance, supplyContracts]);
+    }, [currentAccount, ethereumInstance, supplyContracts]);
 
     const buyOffer = (market: string, account: string) => async (id: string) => {
         const address = await ethereumInstance.buyOffer(market, id, account);
-        const newSC = await ethereumInstance.getSupplyContractInfo(address)
+        const newSC = await ethereumInstance.getSupplyContractInfo(address, currentAccount)
         setSupplyContracts(prevState => [...prevState, address])
         setSupplyContractsDTO(prevState => [...prevState, newSC])
+
+        ethereumInstance
+            .getOffers(currentMarket)
+            .then((data) => {
+                setOffers(data);
+            })
+            .catch((err) => console.log(err));
+
     };
 
     return (

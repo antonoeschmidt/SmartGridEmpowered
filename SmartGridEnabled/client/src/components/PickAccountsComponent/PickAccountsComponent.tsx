@@ -15,8 +15,10 @@ const PickAccountsComponent = () => {
     useEffect(() => {
         if (accounts) return;
         ethereumInstance.getAccounts().then((accounts) => {
-            setAccounts(accounts);
-            if (!currentAccount)setCurrentAccount(accounts[0])
+            if (accounts) {
+                setAccounts(accounts);
+                if (!currentAccount)setCurrentAccount(accounts[0])
+            }
         });
     }, [accounts, currentAccount, ethereumInstance, setAccounts, setCurrentAccount]);
 

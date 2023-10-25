@@ -26,6 +26,6 @@ export const supplyContractParser = (d: any): SupplyContractDTO => {
         seller: d.seller,
         price: Number(d.price),
         amount: Number(d.amount),
-        timestamp: Number(d.timestamp)
+        timestamp: Number(d.timestamp) * 1000
     } as SupplyContractDTO;
 };

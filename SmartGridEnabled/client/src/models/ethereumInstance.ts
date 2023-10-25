@@ -35,6 +35,7 @@ export class EthereumInstance {
         try {
             if (window.web3) {
                 // MetaMask
+                console.log("MetaMask detected");
                 return await window.ethereum.request({
                     method: "eth_requestAccounts",
                 });
@@ -166,11 +167,11 @@ export class EthereumInstance {
         }
     };
 
-    getSupplyContracts = async (supplyContracts: string[]) => {
+    getSupplyContracts = async (supplyContracts: string[], sender: string) => {
         let scList: SupplyContractDTO[] = [];
         try {
-            for (let i = 0; i < supplyContracts.length; i++) {
-                let sc = await this.getSupplyContractInfo(supplyContracts[i]);
+            for (let i = 0; i < supplyContracts?.length; i++) {
+                let sc = await this.getSupplyContractInfo(supplyContracts[i], sender);
 
                 scList.push(sc);
             }
@@ -208,10 +209,9 @@ export class EthereumInstance {
         }
     };
 
-    getSupplyContractInfo = async (address: string) => {
+    getSupplyContractInfo = async (address: string, sender: string) => {
         const supplyContractInstance = this.supplyContractInstance(address);
-        let res = await supplyContractInstance.methods.getInfo().call();
-
+        let res = await supplyContractInstance.methods.getInfo().call({from: sender});
         return supplyContractParser({ ...res, id: address });
     };
 }

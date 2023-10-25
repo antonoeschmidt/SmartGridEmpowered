@@ -60,6 +60,9 @@ contract Market {
         });
         lastestSupplyChainAddress = address(sc);
 
+        offer.active = false;
+        offers[id] = offer;
+
         return address(sc);
     }
 
@@ -67,11 +70,16 @@ contract Market {
         return offers[id];
     }
 
-    function getOffers() public view returns (Offer[] memory) {
+    function getOffers() public returns (Offer[] memory) {
         Offer[] memory offersReturn = new Offer[](offerIds.length);
         for (uint i = 0; i < offerIds.length; i++) {
             string storage offerId = offerIds[i];
             Offer storage offer = offers[offerId];
+
+            if (offer.expirationTime < block.timestamp) {
+                offer.active = false;
+            }
+
             offersReturn[i] = offer;
         }
         return offersReturn;
@@ -143,7 +151,7 @@ contract SupplyContract {
         } else {
             priceDTO = 0;
             amountDTO = 0;
-        }        
+        }
 
         SupplyContractDTO memory scDTO = SupplyContractDTO({
             scAddress: address(this),

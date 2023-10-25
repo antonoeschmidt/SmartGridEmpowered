@@ -8,19 +8,25 @@ import { OfferDTO } from "../../models/models";
 const AddOfferComponent = () => {
     const { ethereumInstance, currentAccount, currentMarket, setOffers } =
         useContext(EthereumContext);
-    const [amount, setAmount] = useState<number>(10);
-    const [price, setPrice] = useState<number>(10);
+    const [amount, setAmount] = useState<number>();
+    const [price, setPrice] = useState<number>();
 
     const addNewOffer = () => {
         if (!currentAccount) {
             alert("Please select an account before creating new offer!");
             return;
         }
+
+        if (!(amount >= 1 || price >= 1)) {
+            alert("Amount and price must have a value")
+            return
+        }
+
         let newOffer: OfferDTO = {
             id: uuidv4(),
             price: price,
             amount: amount,
-            expriration: 100000,
+            expriration: Date.now() + (24 * 60 * 60 * 1000), // 24 hours in ms
             owner: currentAccount,
             active: true,
         };
@@ -32,18 +38,9 @@ const AddOfferComponent = () => {
             });
     };
 
-    const getOffers = () => {
-        ethereumInstance
-            .getOffers(currentMarket)
-            .then((data) => {
-                console.log(data);
-                setOffers(data);
-            })
-            .catch((err) => console.log(err));
-    };
-
     return (
         <div className={`${styles.item}`}>
+            <h3>Add new offer</h3>
             <div className={styles.container}>
                 <TextField
                     label="Amount (Wh)"
@@ -62,14 +59,6 @@ const AddOfferComponent = () => {
                     onClick={() => addNewOffer()}
                 >
                     New Offer
-                </Button>
-                <Button
-                    variant="contained"
-                    color="primary"
-                    style={{ maxHeight: "3em" }}
-                    onClick={() => getOffers()}
-                >
-                    Get offers
                 </Button>
             </div>
         </div>
