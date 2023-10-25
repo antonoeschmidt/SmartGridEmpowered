@@ -5,11 +5,10 @@ import DrawerComponent from "../../components/DrawerComponent/DrawerComponent";
 import EthereumContext from "../../contexts/ethereumContext";
 
 const MainPage = () => {
-    const { setMarkets, ethereumInstance, markets, setSupplyContracts, setCurrentMarket } =
+    const { setMarkets, ethereumInstance, setSupplyContracts, setCurrentMarket, currentMarket } =
         useContext(EthereumContext);
 
-    useEffect(() => {        
-        if (markets) return
+    useEffect(() => {
         ethereumInstance
             .scanBlocksForContractCreations()
             .then(({ marketAddresses, supplyContractAddresses }) => {
@@ -19,13 +18,13 @@ const MainPage = () => {
                 console.log('marketAddresses', marketAddresses)
                 console.log('supplyContractAddresses', supplyContractAddresses)
                 
-                setCurrentMarket(marketAddresses[0])
+                if (!currentMarket) setCurrentMarket(marketAddresses[0])
             })
             .catch((error) => {
                 console.error("Error:", error);
             });
-    }, [ethereumInstance, markets, setCurrentMarket, setMarkets, setSupplyContracts]);
-
+    }, [currentMarket, ethereumInstance, setCurrentMarket, setMarkets, setSupplyContracts]);
+    
     return (
         <div className={styles.container}>
             <DrawerComponent />

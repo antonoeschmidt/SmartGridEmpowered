@@ -13,7 +13,9 @@ const PickAccountsComponent = () => {
     } = useContext(EthereumContext);
 
     useEffect(() => {
+        
         if (accounts) return;
+
         ethereumInstance.getAccounts().then((accounts) => {
             if (accounts) {
                 setAccounts(accounts);
