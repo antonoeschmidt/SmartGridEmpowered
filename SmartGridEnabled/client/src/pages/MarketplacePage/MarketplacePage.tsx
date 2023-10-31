@@ -9,6 +9,7 @@ import styles from "./MarketplacePage.module.css";
 import EthereumContext from "../../contexts/ethereumContext";
 import AddOfferComponent from "../../components/AddOfferComponent/AddOfferComponent";
 import { SupplyContractDTO } from "../../models/models";
+import SuggestedPriceComponent from "../../components/SuggestedPriceComponent/SuggestedPriceComponent";
 
 const MarketplacePage = () => {
     const {
@@ -22,6 +23,10 @@ const MarketplacePage = () => {
     } = useContext(EthereumContext);
     const [supplyContractsDTO, setSupplyContractsDTO] =
         useState<SupplyContractDTO[]>();
+
+    const [amount, setAmount] = useState<number>();
+    const [price, setPrice] = useState<number>();
+    const [suggestedPrice, setSuggestedPrice] = useState<string>()
 
     useEffect(() => {
         if (offers || !currentMarket) return;
@@ -43,27 +48,46 @@ const MarketplacePage = () => {
             .catch((err) => console.error(err));
     }, [currentAccount, ethereumInstance, supplyContracts]);
 
-    const buyOffer = (market: string, account: string) => async (id: string) => {
-        const address = await ethereumInstance.buyOffer(market, id, account);
-        const newSC = await ethereumInstance.getSupplyContractInfo(address, currentAccount)
-        setSupplyContracts(prevState => [...prevState, address])
-        setSupplyContractsDTO(prevState => [...prevState, newSC])
+    useEffect(() => {
+      setSuggestedPrice(Math.random().toFixed(3))
+    }, [])
+    
+    const buyOffer =
+        (market: string, account: string) => async (id: string) => {
+            const address = await ethereumInstance.buyOffer(
+                market,
+                id,
+                account
+            );
+            const newSC = await ethereumInstance.getSupplyContractInfo(
+                address,
+                currentAccount
+            );
+            setSupplyContracts((prevState) => [...prevState, address]);
+            setSupplyContractsDTO((prevState) => [...prevState, newSC]);
 
-        ethereumInstance
-            .getOffers(currentMarket)
-            .then((data) => {
-                setOffers(data);
-            })
-            .catch((err) => console.log(err));
-
-    };
+            ethereumInstance
+                .getOffers(currentMarket)
+                .then((data) => {
+                    setOffers(data);
+                })
+                .catch((err) => console.log(err));
+        };
 
     return (
         <div className={styles.container}>
             <h1>Marketplace</h1>
             {currentMarket ? (
                 <>
-                    <AddOfferComponent />
+                    <div className={styles.row}>
+                        <AddOfferComponent
+                            amount={amount}
+                            setAmount={setAmount}
+                            price={price}
+                            setPrice={setPrice}
+                        />
+                        <SuggestedPriceComponent suggestedPrice={suggestedPrice} />
+                    </div>
                     <div className={styles.item}>
                         <h3>Own offers</h3>
                         {offers && (

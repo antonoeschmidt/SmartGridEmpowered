@@ -1,15 +1,20 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import styles from "./AddOfferComponent.module.css";
 import { Button, TextField } from "@mui/material";
 import EthereumContext from "../../contexts/ethereumContext";
 import { v4 as uuidv4 } from "uuid";
 import { OfferDTO } from "../../models/models";
 
-const AddOfferComponent = () => {
+type Props = {
+    amount: number,
+    setAmount: React.Dispatch<React.SetStateAction<number>>,
+    price: number,
+    setPrice: React.Dispatch<React.SetStateAction<number>>,
+}
+
+const AddOfferComponent = ({amount, setAmount, price, setPrice}: Props) => {
     const { ethereumInstance, currentAccount, currentMarket, setOffers } =
         useContext(EthereumContext);
-    const [amount, setAmount] = useState<number>();
-    const [price, setPrice] = useState<number>();
 
     const addNewOffer = () => {
         if (!currentAccount) {
