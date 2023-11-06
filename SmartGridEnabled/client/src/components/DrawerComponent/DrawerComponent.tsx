@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import StoreIcon from "@mui/icons-material/Store";
+import ElectricMeterIcon from '@mui/icons-material/ElectricMeter';
 
 const DrawerComponent = () => {
     const navigate = useNavigate();
@@ -40,6 +41,12 @@ const DrawerComponent = () => {
                     <ListItemButton onClick={() => navigate("/marketplace")}>
                         <ListItemIcon>{<StoreIcon />}</ListItemIcon>
                         <ListItemText primary={"Marketplace"} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem key={"smartmeter"} disablePadding>
+                    <ListItemButton onClick={() => navigate("/smartmeter")}>
+                        <ListItemIcon>{<ElectricMeterIcon />}</ListItemIcon>
+                        <ListItemText primary={"Smart Meter"} />
                     </ListItemButton>
                 </ListItem>
             </List>

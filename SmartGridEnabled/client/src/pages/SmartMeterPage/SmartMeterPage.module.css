@@ -1,0 +1,22 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 1em;
+}
+
+.row {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+    min-height: 150px;
+    background-color: white;
+    border-radius: 20px;
+    padding: 1em;
+    overflow: hidden;
+}
