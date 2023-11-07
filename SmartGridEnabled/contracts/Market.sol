@@ -2,9 +2,21 @@
 // pragma experimental ABIEncoderV2;
 pragma solidity ^0.8.9;
 
+interface ICableCompany {
+    function registerKey(address smartMeterPubKey, address smartMeterAddress) external;
+    function isRegisteredKey(address smartMeterPubKey, address smartMeterAddress) external view returns (bool);
+    function removeRegisteredKey(address smartMeterPubKey) external;
+}
+
+interface ISmartMeter {
+    function returnReservedBatteryCharge(uint amount) external returns (bool);
+    function subtractBatteryCharge(uint amount) external returns (bool);
+}
+
+
 contract Market {
     address owner;
-    CableCompany cableCompany;
+    ICableCompany cableCompany;
 
     struct Offer {
         string id;
@@ -22,7 +34,7 @@ contract Market {
     
     constructor(address _cableCompanyAddress) payable {
         owner = msg.sender;
-        cableCompany = CableCompany(_cableCompanyAddress);
+        cableCompany = ICableCompany(_cableCompanyAddress);
     }
 
     function addOffer(
@@ -35,7 +47,7 @@ contract Market {
 
         require(cableCompany.isRegisteredKey(msg.sender, smartMeterAddress), "Smart Meter not registered by Cable Company");
 
-        SmartMeter smartMeter = SmartMeter(smartMeterAddress);        
+        ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);        
         require(smartMeter.subtractBatteryCharge(amount), "Not enough stored energy");
 
         offers[id] = Offer({
@@ -55,7 +67,7 @@ contract Market {
     function removeOffer(string memory id, address smartMeterAddress) public returns (bool) {
         Offer memory offer = offers[id];
         require(msg.sender == offer.owner);
-        SmartMeter smartMeter = SmartMeter(smartMeterAddress); 
+        ISmartMeter smartMeter = ISmartMeter(smartMeterAddress); 
         smartMeter.returnReservedBatteryCharge(offer.amount);
         delete offers[id];
         return true;
@@ -177,105 +189,5 @@ contract SupplyContract {
 
         return scDTO;
 
-    }
-}
-
-contract SmartMeter {
-    address owner;
-    address currentMarketAddress;
-    uint private totalConsumption;
-    uint private totalProduction;
-    uint batteryCharge;
-    uint lastDataSent;
-    uint transmissionInterval = 15 seconds;
-
-    constructor() {
-        owner = msg.sender;
-        totalConsumption = 0;
-        totalProduction = 0;
-    }
-
-    struct PowerData {
-        uint256 intervalConsumption;
-        uint256 intervalProduction;
-        uint256 totalConsumption;
-        uint256 totalProduction;
-    }
-
-    event Log(address sender, PowerData pd, uint256 timeStamp);
-
-    function createLog(uint256 intervalConsumption, uint256 intervalProduction)
-        public
-    {
-        require(msg.sender == owner);
-        require(block.timestamp - lastDataSent > transmissionInterval, "Logs cannot appear more frequently than the transmission interval");
-        totalConsumption += intervalConsumption;
-        totalProduction += intervalProduction;
-
-        if (intervalProduction - intervalConsumption > 0) {
-            batteryCharge += intervalProduction - intervalConsumption;
-        }
-
-        emit Log(
-            msg.sender,
-            PowerData({
-                totalProduction: totalProduction,
-                totalConsumption: totalConsumption,
-                intervalConsumption: intervalConsumption,
-                intervalProduction: intervalProduction
-            }),
-            block.timestamp
-        );
-        lastDataSent = block.timestamp;
-    }
-
-    function getBatteryCharge() public view returns(uint) {
-        return batteryCharge;
-    }
-
-    function subtractBatteryCharge(uint amount) public returns (bool) {
-        require(msg.sender == currentMarketAddress, "Only registered market can substract energy");
-        if (batteryCharge < amount) {
-            return false;
-        }
-        batteryCharge -= amount;
-        return true;
-    }
-
-    function setCurrentMarketAddress(address marketAddress) public returns (bool) {
-        require(msg.sender == owner, "Only owner can change market address");
-        currentMarketAddress = marketAddress;
-        return true;
-    }
-
-    function returnReservedBatteryCharge(uint returnedBatteryCharge) public returns (bool) {
-        require(msg.sender == currentMarketAddress, "Only registered market can return energy");
-        batteryCharge += returnedBatteryCharge;
-        return true;
-    }
-
-}
-
-contract CableCompany {
-    address owner;
-    mapping(address => address) pubKeys;
-
-    constructor() {
-        owner = msg.sender;
-    }
-
-    function registerKey(address smartMeterPubKey, address smartMeterAddress) public {
-        require(msg.sender == owner, "Only owner can register new keys");
-        pubKeys[smartMeterPubKey] = smartMeterAddress;
-    }
-
-    function isRegisteredKey(address smartMeterPubKey, address smartMeterAddress) view public returns (bool) {
-        require(pubKeys[smartMeterPubKey] == smartMeterAddress, "Key not registered");
-        return true;
-    }
-
-    function removeRegisteredKey(address smartMeterPubKey) public {
-        require(msg.sender == owner, "Only owner can remove keys");
-        delete pubKeys[smartMeterPubKey];
     }
 }
