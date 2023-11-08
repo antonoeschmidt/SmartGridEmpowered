@@ -36,6 +36,8 @@ export const useEthereumContext = (): EthereumContextType => {
     const [cableCompanyAddress, setCableCompanyAddress] = useState<string>()
     const [smartMeterAddress, setSmartMeterAddress] = useState<string>()
 
+    
+
     return {
         ethereumInstance,
         setEthereumInstance,

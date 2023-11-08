@@ -1,18 +1,19 @@
-const CableCompany = artifacts.require("./CableCompany.sol");
+// const CableCompany = artifacts.require("./CableCompany.sol");
 const Market = artifacts.require("./Market.sol");
-const SupplyContract = artifacts.require("./SupplyContract.sol");
-const SmartMeter = artifacts.require("./SmartMeter.sol");
+// const SupplyContract = artifacts.require("./SupplyContract.sol");
+// const SmartMeter = artifacts.require("./SmartMeter.sol");
 
-module.exports = function (deployer, network, accounts) {
-    
-    // Deploy Market
-    deployer.deploy(Market, accounts[0])
-    
+module.exports = async function (deployer, network, accounts) {
     // Deploy CableCompany
-    deployer.deploy(CableCompany);
+    await deployer.deploy(CableCompany);
+
+    //USE THIS AUTOMATE THINGS!! haha
+
+    // Deploy Market
+    await deployer.deploy(Market, CableCompany.address);
 
     // // Deploy SmartMeter
-    deployer.deploy(SmartMeter);
+    await deployer.deploy(SmartMeter);
 
     // /** Deploy SupplyContract
     //  * @param buyer: address
@@ -21,5 +22,5 @@ module.exports = function (deployer, network, accounts) {
     //  * @param price: uint (Euro Cents)
     //  *
     //  **/
-    deployer.deploy(SupplyContract, accounts[0], accounts[1], 1, 1);
+    await deployer.deploy(SupplyContract, accounts[0], accounts[1], 1, 1);
 };

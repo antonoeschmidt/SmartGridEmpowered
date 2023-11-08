@@ -10,7 +10,7 @@ const ManageMarketsComponent = () => {
         setCurrentMarket,
         setMarkets,
         markets,
-        // cableCompanyAddress
+        cableCompanyAddress
     } = useContext(EthereumContext);
 
     const [newMarketCreated, setNewMarketCreated] = useState(false);
@@ -20,7 +20,7 @@ const ManageMarketsComponent = () => {
             alert("No account or cable company selected")
             return;
         }
-        let marketAddress = await ethereumInstance.deployMarket(currentAccount, "0xb82E6d77223F480EAd1345b5D93Bb9e71B452a55");
+        let marketAddress = await ethereumInstance.deployMarket(currentAccount, cableCompanyAddress);
         setNewMarketCreated(true);
         setCurrentMarket(marketAddress);
         setMarkets(markets ? [...markets, marketAddress] : [marketAddress]);

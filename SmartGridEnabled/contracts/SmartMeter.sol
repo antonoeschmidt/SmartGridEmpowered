@@ -26,15 +26,19 @@ contract SmartMeter {
 
     event Log(address sender, PowerData pd, uint256 timeStamp);
 
-    function createLog(uint256 intervalConsumption, uint256 intervalProduction)
-        public
-    {
+    function createLog(
+        uint256 intervalConsumption,
+        uint256 intervalProduction
+    ) public {
         require(msg.sender == owner);
-        require(block.timestamp - lastDataSent > transmissionInterval, "Logs cannot appear more frequently than the transmission interval");
+        require(
+            block.timestamp - lastDataSent > transmissionInterval,
+            "Logs cannot appear more frequently than the transmission interval"
+        );
         totalConsumption += intervalConsumption;
         totalProduction += intervalProduction;
 
-        if (intervalProduction - intervalConsumption > 0) {
+        if ((int(intervalProduction) - int(intervalConsumption)) > 0) {
             batteryCharge += intervalProduction - intervalConsumption;
         }
 
@@ -51,12 +55,15 @@ contract SmartMeter {
         lastDataSent = block.timestamp;
     }
 
-    function getBatteryCharge() public view returns(uint) {
+    function getBatteryCharge() public view returns (uint) {
         return batteryCharge;
     }
 
     function subtractBatteryCharge(uint amount) public returns (bool) {
-        require(msg.sender == currentMarketAddress, "Only registered market can substract energy");
+        require(
+            msg.sender == currentMarketAddress,
+            "Only registered market can substract energy"
+        );
         if (batteryCharge < amount) {
             return false;
         }
@@ -64,16 +71,22 @@ contract SmartMeter {
         return true;
     }
 
-    function setCurrentMarketAddress(address marketAddress) public returns (bool) {
+    function setCurrentMarketAddress(
+        address marketAddress
+    ) public returns (bool) {
         require(msg.sender == owner, "Only owner can change market address");
         currentMarketAddress = marketAddress;
         return true;
     }
 
-    function returnReservedBatteryCharge(uint returnedBatteryCharge) public returns (bool) {
-        require(msg.sender == currentMarketAddress, "Only registered market can return energy");
+    function returnReservedBatteryCharge(
+        uint returnedBatteryCharge
+    ) public returns (bool) {
+        require(
+            msg.sender == currentMarketAddress,
+            "Only registered market can return energy"
+        );
         batteryCharge += returnedBatteryCharge;
         return true;
     }
-
 }

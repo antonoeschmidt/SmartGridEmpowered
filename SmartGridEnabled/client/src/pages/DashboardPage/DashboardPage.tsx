@@ -7,6 +7,7 @@ import CableCompanyComponent from "../../components/Dashboard/CableCompanyCompon
 import ManageSmartMeterComponent from "../../components/Dashboard/ManageSmartMeterComponent/ManageSmartMeterComponent";
 import RegisterSmartMeterComponent from "../../components/Dashboard/RegisterSmartMeterComponent/RegisterSmartMeterComponent";
 import IsRegisteredSmartMeterComponent from "../../components/Dashboard/IsRegisteredSmartMeterComponent/IsRegisteredSmartMeterComponent";
+import SetMarketSmartMeterComponent from "../../components/Dashboard/SetMarketSmartMeterComponent/SetMarketSmartMeterComponent";
 
 const DashboardPage = () => {
     return (
@@ -32,6 +33,9 @@ const DashboardPage = () => {
             </div>
             <div className={styles.row}>
                 <IsRegisteredSmartMeterComponent />
+            </div>
+            <div className={styles.row}>
+                <SetMarketSmartMeterComponent />
             </div>
 
         </div>

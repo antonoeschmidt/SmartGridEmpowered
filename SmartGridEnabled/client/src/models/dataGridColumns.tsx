@@ -34,7 +34,7 @@ export const offerColumns: GridColDef[] = [
     { field: "amount", headerName: "Amount (Wh)", width: 150 },
     { field: "price", headerName: "Price (€ cents)", width: 150 },
     {
-        field: "expriration",
+        field: "expiration",
         headerName: "Expires at",
         width: 190,
         editable: false,

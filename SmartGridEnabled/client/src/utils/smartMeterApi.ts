@@ -10,6 +10,27 @@ export const getBatteryCharge = async (address: string) => {
     return await smartMeterInstance(address).methods.getBatteryCharge().call();
 };
 
+export const setCurrentMarketAddress = async (sender: string, smartMeterAddress: string, marketAddress: string) => {
+    const contract = smartMeterInstance(smartMeterAddress);
+    try {
+        let res  = await contract.methods
+            .setCurrentMarketAddress(
+                // @ts-ignore
+                marketAddress,
+            )
+            .send({
+                from: sender,
+                gas: "1500000",
+                gasPrice: "30000000000",
+            });
+        return res;
+
+    } catch (error) {
+        console.error(error)
+    }
+
+}
+
 export const createLog = async (
     sender: string,
     smartMeterAddress: string,

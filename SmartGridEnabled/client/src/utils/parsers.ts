@@ -10,9 +10,9 @@ export const dateFormatter = (dateString: string) => {
 export const offerParser = (d: any): OfferDTO => {
     return {
         id: d.id,
-        amount: Number(d.kWh),
+        amount: Number(d.amount),
         price: Number(d.price),
-        expiration: Number(d.expirationTime),
+        expiration: Number(d.expiration),
         owner: d.owner,
         active: d.active,
     } as OfferDTO;
