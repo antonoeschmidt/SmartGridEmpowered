@@ -11,7 +11,6 @@ contract("Market", (accounts) => {
     let supplyContractInstance;
 
     before(async () => {
-        Market.defaults({from: accounts[0]});
         cableCompanyInstance = await CableCompany.deployed();
         marketInstance = await Market.new(cableCompanyInstance.address);
         smartMeterInstance = await SmartMeter.deployed();
@@ -31,7 +30,11 @@ contract("Market", (accounts) => {
         await smartMeterInstance.createLog(0, 5);
         // add offer
         console.log("accounts[0", accounts[0]);
-        const response = await marketInstance.addOffer("1", 1, 1, 1, smartMeterInstance.address, {from: accounts[0]});
+        await marketInstance.addOffer("1", 1, 1, Date.now() + 1000 * 60 * 60, smartMeterInstance.address, {from: accounts[0]});
+        // attempt to buy offer
+        await marketInstance.buyOffer("1", {from: accounts[1]});
+
+
         
         //assert.equal(isRegistered, true, "Is registered");
     });
