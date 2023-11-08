@@ -29,12 +29,12 @@ contract SmartMeter {
     function createLog(uint256 intervalConsumption, uint256 intervalProduction)
         public
     {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "Only sender can create log");
         require(block.timestamp - lastDataSent > transmissionInterval, "Logs cannot appear more frequently than the transmission interval");
         totalConsumption += intervalConsumption;
         totalProduction += intervalProduction;
 
-        if (intervalProduction - intervalConsumption > 0) {
+        if ((int(intervalProduction) - int(intervalConsumption)) > 0) {
             batteryCharge += intervalProduction - intervalConsumption;
         }
 

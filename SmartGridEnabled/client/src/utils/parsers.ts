@@ -12,7 +12,7 @@ export const offerParser = (d: any): OfferDTO => {
         id: d.id,
         amount: Number(d.kWh),
         price: Number(d.price),
-        expriration: Number(d.expirationTime),
+        expiration: Number(d.expirationTime),
         owner: d.owner,
         active: d.active,
     } as OfferDTO;

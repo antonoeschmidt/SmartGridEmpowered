@@ -65,7 +65,7 @@ contract Market {
 
     function removeOffer(string memory id, address smartMeterAddress) public returns (bool) {
         Offer memory offer = offers[id];
-        require(msg.sender == offer.owner);
+        require(msg.sender == offer.owner, "Only owner can remove offer");
         ISmartMeter smartMeter = ISmartMeter(smartMeterAddress); 
         smartMeter.returnReservedBatteryCharge(offer.amount);
         delete offers[id];

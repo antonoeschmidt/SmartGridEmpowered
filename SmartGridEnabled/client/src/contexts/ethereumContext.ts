@@ -17,6 +17,10 @@ export type EthereumContextType = {
     setSupplyContracts: React.Dispatch<React.SetStateAction<string[]>>
     offers: OfferDTO[];
     setOffers: React.Dispatch<React.SetStateAction<OfferDTO[]>>
+    cableCompanyAddress: string;
+    setCableCompanyAddress: (account: string) => void;
+    smartMeterAddress: string;
+    setSmartMeterAddress: (account: string) => void;
 };
 
 export const useEthereumContext = (): EthereumContextType => {
@@ -29,6 +33,8 @@ export const useEthereumContext = (): EthereumContextType => {
     );
     const [supplyContracts, setSupplyContracts] = useState<string[]>();
     const [offers, setOffers] = useState<OfferDTO[]>();
+    const [cableCompanyAddress, setCableCompanyAddress] = useState<string>()
+    const [smartMeterAddress, setSmartMeterAddress] = useState<string>()
 
     return {
         ethereumInstance,
@@ -44,7 +50,11 @@ export const useEthereumContext = (): EthereumContextType => {
         supplyContracts,
         setSupplyContracts,
         offers,
-        setOffers
+        setOffers,
+        cableCompanyAddress,
+        setCableCompanyAddress,
+        smartMeterAddress,
+        setSmartMeterAddress
     };
 };
 

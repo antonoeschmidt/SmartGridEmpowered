@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Button } from "@mui/material";
-import EthereumContext from "../../contexts/ethereumContext";
+import EthereumContext from "../../../contexts/ethereumContext";
 import styles from "./ManageMarketsComponent.module.css";
 
 const ManageMarketsComponent = () => {
@@ -10,13 +10,17 @@ const ManageMarketsComponent = () => {
         setCurrentMarket,
         setMarkets,
         markets,
+        // cableCompanyAddress
     } = useContext(EthereumContext);
 
     const [newMarketCreated, setNewMarketCreated] = useState(false);
 
     const newMarket = (async () => {
-        if (!currentAccount) return;
-        let marketAddress = await ethereumInstance.deployMarket(currentAccount);
+        if (!currentAccount) {
+            alert("No account or cable company selected")
+            return;
+        }
+        let marketAddress = await ethereumInstance.deployMarket(currentAccount, "0xb82E6d77223F480EAd1345b5D93Bb9e71B452a55");
         setNewMarketCreated(true);
         setCurrentMarket(marketAddress);
         setMarkets(markets ? [...markets, marketAddress] : [marketAddress]);

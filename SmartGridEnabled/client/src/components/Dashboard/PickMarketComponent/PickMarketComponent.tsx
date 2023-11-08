@@ -1,6 +1,6 @@
 import React, { useContext  } from "react";
 import { MenuItem, Select } from "@mui/material";
-import EthereumContext from "../../contexts/ethereumContext";
+import EthereumContext from "../../../contexts/ethereumContext";
 import styles from "./PickMarketComponent.module.css";
 
 const PickMarketComponent = () => {

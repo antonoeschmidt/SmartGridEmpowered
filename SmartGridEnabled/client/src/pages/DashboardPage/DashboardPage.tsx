@@ -1,8 +1,12 @@
 import React from "react";
 import styles from "./DashboardPage.module.css";
-import PickAccountsComponent from "../../components/PickAccountsComponent/PickAccountsComponent";
-import PickMarketComponent from "../../components/PickMarketComponent/PickMarketComponent";
-import ManageMarketsComponent from "../../components/ManageMarketsComponent/ManageMarketsComponent";
+import PickAccountsComponent from "../../components/Dashboard/PickAccountsComponent/PickAccountsComponent";
+import PickMarketComponent from "../../components/Dashboard/PickMarketComponent/PickMarketComponent";
+import ManageMarketsComponent from "../../components/Dashboard/ManageMarketsComponent/ManageMarketsComponent";
+import CableCompanyComponent from "../../components/Dashboard/CableCompanyComponent/CableCompanyComponent";
+import ManageSmartMeterComponent from "../../components/Dashboard/ManageSmartMeterComponent/ManageSmartMeterComponent";
+import RegisterSmartMeterComponent from "../../components/Dashboard/RegisterSmartMeterComponent/RegisterSmartMeterComponent";
+import IsRegisteredSmartMeterComponent from "../../components/Dashboard/IsRegisteredSmartMeterComponent/IsRegisteredSmartMeterComponent";
 
 const DashboardPage = () => {
     return (
@@ -12,11 +16,24 @@ const DashboardPage = () => {
                 <PickAccountsComponent />
             </div>
             <div className={styles.row}>
-                <PickMarketComponent />
+                <CableCompanyComponent />
+            </div>
+            <div className={styles.row}>
+                <ManageSmartMeterComponent />
+            </div>
+            <div className={styles.row}>
+                <RegisterSmartMeterComponent />
             </div>
             <div className={styles.row}>
                 <ManageMarketsComponent />
             </div>
+            <div className={styles.row}>
+                <PickMarketComponent />
+            </div>
+            <div className={styles.row}>
+                <IsRegisteredSmartMeterComponent />
+            </div>
+
         </div>
     );
 };

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import DataTable from "../../components/DataTable/DataTable";
+import DataTable from "../../components/Shared/DataTable/DataTable";
 import {
     buyOfferColumns,
     offerColumns,
@@ -7,9 +7,9 @@ import {
 } from "../../models/dataGridColumns";
 import styles from "./MarketplacePage.module.css";
 import EthereumContext from "../../contexts/ethereumContext";
-import AddOfferComponent from "../../components/AddOfferComponent/AddOfferComponent";
+import AddOfferComponent from "../../components/Market/AddOfferComponent/AddOfferComponent";
 import { SupplyContractDTO } from "../../models/models";
-import SuggestedPriceComponent from "../../components/SuggestedPriceComponent/SuggestedPriceComponent";
+import SuggestedPriceComponent from "../../components/Market/SuggestedPriceComponent/SuggestedPriceComponent";
 
 const MarketplacePage = () => {
     const {

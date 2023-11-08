@@ -1,4 +1,3 @@
-
 // SPDX-License-Identifier: GPL-3.0
 // pragma experimental ABIEncoderV2;
 pragma solidity ^0.8.9;
@@ -16,7 +15,7 @@ contract CableCompany {
         pubKeys[smartMeterPubKey] = smartMeterAddress;
     }
 
-    function isRegisteredKey(address smartMeterPubKey, address smartMeterAddress) view public returns (bool) {        
+    function isRegisteredKey(address smartMeterPubKey, address smartMeterAddress) view public returns (bool) {
         return pubKeys[smartMeterPubKey] == smartMeterAddress;
     }
 
@@ -24,4 +23,8 @@ contract CableCompany {
         require(msg.sender == owner, "Only owner can remove keys");
         delete pubKeys[smartMeterPubKey];
     }
+
+     function getOwner() public view returns(address) {
+        return owner;
+    } 
 }
