@@ -17,12 +17,15 @@ contract CableCompany {
     }
 
     function isRegisteredKey(address smartMeterPubKey, address smartMeterAddress) view public returns (bool) {
-        require(pubKeys[smartMeterPubKey] == smartMeterAddress, "Key not registered");
-        return true;
+        return pubKeys[smartMeterPubKey] == smartMeterAddress;
     }
 
     function removeRegisteredKey(address smartMeterPubKey) public {
         require(msg.sender == owner, "Only owner can remove keys");
         delete pubKeys[smartMeterPubKey];
     }
+
+    function getOwner() public view returns(address) {
+        return owner;
+    } 
 }

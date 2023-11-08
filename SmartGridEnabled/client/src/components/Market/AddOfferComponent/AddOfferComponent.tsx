@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
 import styles from "./AddOfferComponent.module.css";
 import { Button, TextField } from "@mui/material";
-import EthereumContext from "../../contexts/ethereumContext";
+import EthereumContext from "../../../contexts/ethereumContext";
 import { v4 as uuidv4 } from "uuid";
-import { OfferDTO } from "../../models/models";
+import { OfferDTO } from "../../../models/models";
 
 type Props = {
     amount: number,
@@ -13,7 +13,7 @@ type Props = {
 }
 
 const AddOfferComponent = ({amount, setAmount, price, setPrice}: Props) => {
-    const { ethereumInstance, currentAccount, currentMarket, setOffers } =
+    const { ethereumInstance, currentAccount, currentMarket, setOffers, smartMeterAddress } =
         useContext(EthereumContext);
 
     const addNewOffer = () => {
@@ -31,12 +31,12 @@ const AddOfferComponent = ({amount, setAmount, price, setPrice}: Props) => {
             id: uuidv4(),
             price: price,
             amount: amount,
-            expriration: Date.now() + (24 * 60 * 60 * 1000), // 24 hours in ms
+            expiration: Date.now() + (24 * 60 * 60 * 1000), // 24 hours in ms
             owner: currentAccount,
             active: true,
         };
         ethereumInstance
-            .addOffer(newOffer, currentMarket, currentAccount)
+            .addOffer(newOffer, currentMarket, currentAccount, smartMeterAddress)
             .then((offer) => {
                 console.log(offer);
                 setOffers((prev) => [...prev, newOffer]);

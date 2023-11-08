@@ -1,7 +1,7 @@
 export type OfferDTO = {
     id: string;
     price: number;
-    expriration: number;
+    expiration: number;
     amount: number;
     owner: string;
     active: boolean;

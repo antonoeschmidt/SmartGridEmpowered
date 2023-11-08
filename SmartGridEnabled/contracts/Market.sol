@@ -4,7 +4,7 @@ pragma solidity ^0.8.9;
 
 contract Market {
     address owner;
-    CableCompany cableCompany;
+    address cableCompanyAddress;
 
     struct Offer {
         string id;
@@ -22,7 +22,7 @@ contract Market {
     
     constructor(address _cableCompanyAddress) payable {
         owner = msg.sender;
-        cableCompany = CableCompany(_cableCompanyAddress);
+        cableCompanyAddress = _cableCompanyAddress;
     }
 
     function addOffer(
@@ -33,10 +33,14 @@ contract Market {
         address smartMeterAddress
     ) public returns (bool) {
 
-        require(cableCompany.isRegisteredKey(msg.sender, smartMeterAddress), "Smart Meter not registered by Cable Company");
+        CableCompany cableCompany = CableCompany(cableCompanyAddress);
+        cableCompany.getOwner();
+        // bool res = cableCompany.isRegisteredKey(msg.sender, smartMeterAddress);
+        
+        // require(cableCompany.isRegisteredKey(msg.sender, smartMeterAddress), "Smart Meter not registered by Cable Company");
 
-        SmartMeter smartMeter = SmartMeter(smartMeterAddress);        
-        require(smartMeter.subtractBatteryCharge(amount), "Not enough stored energy");
+        // SmartMeter smartMeter = SmartMeter(smartMeterAddress);        
+        // require(smartMeter.subtractBatteryCharge(amount), "Not enough stored energy");
 
         offers[id] = Offer({
             id: id,
@@ -54,7 +58,7 @@ contract Market {
 
     function removeOffer(string memory id, address smartMeterAddress) public returns (bool) {
         Offer memory offer = offers[id];
-        require(msg.sender == offer.owner);
+        require(msg.sender == offer.owner, "Only owner can remove offer");
         SmartMeter smartMeter = SmartMeter(smartMeterAddress); 
         smartMeter.returnReservedBatteryCharge(offer.amount);
         delete offers[id];
@@ -207,12 +211,12 @@ contract SmartMeter {
     function createLog(uint256 intervalConsumption, uint256 intervalProduction)
         public
     {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "Only sender can create log");
         require(block.timestamp - lastDataSent > transmissionInterval, "Logs cannot appear more frequently than the transmission interval");
         totalConsumption += intervalConsumption;
         totalProduction += intervalProduction;
 
-        if (intervalProduction - intervalConsumption > 0) {
+        if ((int(intervalProduction) - int(intervalConsumption)) > 0) {
             batteryCharge += intervalProduction - intervalConsumption;
         }
 
@@ -270,12 +274,15 @@ contract CableCompany {
     }
 
     function isRegisteredKey(address smartMeterPubKey, address smartMeterAddress) view public returns (bool) {
-        require(pubKeys[smartMeterPubKey] == smartMeterAddress, "Key not registered");
-        return true;
+        return pubKeys[smartMeterPubKey] == smartMeterAddress;
     }
 
     function removeRegisteredKey(address smartMeterPubKey) public {
         require(msg.sender == owner, "Only owner can remove keys");
         delete pubKeys[smartMeterPubKey];
     }
+
+     function getOwner() public view returns(address) {
+        return owner;
+    } 
 }

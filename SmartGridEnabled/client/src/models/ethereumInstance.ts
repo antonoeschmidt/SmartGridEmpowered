@@ -1,6 +1,8 @@
 import Web3 from "web3";
 import SupplyContract from "../contracts/SupplyContract.json";
 import Market from "../contracts/Market.json";
+import CableCompany from "../contracts/CableCompany.json"
+import SmartMeter from "../contracts/SmartMeter.json"
 import { OfferDTO, SupplyContractDTO } from "./models";
 import { supplyContractParser, offerParser } from "../utils/parsers";
 
@@ -56,6 +58,10 @@ export class EthereumInstance {
         return new this.web3.eth.Contract(Market.abi, address);
     };
 
+    cableCompanyInstance = (address: string) => {
+        return new this.web3.eth.Contract(CableCompany.abi, address);
+    }
+
     deploySupplyContract = async (sender: string, sc: SupplyContractDTO) => {
         let newContract = new this.web3.eth.Contract(SupplyContract.abi);
         let res = await newContract
@@ -72,10 +78,26 @@ export class EthereumInstance {
         return res.options.address;
     };
 
-    deployMarket = async (sender: string) => {
+    deployMarket = async (sender: string, cableCompanyAddress: string) => {
         let newContract = new this.web3.eth.Contract(Market.abi);
         let contract = newContract.deploy({
             data: Market.bytecode,
+            // @ts-ignore
+            arguments: [cableCompanyAddress],
+        });
+        let res = await contract.send({
+            from: sender,
+            gas: "3000000",
+            gasPrice: "30000000000",
+        });
+
+        return res.options.address;
+    };
+
+    deployCableCompany = async (sender: string) => {
+        let newContract = new this.web3.eth.Contract(CableCompany.abi);
+        let contract = newContract.deploy({
+            data: CableCompany.bytecode,
         });
         let res = await contract.send({
             from: sender,
@@ -86,9 +108,46 @@ export class EthereumInstance {
         return res.options.address;
     };
 
+    deploySmartMeter = async (sender: string) => {
+        let newContract = new this.web3.eth.Contract(SmartMeter.abi);
+        let contract = newContract.deploy({
+            data: SmartMeter.bytecode,
+        });
+        let res = await contract.send({
+            from: sender,
+            gas: "2500000",
+            gasPrice: "30000000000",
+        });
+
+        return res.options.address;
+    };
+
+    registerSmartMeter = async (sender: string, cableCompanyAddress: string, smartMeterPubKey: string, smartMeterAddress: string) => {
+        let cableCompanyInstance = this.cableCompanyInstance(cableCompanyAddress);
+        try {
+            let res = await cableCompanyInstance.methods
+                .registerKey(
+                    // @ts-ignore
+                    smartMeterPubKey,
+                    smartMeterAddress
+                )
+                .send({
+                    from: sender,
+                    gas: "1500000",
+                    gasPrice: "30000000000",
+                });
+
+            return res;
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
+
     scanBlocksForContractCreations = async () => {
         let marketAddresses: string[] = [];
         let supplyContractAddresses: string[] = [];
+        let cableCompanyAddresses: string[] = [];
         const latestBlockNumber = await this.web3.eth.getBlockNumber();
 
         for (let i = 0; i <= latestBlockNumber; i++) {
@@ -108,6 +167,10 @@ export class EthereumInstance {
                             this.supplyContractInstance(
                                 receipt.contractAddress
                             );
+                        
+                        let cableCompanyInstance = 
+                                this.cableCompanyInstance(receipt.contractAddress)
+                        
                         try {
                             // Checks if this call fails. If it doesn't, its a Market SC
                             await marketInstance.methods.getOfferIDs().call();
@@ -125,14 +188,30 @@ export class EthereumInstance {
                             );
                             continue;
                         } catch {}
+
+                        try {
+                            // Checks if this call fails. If it doesn't, its a CableCompany SC
+                            await cableCompanyInstance.methods
+                                .getOwner()
+                                .call();
+                            cableCompanyAddresses.push(
+                                receipt.contractAddress
+                            );
+                            continue;
+                        } catch {}
                     }
                 }
             }
         }
-        return { marketAddresses, supplyContractAddresses };
+        return { marketAddresses, supplyContractAddresses, cableCompanyAddresses };
     };
 
-    addOffer = async (offer: OfferDTO, market: string, account: string) => {
+    addOffer = async (
+        offer: OfferDTO,
+        market: string,
+        account: string,
+        smartMeterAddress: string
+    ) => {
         let marketInstance = this.marketInstance(market);
         try {
             await marketInstance.methods
@@ -140,12 +219,13 @@ export class EthereumInstance {
                     // @ts-ignore
                     offer.id,
                     offer.price,
-                    offer.expriration,
-                    offer.amount
+                    offer.expiration,
+                    offer.amount,
+                    smartMeterAddress
                 )
                 .send({
                     from: account,
-                    gas: "1500000",
+                    gas: "3000000",
                     gasPrice: "30000000000",
                 });
 
@@ -171,7 +251,10 @@ export class EthereumInstance {
         let scList: SupplyContractDTO[] = [];
         try {
             for (let i = 0; i < supplyContracts?.length; i++) {
-                let sc = await this.getSupplyContractInfo(supplyContracts[i], sender);
+                let sc = await this.getSupplyContractInfo(
+                    supplyContracts[i],
+                    sender
+                );
 
                 scList.push(sc);
             }
@@ -203,7 +286,6 @@ export class EthereumInstance {
             );
 
             return await this.deploySupplyContract(account, supplyContractInfo);
-
         } catch (error) {
             console.error(error);
         }
@@ -211,7 +293,9 @@ export class EthereumInstance {
 
     getSupplyContractInfo = async (address: string, sender: string) => {
         const supplyContractInstance = this.supplyContractInstance(address);
-        let res = await supplyContractInstance.methods.getInfo().call({from: sender});
+        let res = await supplyContractInstance.methods
+            .getInfo()
+            .call({ from: sender });
         return supplyContractParser({ ...res, id: address });
     };
 }

@@ -29,6 +29,9 @@ const DrawerComponent = () => {
             variant="permanent"
             anchor="left"
         >
+            <div style={{display: "flex", textAlign: "center"}}>
+            <h3 style={{width: "240px"}} >Smart Grid Empowered</h3>
+            </div>
             <Divider />
             <List>
                 <ListItem key={"home"} disablePadding>
