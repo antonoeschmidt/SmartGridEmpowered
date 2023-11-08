@@ -44,7 +44,6 @@ contract Market {
         uint256 expiration,
         address smartMeterAddress
     ) public returns (bool) {
-
         require(cableCompany.isRegisteredKey(msg.sender, smartMeterAddress), "Smart Meter not registered by Cable Company");
 
         ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);        

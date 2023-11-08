@@ -16,9 +16,8 @@ contract CableCompany {
         pubKeys[smartMeterPubKey] = smartMeterAddress;
     }
 
-    function isRegisteredKey(address smartMeterPubKey, address smartMeterAddress) view public returns (bool) {
-        require(pubKeys[smartMeterPubKey] == smartMeterAddress, "Key not registered");
-        return true;
+    function isRegisteredKey(address smartMeterPubKey, address smartMeterAddress) view public returns (bool) {        
+        return pubKeys[smartMeterPubKey] == smartMeterAddress;
     }
 
     function removeRegisteredKey(address smartMeterPubKey) public {
