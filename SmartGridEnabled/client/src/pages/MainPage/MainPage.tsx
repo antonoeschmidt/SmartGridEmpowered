@@ -3,11 +3,11 @@ import { Outlet } from "react-router-dom";
 import styles from "./MainPage.module.css";
 import DrawerComponent from "../../components/Shared/DrawerComponent/DrawerComponent";
 import EthereumContext from "../../contexts/ethereumContext";
+import { scanBlocksForContractCreations } from "../../apis/web3";
 
 const MainPage = () => {
     const {
         setMarkets,
-        ethereumInstance,
         setSupplyContracts,
         setCurrentMarket,
         currentMarket,
@@ -17,8 +17,7 @@ const MainPage = () => {
 
     useEffect(() => {
         const getData = () => {
-            ethereumInstance
-                .scanBlocksForContractCreations()
+            scanBlocksForContractCreations()
                 .then(
                     ({
                         marketAddresses,
@@ -47,13 +46,7 @@ const MainPage = () => {
                 });
         };
         return () => getData();
-    }, [
-        currentMarket,
-        ethereumInstance,
-        setCableCompanyAddress,
-        setMarkets,
-        setSupplyContracts,
-    ]);
+    }, [currentMarket, setCableCompanyAddress, setMarkets, setSupplyContracts]);
 
     useEffect(() => {
         if (!currentMarket && markets) setCurrentMarket(markets[0]);

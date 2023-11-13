@@ -1,28 +1,27 @@
 import React, { useContext, useState } from "react";
 import styles from "./SmartMeterPage.module.css";
 import { Button, TextField } from "@mui/material";
-import { createLog, getBatteryCharge } from "../../utils/smartMeterApi";
 import EthereumContext from "../../contexts/ethereumContext";
 
 const SmartMeterPage = () => {
-    const [consumption, setConsumption] = useState<number>()
-    const [production, setProduction] = useState<number>()
+    const [consumption, setConsumption] = useState<number>();
+    const [production, setProduction] = useState<number>();
 
-    const { currentAccount, smartMeterAddress } = useContext(EthereumContext);
-    
+    const { smartMeterAddress, getBatteryCharge, createSmartMeterLog } =
+        useContext(EthereumContext);
+
     const createLogClick = async () => {
         if (!consumption || !production || !smartMeterAddress) {
-            alert("No energy data or smart meter selected")
+            alert("No energy data or smart meter selected");
             return;
-        } 
-        let res = await createLog(currentAccount, smartMeterAddress, consumption, production)
+        }
+        let res = await createSmartMeterLog(consumption, production);
         console.log(res);
     };
 
     const getBatteryLevel = async () => {
-        let batteryLevel = await getBatteryCharge(smartMeterAddress);
+        let batteryLevel = await getBatteryCharge();
         console.log(batteryLevel);
-        
     };
 
     return (
@@ -34,12 +33,16 @@ const SmartMeterPage = () => {
                     <TextField
                         variant="outlined"
                         label="Consumption"
-                        onChange={(e) => setConsumption(parseInt(e.target.value))}
+                        onChange={(e) =>
+                            setConsumption(parseInt(e.target.value))
+                        }
                     ></TextField>
                     <TextField
                         variant="outlined"
                         label="Production"
-                        onChange={(e) => setProduction(parseInt(e.target.value))}
+                        onChange={(e) =>
+                            setProduction(parseInt(e.target.value))
+                        }
                     ></TextField>
                     <Button
                         variant="contained"

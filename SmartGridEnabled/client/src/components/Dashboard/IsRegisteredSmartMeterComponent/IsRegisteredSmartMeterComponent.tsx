@@ -2,21 +2,16 @@ import React, { useContext, useState } from "react";
 import { Button, TextField } from "@mui/material";
 import EthereumContext from "../../../contexts/ethereumContext";
 import styles from "./IsRegisteredSmartMeterComponent.module.css";
-import { isRegisteredKey } from "../../../utils/cableCompanyApi";
 
 const IsRegisteredSmartMeterComponent = () => {
-    const { cableCompanyAddress, currentAccount } = useContext(EthereumContext);
+    const { currentAccount, isRegisteredKey } = useContext(EthereumContext);
 
     const [smartMeterPubKey, setSmartMeterPubKey] = useState<string>();
     const [smartMeterAddress, setSmartMeterAddress] = useState<string>();
 
     const isKeyRegistered = async () => {
         if (!currentAccount) return;
-        let res = await isRegisteredKey(
-            cableCompanyAddress,
-            smartMeterPubKey,
-            smartMeterAddress
-        );
+        let res = await isRegisteredKey(smartMeterPubKey, smartMeterAddress);
         console.log(res);
     };
 

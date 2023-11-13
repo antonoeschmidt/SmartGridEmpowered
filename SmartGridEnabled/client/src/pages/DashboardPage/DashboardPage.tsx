@@ -37,7 +37,6 @@ const DashboardPage = () => {
             <div className={styles.row}>
                 <SetMarketSmartMeterComponent />
             </div>
-
         </div>
     );
 };

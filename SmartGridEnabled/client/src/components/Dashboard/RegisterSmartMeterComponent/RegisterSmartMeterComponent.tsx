@@ -4,19 +4,13 @@ import EthereumContext from "../../../contexts/ethereumContext";
 import styles from "./RegisterSmartMeterComponent.module.css";
 
 const RegisterSmartMeterComponent = () => {
-    const { ethereumInstance, currentAccount, cableCompanyAddress } =
-        useContext(EthereumContext);
+    const { currentAccount, registerSmartMeter } = useContext(EthereumContext);
     const [smartMeterPubKey, setSmartMeterPubKey] = useState<string>();
     const [smartMeterAddress, setSmartMeterAddress] = useState<string>();
 
-    const registerSmartMeter = async () => {
+    const handleRegisterSmartMeter = async () => {
         if (!currentAccount) return;
-        let res = await ethereumInstance.registerSmartMeter(
-            currentAccount,
-            cableCompanyAddress,
-            smartMeterPubKey,
-            smartMeterAddress
-        );
+        let res = await registerSmartMeter(smartMeterPubKey, smartMeterAddress);
         console.log(res);
     };
 
@@ -41,7 +35,7 @@ const RegisterSmartMeterComponent = () => {
                     variant="contained"
                     color="primary"
                     style={{ maxHeight: "3em" }}
-                    onClick={() => registerSmartMeter()}
+                    onClick={() => handleRegisterSmartMeter()}
                 >
                     Register Smart Meter
                 </Button>

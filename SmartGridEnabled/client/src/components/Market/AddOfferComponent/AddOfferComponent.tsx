@@ -6,15 +6,14 @@ import { v4 as uuidv4 } from "uuid";
 import { OfferDTO } from "../../../models/models";
 
 type Props = {
-    amount: number,
-    setAmount: React.Dispatch<React.SetStateAction<number>>,
-    price: number,
-    setPrice: React.Dispatch<React.SetStateAction<number>>,
-}
+    amount: number;
+    setAmount: React.Dispatch<React.SetStateAction<number>>;
+    price: number;
+    setPrice: React.Dispatch<React.SetStateAction<number>>;
+};
 
-const AddOfferComponent = ({amount, setAmount, price, setPrice}: Props) => {
-    const { ethereumInstance, currentAccount, currentMarket, setOffers, smartMeterAddress } =
-        useContext(EthereumContext);
+const AddOfferComponent = ({ amount, setAmount, price, setPrice }: Props) => {
+    const { currentAccount, setOffers, addOffer } = useContext(EthereumContext);
 
     const addNewOffer = () => {
         if (!currentAccount) {
@@ -23,24 +22,27 @@ const AddOfferComponent = ({amount, setAmount, price, setPrice}: Props) => {
         }
 
         if (!(amount >= 1 || price >= 1)) {
-            alert("Amount and price must have a value")
-            return
+            alert("Amount and price must have a value");
+            return;
         }
 
         let newOffer: OfferDTO = {
             id: uuidv4(),
             price: price,
             amount: amount,
-            expiration: Date.now() + (24 * 60 * 60 * 1000), // 24 hours in ms
+            expiration: Date.now() + 24 * 60 * 60 * 1000, // 24 hours in ms
             owner: currentAccount,
             active: true,
         };
-        ethereumInstance
-            .addOffer(newOffer, currentMarket, currentAccount, smartMeterAddress)
-            .then((offer) => {
-                console.log(offer);
-                setOffers((prev) => [...prev, newOffer]);
-            });
+
+        addOffer(newOffer).then((offer) => {
+            if (!offer) {
+                alert("Not enough stored energy to make offer");
+                return;
+            }
+            console.log(offer);
+            setOffers((prev) => [...prev, newOffer]);
+        });
     };
 
     return (

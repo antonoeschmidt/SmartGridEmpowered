@@ -1,23 +1,20 @@
 import React, { useContext, useState } from "react";
 import { Button } from "@mui/material";
-import EthereumContext from "../../../contexts/ethereumContext";
 import styles from "./CableCompanyComponent.module.css";
+import EthereumContext from "../../../contexts/ethereumContext";
 
 const CableCompanyComponent = () => {
     const {
-        ethereumInstance,
         currentAccount,
         setCableCompanyAddress,
         cableCompanyAddress,
+        deployCableCompany,
     } = useContext(EthereumContext);
-
     const [newCableCompanyCreated, setNewCableCompanyCreated] = useState(false);
 
     const newCableCompany = async () => {
         if (!currentAccount) return;
-        let cableCompanyAddress = await ethereumInstance.deployCableCompany(
-            currentAccount
-        );
+        let cableCompanyAddress = await deployCableCompany();
         setNewCableCompanyCreated(true);
         setCableCompanyAddress(cableCompanyAddress);
     };

@@ -5,17 +5,17 @@ import styles from "./ManageSmartMeterComponent.module.css";
 
 const ManageSmartMeterComponent = () => {
     const {
-        ethereumInstance,
         currentAccount,
         setSmartMeterAddress,
         smartMeterAddress,
+        deploySmartMeter,
     } = useContext(EthereumContext);
 
     const [newSmartMeterCreated, setNewSmartMeterCreated] = useState(false);
 
     const newSmartMeter = async () => {
         if (!currentAccount) return;
-        let address = await ethereumInstance.deploySmartMeter(currentAccount);
+        let address = await deploySmartMeter(currentAccount);
         setNewSmartMeterCreated(true);
         setSmartMeterAddress(address);
         console.log(address);

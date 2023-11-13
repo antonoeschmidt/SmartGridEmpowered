@@ -5,26 +5,25 @@ import styles from "./ManageMarketsComponent.module.css";
 
 const ManageMarketsComponent = () => {
     const {
-        ethereumInstance,
         currentAccount,
         setCurrentMarket,
         setMarkets,
         markets,
-        cableCompanyAddress
+        deployMarket,
     } = useContext(EthereumContext);
 
     const [newMarketCreated, setNewMarketCreated] = useState(false);
 
-    const newMarket = (async () => {
+    const newMarket = async () => {
         if (!currentAccount) {
-            alert("No account or cable company selected")
+            alert("No account or cable company selected");
             return;
         }
-        let marketAddress = await ethereumInstance.deployMarket(currentAccount, cableCompanyAddress);
+        let marketAddress = await deployMarket();
         setNewMarketCreated(true);
         setCurrentMarket(marketAddress);
         setMarkets(markets ? [...markets, marketAddress] : [marketAddress]);
-    });
+    };
 
     return (
         <div className={`${styles.item} ${styles.pickAccount}`}>

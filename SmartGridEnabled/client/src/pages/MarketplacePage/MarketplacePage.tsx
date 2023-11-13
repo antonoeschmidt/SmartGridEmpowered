@@ -13,66 +13,57 @@ import SuggestedPriceComponent from "../../components/Market/SuggestedPriceCompo
 
 const MarketplacePage = () => {
     const {
-        ethereumInstance,
         currentMarket,
-        supplyContracts,
         setSupplyContracts,
         currentAccount,
         offers,
+        buyOffer,
         setOffers,
+        getOffers,
+        getSupplyContracts,
+        getSupplyContractInfo,
     } = useContext(EthereumContext);
     const [supplyContractsDTO, setSupplyContractsDTO] =
         useState<SupplyContractDTO[]>();
 
     const [amount, setAmount] = useState<number>();
     const [price, setPrice] = useState<number>();
-    const [suggestedPrice, setSuggestedPrice] = useState<string>()
+    const [suggestedPrice, setSuggestedPrice] = useState<string>();
 
     useEffect(() => {
         if (offers || !currentMarket) return;
-        ethereumInstance
-            .getOffers(currentMarket)
+        getOffers()
             .then((data) => {
                 setOffers(data);
             })
             .catch((err) => console.log(err));
-    }, [currentMarket, ethereumInstance, offers, setOffers]);
+    }, [currentMarket, getOffers, offers, setOffers]);
 
     useEffect(() => {
-        ethereumInstance
-            .getSupplyContracts(supplyContracts, currentAccount)
+        getSupplyContracts()
             .then((data) => {
                 console.log(data);
                 setSupplyContractsDTO(data);
             })
             .catch((err) => console.error(err));
-    }, [currentAccount, ethereumInstance, supplyContracts]);
+    }, [getSupplyContracts]);
 
     useEffect(() => {
-      setSuggestedPrice(Math.random().toFixed(3))
-    }, [])
-    
-    const buyOffer =
-        (market: string, account: string) => async (id: string) => {
-            const address = await ethereumInstance.buyOffer(
-                market,
-                id,
-                account
-            );
-            const newSC = await ethereumInstance.getSupplyContractInfo(
-                address,
-                currentAccount
-            );
-            setSupplyContracts((prevState) => [...prevState, address]);
-            setSupplyContractsDTO((prevState) => [...prevState, newSC]);
+        setSuggestedPrice(Math.random().toFixed(3));
+    }, []);
 
-            ethereumInstance
-                .getOffers(currentMarket)
-                .then((data) => {
-                    setOffers(data);
-                })
-                .catch((err) => console.log(err));
-        };
+    const handleBuyOffer = () => async (id: string) => {
+        const address = await buyOffer(id);
+        const newSC = await getSupplyContractInfo(address);
+        setSupplyContracts((prevState) => [...prevState, address]);
+        setSupplyContractsDTO((prevState) => [...prevState, newSC]);
+
+        getOffers()
+            .then((data) => {
+                setOffers(data);
+            })
+            .catch((err) => console.log(err));
+    };
 
     return (
         <div className={styles.container}>
@@ -86,7 +77,9 @@ const MarketplacePage = () => {
                             price={price}
                             setPrice={setPrice}
                         />
-                        <SuggestedPriceComponent suggestedPrice={suggestedPrice} />
+                        <SuggestedPriceComponent
+                            suggestedPrice={suggestedPrice}
+                        />
                     </div>
                     <div className={styles.item}>
                         <h3>Own offers</h3>
@@ -106,9 +99,7 @@ const MarketplacePage = () => {
                                 rows={offers.filter(
                                     (offer) => offer.owner !== currentAccount
                                 )}
-                                columns={buyOfferColumns(
-                                    buyOffer(currentMarket, currentAccount)
-                                )}
+                                columns={buyOfferColumns(handleBuyOffer())}
                             />
                         )}
                     </div>

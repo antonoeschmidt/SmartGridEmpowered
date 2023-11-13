@@ -2,19 +2,14 @@ import React, { useContext } from "react";
 import { Button } from "@mui/material";
 import EthereumContext from "../../../contexts/ethereumContext";
 import styles from "./SetMarketSmartMeterComponent.module.css";
-import { setCurrentMarketAddress } from "../../../utils/smartMeterApi";
 
 const SetMarketSmartMeterComponent = () => {
-    const { currentAccount, currentMarket, smartMeterAddress } =
+    const { currentAccount, currentMarket, setSmartMeterMarketAddress } =
         useContext(EthereumContext);
 
     const setMarketAddressSmartMeter = async () => {
         if (!currentAccount || !currentMarket) return;
-        let res = await setCurrentMarketAddress(
-            currentAccount,
-            smartMeterAddress,
-            currentMarket
-        );
+        let res = await setSmartMeterMarketAddress();
         console.log(res);
     };
 
