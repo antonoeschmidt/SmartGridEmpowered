@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { TextField } from "@mui/material";
 import EthereumContext from "../../../contexts/ethereumContext";
-import styles from "./ManageSmartMeterComponent.module.css";
 import Button from "../../Shared/Button/Button";
 
 const ManageSmartMeterComponent = () => {
@@ -23,15 +22,12 @@ const ManageSmartMeterComponent = () => {
     };
 
     return (
-        <div className={`${styles.item} ${styles.pickAccount}`}>
-            <h3>Smart Meter</h3>
-            <div className={styles.buttons}>
-                <Button
-                    disabled={!currentAccount}
-                    onClick={() => newSmartMeter()}
-                    text="New Smart Meter"
-                />
-            </div>
+        <>
+            <Button
+                disabled={!currentAccount}
+                onClick={() => newSmartMeter()}
+                text="New Smart Meter"
+            />
             <TextField
                 variant="outlined"
                 placeholder="Set smart meter address"
@@ -49,7 +45,7 @@ const ManageSmartMeterComponent = () => {
                     {smartMeterAddress}
                 </p>
             )}
-        </div>
+        </>
     );
 };
 

@@ -1,17 +1,17 @@
-import React, { useContext  } from "react";
+import React, { useContext } from "react";
 import { MenuItem, Select } from "@mui/material";
 import EthereumContext from "../../../contexts/ethereumContext";
 import styles from "./PickMarketComponent.module.css";
 
 const PickMarketComponent = () => {
-    const { currentMarket, setCurrentMarket, markets } = useContext(EthereumContext);
-    
+    const { currentMarket, setCurrentMarket, markets } =
+        useContext(EthereumContext);
+
     return (
-        <div className={`${styles.item} ${styles.pickMarket}`}>
-            <h3>Choose Market</h3>
+        <>
             <Select
                 className={styles.pickMarketSelector}
-                value={currentMarket ? currentMarket : ''}
+                value={currentMarket ? currentMarket : ""}
                 label="Age"
                 onChange={(e) => {
                     setCurrentMarket(e.target.value);
@@ -33,7 +33,7 @@ const PickMarketComponent = () => {
                     {currentMarket}
                 </p>
             )}
-        </div>
+        </>
     );
 };
 

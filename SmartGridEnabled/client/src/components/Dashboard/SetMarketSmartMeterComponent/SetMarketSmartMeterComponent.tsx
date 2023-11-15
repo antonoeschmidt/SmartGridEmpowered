@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import EthereumContext from "../../../contexts/ethereumContext";
-import styles from "./SetMarketSmartMeterComponent.module.css";
 import Button from "../../Shared/Button/Button";
 
 const SetMarketSmartMeterComponent = () => {
@@ -14,16 +13,13 @@ const SetMarketSmartMeterComponent = () => {
     };
 
     return (
-        <div className={`${styles.item} ${styles.pickAccount}`}>
-            <h3>Set Market Address Smart Meter</h3>
-            <div className={styles.buttons}>
-                <Button
-                    disabled={!currentAccount}
-                    onClick={() => setMarketAddressSmartMeter()}
-                    text="Set Market Address"
-                />
-            </div>
-        </div>
+        <>
+            <Button
+                disabled={!currentAccount}
+                onClick={() => setMarketAddressSmartMeter()}
+                text="Set Market Address"
+            />
+        </>
     );
 };
 

@@ -20,8 +20,7 @@ const PickAccountsComponent = () => {
     }, [accounts, currentAccount, setAccounts, setCurrentAccount]);
 
     return (
-        <div className={`${styles.item} ${styles.pickAccount}`}>
-            <h3>Choose Account</h3>
+        <>
             <Select
                 className={styles.pickAccountSelector}
                 value={currentAccount}
@@ -46,7 +45,7 @@ const PickAccountsComponent = () => {
                     {currentAccount}
                 </p>
             )}
-        </div>
+        </>
     );
 };
 

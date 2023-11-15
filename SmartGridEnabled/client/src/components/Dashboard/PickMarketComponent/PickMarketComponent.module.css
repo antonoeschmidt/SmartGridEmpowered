@@ -1,21 +1,3 @@
-.pickMarket  {
-    max-width: 50%;
-}
-
 .pickMarketSelector {
     width: 50%;
-}
-
-.item {
-    display: flex;
-    flex-direction: column;
-    flex-grow: 1;
-    min-height: 150px;
-    background-color: white;
-    border-radius: 20px;
-    padding: 1em;
-    text-align: center;
-    align-items: center;
-    overflow: hidden;
-    gap: 5px;
 }

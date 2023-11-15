@@ -9,33 +9,69 @@ import RegisterSmartMeterComponent from "../../components/Dashboard/RegisterSmar
 import IsRegisteredSmartMeterComponent from "../../components/Dashboard/IsRegisteredSmartMeterComponent/IsRegisteredSmartMeterComponent";
 import SetMarketSmartMeterComponent from "../../components/Dashboard/SetMarketSmartMeterComponent/SetMarketSmartMeterComponent";
 
+type DashboardItemProps = {
+    title: string;
+    content: JSX.Element;
+};
+
+const DashboardItem = ({ title, content }: DashboardItemProps) => {
+    return (
+        <div className={styles.item}>
+            <div className={styles.title}>{title}</div>
+            <hr />
+            <div className={styles.itemContent}>{content}</div>
+        </div>
+    );
+};
+
 const DashboardPage = () => {
     return (
         <div className={styles.container}>
             <h1>Dashboard</h1>
-            <div className={styles.row}>
-                <PickAccountsComponent />
-            </div>
-            <div className={styles.row}>
-                <CableCompanyComponent />
-            </div>
-            <div className={styles.row}>
-                <ManageSmartMeterComponent />
-            </div>
-            <div className={styles.row}>
-                <RegisterSmartMeterComponent />
-            </div>
-            <div className={styles.row}>
-                <ManageMarketsComponent />
-            </div>
-            <div className={styles.row}>
-                <PickMarketComponent />
-            </div>
-            <div className={styles.row}>
-                <IsRegisteredSmartMeterComponent />
-            </div>
-            <div className={styles.row}>
-                <SetMarketSmartMeterComponent />
+            <div className={styles.content}>
+                <div className={styles.col}>
+                    <h3>Accounts</h3>
+                    <DashboardItem
+                        title="Choose account"
+                        content={<PickAccountsComponent />}
+                    />
+                </div>
+                <div className={styles.col}>
+                    <h3>Markets</h3>
+                    <DashboardItem
+                        title="Manage markets"
+                        content={<ManageMarketsComponent />}
+                    />
+                    <DashboardItem
+                        title="Choose Market"
+                        content={<PickMarketComponent />}
+                    />
+                </div>
+                <div className={styles.col}>
+                    <h3>Cable Company</h3>
+                    <DashboardItem
+                        title="Cable Company"
+                        content={<CableCompanyComponent />}
+                    />
+                    <DashboardItem
+                        title="Smart Meter"
+                        content={<ManageSmartMeterComponent />}
+                    />
+                    <DashboardItem
+                        title="Register Smart Meter"
+                        content={<RegisterSmartMeterComponent />}
+                    />
+                    <DashboardItem
+                        title="Check registration"
+                        content={<IsRegisteredSmartMeterComponent />}
+                    />
+                    <DashboardItem
+                        title="Set Market Address Smart Meter"
+                        content={<SetMarketSmartMeterComponent />}
+                    />
+
+                    <div />
+                </div>
             </div>
         </div>
     );

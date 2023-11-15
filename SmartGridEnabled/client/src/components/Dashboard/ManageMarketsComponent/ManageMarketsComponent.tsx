@@ -1,6 +1,5 @@
 import React, { useContext, useState } from "react";
 import EthereumContext from "../../../contexts/ethereumContext";
-import styles from "./ManageMarketsComponent.module.css";
 import Button from "../../Shared/Button/Button";
 
 const ManageMarketsComponent = () => {
@@ -26,19 +25,16 @@ const ManageMarketsComponent = () => {
     };
 
     return (
-        <div className={`${styles.item} ${styles.pickAccount}`}>
-            <h3>Manage markets</h3>
-            <div className={styles.buttons}>
-                <Button
-                    disabled={!currentAccount}
-                    onClick={() => newMarket()}
-                    text={"New Market"}
-                />
-            </div>
+        <>
+            <Button
+                disabled={!currentAccount}
+                onClick={() => newMarket()}
+                text={"New Market"}
+            />
             {newMarketCreated && (
                 <p className="light-text">New market created!</p>
             )}
-        </div>
+        </>
     );
 };
 

@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import { TextField } from "@mui/material";
 import EthereumContext from "../../../contexts/ethereumContext";
-import styles from "./RegisterSmartMeterComponent.module.css";
 import Button from "../../Shared/Button/Button";
 
 const RegisterSmartMeterComponent = () => {
@@ -16,8 +15,7 @@ const RegisterSmartMeterComponent = () => {
     };
 
     return (
-        <div className={`${styles.item} ${styles.pickAccount}`}>
-            <h3>Register Smart Meter</h3>
+        <>
             <TextField
                 id="outlined-basic"
                 label="Public Key"
@@ -30,14 +28,12 @@ const RegisterSmartMeterComponent = () => {
                 variant="outlined"
                 onChange={(e) => setSmartMeterAddress(e.target.value)}
             />
-            <div className={styles.buttons}>
-                <Button
-                    disabled={!currentAccount}
-                    onClick={() => handleRegisterSmartMeter()}
-                    text="Register Smart Meter"
-                />
-            </div>
-        </div>
+            <Button
+                disabled={!currentAccount}
+                onClick={() => handleRegisterSmartMeter()}
+                text="Register Smart Meter"
+            />
+        </>
     );
 };
 
