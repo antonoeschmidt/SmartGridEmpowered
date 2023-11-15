@@ -1,0 +1,36 @@
+.row {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+  }
+  
+  .rowInactive {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    opacity: 0.25;
+  }
+  
+  .activeLogo,
+  .inactiveLogo {
+    align-items: center;
+    justify-content: center;
+    display: flex;
+    height: 5em;
+    width: 5em;
+    border-radius: 20px;
+  }
+  
+  .activeLogo {
+    background-color: var(--light-green);
+  }
+  
+  .inactiveLogo {
+    background-color: var(--lighter-grey)
+  }
+  
+  
+  .companyLogo {
+    height: 3em;
+    width: 3em;
+  }

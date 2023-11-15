@@ -8,6 +8,7 @@ import EthereumContext, {
 } from "./contexts/ethereumContext";
 import MarketplacePage from "./pages/MarketplacePage/MarketplacePage";
 import SmartMeterPage from "./pages/SmartMeterPage/SmartMeterPage";
+import OnboardingPage from "./pages/OnboardingPage/OnboardingPage";
 
 const App = () => {
     const ethereumContextValue = useEthereumContext();
@@ -18,9 +19,16 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={<MainPage />}>
                         <Route path="/" element={<DashboardPage />} />
-                        <Route path="/marketplace" element={<MarketplacePage />} />
-                        <Route path="/smartmeter" element={<SmartMeterPage />} />
+                        <Route
+                            path="/marketplace"
+                            element={<MarketplacePage />}
+                        />
+                        <Route
+                            path="/smartmeter"
+                            element={<SmartMeterPage />}
+                        />
                     </Route>
+                    <Route path="onboarding" element={<OnboardingPage />} />
                 </Routes>
             </BrowserRouter>
         </EthereumContext.Provider>

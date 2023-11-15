@@ -1,0 +1,32 @@
+.item {
+    display: flex;
+    flex-direction: column;
+    min-height: 150px;
+    background-color: white;
+    border-radius: 10px;
+    padding: 0.5em 0 1em;
+    width: 100%;
+    overflow: hidden;
+    height: fit-content;
+    gap: 5px;
+}
+
+hr {
+    width: 100%;
+    border: 1px solid #e5e7eb;
+}
+
+.itemContent {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    padding: 1em;
+    gap: 5px;
+}
+
+.title {
+    padding-left: 1em;
+    font-weight: 600;
+    color: #525252;
+}
