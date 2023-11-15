@@ -1,9 +1,10 @@
 import React, { useContext } from "react";
 import styles from "./AddOfferComponent.module.css";
-import { Button, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import EthereumContext from "../../../contexts/ethereumContext";
 import { v4 as uuidv4 } from "uuid";
 import { OfferDTO } from "../../../models/models";
+import Button from "../../Shared/Button/Button";
 
 type Props = {
     amount: number;
@@ -59,14 +60,7 @@ const AddOfferComponent = ({ amount, setAmount, price, setPrice }: Props) => {
                     variant="outlined"
                     onChange={(e) => setPrice(parseInt(e.target.value))}
                 />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    style={{ maxHeight: "3em" }}
-                    onClick={() => addNewOffer()}
-                >
-                    New Offer
-                </Button>
+                <Button onClick={() => addNewOffer()} text="New Offer" />
             </div>
         </div>
     );

@@ -1,9 +1,8 @@
 import React, { useContext, useEffect } from "react";
 import { Outlet } from "react-router-dom";
-import styles from "./MainPage.module.css";
-import DrawerComponent from "../../components/Shared/DrawerComponent/DrawerComponent";
 import EthereumContext from "../../contexts/ethereumContext";
 import { scanBlocksForContractCreations } from "../../apis/web3";
+import PersistentDrawerLeft from "./PersistentDrawer";
 
 const MainPage = () => {
     const {
@@ -52,15 +51,7 @@ const MainPage = () => {
         if (!currentMarket && markets) setCurrentMarket(markets[0]);
     }, [currentMarket, markets, setCurrentMarket]);
 
-    return (
-        <div className={styles.container}>
-            <DrawerComponent />
-
-            <div className={styles.content}>
-                <Outlet />
-            </div>
-        </div>
-    );
+    return <PersistentDrawerLeft children={<Outlet />} />;
 };
 
 export default MainPage;

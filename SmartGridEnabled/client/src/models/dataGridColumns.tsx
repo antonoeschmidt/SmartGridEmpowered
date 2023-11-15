@@ -1,7 +1,7 @@
-import { Button } from "@mui/material";
 import { GridValueFormatterParams } from "@mui/x-data-grid";
 import { GridColDef } from "@mui/x-data-grid/models/colDef/gridColDef";
 import { dateFormatter } from "../utils/parsers";
+import Button from "../components/Shared/Button/Button";
 
 export const supplyContractColumns: GridColDef[] = [
     { field: "buyer", headerName: "Buyer", width: 370 },
@@ -14,10 +14,14 @@ export const supplyContractColumns: GridColDef[] = [
             return params.value === 0 ? "Hidden" : params.value;
         },
     },
-    { field: "price", headerName: "Price (€ cents)", width: 150,
-    valueFormatter: (params: GridValueFormatterParams<number>) => {
-        return params.value === 0 ? "Hidden" : params.value;
-    } },
+    {
+        field: "price",
+        headerName: "Price (€ cents)",
+        width: 150,
+        valueFormatter: (params: GridValueFormatterParams<number>) => {
+            return params.value === 0 ? "Hidden" : params.value;
+        },
+    },
     {
         field: "timestamp",
         headerName: "Timestamp",
@@ -46,7 +50,7 @@ export const offerColumns: GridColDef[] = [
 ];
 
 export const buyOfferColumns = (
-    buyOnClick: (id: string) => void
+    buyOnClick: (id: string) => any
 ): GridColDef[] => [
     ...offerColumns,
     {
@@ -57,13 +61,10 @@ export const buyOfferColumns = (
             // you will find row info in params
             return (
                 <Button
-                    color="primary"
                     disabled={!params.row.active}
-                    variant="contained"
-                    onClick={(e) => buyOnClick(params.rowNode.id as string)}
-                >
-                    Buy
-                </Button>
+                    onClick={buyOnClick(params.rowNode.id as string)}
+                    text="Buy"
+                />
             );
         },
     },

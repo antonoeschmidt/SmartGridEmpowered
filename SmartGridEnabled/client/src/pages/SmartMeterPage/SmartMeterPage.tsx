@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
 import styles from "./SmartMeterPage.module.css";
-import { Button, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import EthereumContext from "../../contexts/ethereumContext";
+import Button from "../../components/Shared/Button/Button";
 
 const SmartMeterPage = () => {
     const [consumption, setConsumption] = useState<number>();
@@ -45,21 +46,14 @@ const SmartMeterPage = () => {
                         }
                     ></TextField>
                     <Button
-                        variant="contained"
-                        color="primary"
-                        style={{ maxHeight: "3em" }}
                         onClick={() => createLogClick()}
-                    >
-                        Simulate log
-                    </Button>
+                        text="Simulate Log"
+                    />
+
                     <Button
-                        variant="contained"
-                        color="primary"
-                        style={{ maxHeight: "3em" }}
                         onClick={() => getBatteryLevel()}
-                    >
-                        Get level
-                    </Button>
+                        text="Get level"
+                    />
                 </div>
             </div>
         </div>

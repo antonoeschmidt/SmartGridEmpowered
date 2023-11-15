@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
-import { Button } from "@mui/material";
 import styles from "./CableCompanyComponent.module.css";
 import EthereumContext from "../../../contexts/ethereumContext";
+import Button from "../../Shared/Button/Button";
 
 const CableCompanyComponent = () => {
     const {
@@ -24,14 +24,10 @@ const CableCompanyComponent = () => {
             <h3>Cable Company</h3>
             <div className={styles.buttons}>
                 <Button
+                    text={"New Cable Company"}
+                    onClick={newCableCompany}
                     disabled={!currentAccount}
-                    variant="contained"
-                    color="primary"
-                    style={{ maxHeight: "3em" }}
-                    onClick={() => newCableCompany()}
-                >
-                    New Cable Company
-                </Button>
+                />
             </div>
             {newCableCompanyCreated && (
                 <>

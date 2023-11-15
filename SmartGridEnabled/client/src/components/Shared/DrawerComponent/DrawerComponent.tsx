@@ -8,30 +8,47 @@ import {
     ListItemButton,
     ListItemIcon,
     ListItemText,
+    IconButton,
 } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import StoreIcon from "@mui/icons-material/Store";
-import ElectricMeterIcon from '@mui/icons-material/ElectricMeter';
+import ElectricMeterIcon from "@mui/icons-material/ElectricMeter";
+import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 
-const DrawerComponent = () => {
+type Props = {
+    drawerWidth: number;
+    open: boolean;
+    handleDrawerClose: () => void;
+    DrawerHeader: any;
+};
+
+const DrawerComponent = ({
+    drawerWidth,
+    open,
+    handleDrawerClose,
+    DrawerHeader,
+}: Props) => {
     const navigate = useNavigate();
 
     return (
         <Drawer
-            className="drawer-component"
             sx={{
-                minWidth: "240px",
+                width: drawerWidth,
+                flexShrink: 0,
                 "& .MuiDrawer-paper": {
-                    minWidth: "240px",
-                    backgroundColor: "#EDEDE9",
+                    width: drawerWidth,
+                    boxSizing: "border-box",
                 },
             }}
-            variant="permanent"
+            variant="persistent"
             anchor="left"
+            open={open}
         >
-            <div style={{display: "flex", textAlign: "center"}}>
-            <h3 style={{width: "240px"}} >Smart Grid Empowered</h3>
-            </div>
+            <DrawerHeader>
+                <IconButton onClick={handleDrawerClose}>
+                    <ChevronLeftIcon />
+                </IconButton>
+            </DrawerHeader>
             <Divider />
             <List>
                 <ListItem key={"home"} disablePadding>

@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
-import { Button } from "@mui/material";
 import EthereumContext from "../../../contexts/ethereumContext";
 import styles from "./SetMarketSmartMeterComponent.module.css";
+import Button from "../../Shared/Button/Button";
 
 const SetMarketSmartMeterComponent = () => {
     const { currentAccount, currentMarket, setSmartMeterMarketAddress } =
@@ -19,13 +19,9 @@ const SetMarketSmartMeterComponent = () => {
             <div className={styles.buttons}>
                 <Button
                     disabled={!currentAccount}
-                    variant="contained"
-                    color="primary"
-                    style={{ maxHeight: "3em" }}
                     onClick={() => setMarketAddressSmartMeter()}
-                >
-                    Set Market Address
-                </Button>
+                    text="Set Market Address"
+                />
             </div>
         </div>
     );

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
-import { Button } from "@mui/material";
 import EthereumContext from "../../../contexts/ethereumContext";
 import styles from "./ManageMarketsComponent.module.css";
+import Button from "../../Shared/Button/Button";
 
 const ManageMarketsComponent = () => {
     const {
@@ -31,13 +31,9 @@ const ManageMarketsComponent = () => {
             <div className={styles.buttons}>
                 <Button
                     disabled={!currentAccount}
-                    variant="contained"
-                    color="primary"
-                    style={{ maxHeight: "3em" }}
                     onClick={() => newMarket()}
-                >
-                    New Market
-                </Button>
+                    text={"New Market"}
+                />
             </div>
             {newMarketCreated && (
                 <p className="light-text">New market created!</p>

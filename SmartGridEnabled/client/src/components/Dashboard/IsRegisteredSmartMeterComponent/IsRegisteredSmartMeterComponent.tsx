@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
-import { Button, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import EthereumContext from "../../../contexts/ethereumContext";
 import styles from "./IsRegisteredSmartMeterComponent.module.css";
+import Button from "../../Shared/Button/Button";
 
 const IsRegisteredSmartMeterComponent = () => {
     const { currentAccount, isRegisteredKey } = useContext(EthereumContext);
@@ -33,13 +34,9 @@ const IsRegisteredSmartMeterComponent = () => {
             <div className={styles.buttons}>
                 <Button
                     disabled={!currentAccount}
-                    variant="contained"
-                    color="primary"
-                    style={{ maxHeight: "3em" }}
                     onClick={() => isKeyRegistered()}
-                >
-                    Check registration
-                </Button>
+                    text="Check registration"
+                />
             </div>
         </div>
     );

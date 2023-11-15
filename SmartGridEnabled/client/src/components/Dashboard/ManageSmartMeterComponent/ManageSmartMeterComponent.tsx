@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
-import { Button, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import EthereumContext from "../../../contexts/ethereumContext";
 import styles from "./ManageSmartMeterComponent.module.css";
+import Button from "../../Shared/Button/Button";
 
 const ManageSmartMeterComponent = () => {
     const {
@@ -27,13 +28,9 @@ const ManageSmartMeterComponent = () => {
             <div className={styles.buttons}>
                 <Button
                     disabled={!currentAccount}
-                    variant="contained"
-                    color="primary"
-                    style={{ maxHeight: "3em" }}
                     onClick={() => newSmartMeter()}
-                >
-                    New Smart Meter
-                </Button>
+                    text="New Smart Meter"
+                />
             </div>
             <TextField
                 variant="outlined"
