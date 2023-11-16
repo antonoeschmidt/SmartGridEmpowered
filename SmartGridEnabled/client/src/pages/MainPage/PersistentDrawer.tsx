@@ -94,7 +94,7 @@ export default function PersistentDrawerLeft({ children }: Props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
-                        Smart Grid Empowered
+                        Smart Grid Empowered.
                     </Typography>
                 </Toolbar>
             </AppBar>

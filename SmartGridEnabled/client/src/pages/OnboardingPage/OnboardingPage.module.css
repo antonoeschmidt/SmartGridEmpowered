@@ -12,10 +12,24 @@
     width: 20em;
     padding: 4em 5em;
     height: 30em;
+    transform: translate(0);
+    transition: 0.2s ease-in-out;
 }
    
 .steps {
     display: flex;
     border-radius: 30px;
     padding: 0 1em;
+}
+
+.animate {
+    transition: 0.2s ease-in-out;
+    transform: translate(-100vw, 5vh)
+}
+
+.title {
+    position: absolute;
+    top: 0;
+    left: 2em;
+    color: var(--deep-purple)
 }

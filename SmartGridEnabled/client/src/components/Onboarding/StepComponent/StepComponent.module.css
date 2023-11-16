@@ -19,6 +19,7 @@
     height: 5em;
     width: 5em;
     border-radius: 20px;
+    border: 2px solid transparent
   }
   
   .activeLogo {
@@ -27,6 +28,11 @@
   
   .inactiveLogo {
     background-color: var(--lighter-grey)
+  }
+
+  .activeLogo:hover,
+  .inactiveLogo:hover {
+    border: 2px solid black
   }
   
   
