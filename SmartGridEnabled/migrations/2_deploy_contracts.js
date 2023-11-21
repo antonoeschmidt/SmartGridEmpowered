@@ -1,7 +1,7 @@
-// const CableCompany = artifacts.require("./CableCompany.sol");
+const CableCompany = artifacts.require("./CableCompany.sol");
 const Market = artifacts.require("./Market.sol");
-// const SupplyContract = artifacts.require("./SupplyContract.sol");
-// const SmartMeter = artifacts.require("./SmartMeter.sol");
+const SupplyContract = artifacts.require("./SupplyContract.sol");
+const SmartMeter = artifacts.require("./SmartMeter.sol");
 
 module.exports = async function (deployer, network, accounts) {
     // Deploy CableCompany

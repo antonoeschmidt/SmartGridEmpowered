@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import EthereumContext from "../../../contexts/ethereumContext";
 import Button from "../../Shared/Button/Button";
 
@@ -13,6 +13,8 @@ const ManageMarketsComponent = () => {
 
     const [newMarketCreated, setNewMarketCreated] = useState(false);
 
+
+
     const newMarket = async () => {
         if (!currentAccount) {
             alert("No account or cable company selected");
@@ -23,6 +25,7 @@ const ManageMarketsComponent = () => {
         setCurrentMarket(marketAddress);
         setMarkets(markets ? [...markets, marketAddress] : [marketAddress]);
     };
+
 
     return (
         <>
