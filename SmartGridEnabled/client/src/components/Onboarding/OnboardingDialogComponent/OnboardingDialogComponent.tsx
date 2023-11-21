@@ -31,9 +31,7 @@ const OnboardingDialogComponent = () => {
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} autoFocus>
-                    Let's get started!
-                </Button>
+                <Button onClick={handleClose}>Let's get started!</Button>
             </DialogActions>
         </Dialog>
     );

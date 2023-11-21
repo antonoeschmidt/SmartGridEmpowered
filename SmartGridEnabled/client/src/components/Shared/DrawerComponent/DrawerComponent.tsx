@@ -51,14 +51,8 @@ const DrawerComponent = ({
             </DrawerHeader>
             <Divider />
             <List>
-                <ListItem key={"home"} disablePadding>
-                    <ListItemButton onClick={() => navigate("/")}>
-                        <ListItemIcon>{<DashboardIcon />}</ListItemIcon>
-                        <ListItemText primary={"Dashboard"} />
-                    </ListItemButton>
-                </ListItem>
                 <ListItem key={"marketplace"} disablePadding>
-                    <ListItemButton onClick={() => navigate("/marketplace")}>
+                    <ListItemButton onClick={() => navigate("/")}>
                         <ListItemIcon>{<StoreIcon />}</ListItemIcon>
                         <ListItemText primary={"Marketplace"} />
                     </ListItemButton>
@@ -67,6 +61,12 @@ const DrawerComponent = ({
                     <ListItemButton onClick={() => navigate("/smartmeter")}>
                         <ListItemIcon>{<ElectricMeterIcon />}</ListItemIcon>
                         <ListItemText primary={"Smart Meter"} />
+                    </ListItemButton>
+                </ListItem>
+                <ListItem key={"home"} disablePadding>
+                    <ListItemButton onClick={() => navigate("/settings")}>
+                        <ListItemIcon>{<DashboardIcon />}</ListItemIcon>
+                        <ListItemText primary={"Settings"} />
                     </ListItemButton>
                 </ListItem>
             </List>

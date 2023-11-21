@@ -26,6 +26,10 @@ const OnboardingContentComponent = ({
         setSmartMeterAddress,
         registerSmartMeter,
         currentMarket,
+        deployMarket,
+        setCurrentMarket,
+        setMarkets,
+        markets,
     } = useContext(EthereumContext);
     const navigate = useNavigate();
 
@@ -57,6 +61,13 @@ const OnboardingContentComponent = ({
 
         // Register Smart Meter
         await registerSmartMeter(address, currentAccount);
+
+        // Create New Market
+        if (!markets) {
+            const marketAddress = await deployMarket();
+            setCurrentMarket(marketAddress);
+            setMarkets(markets ? [...markets, marketAddress] : [marketAddress]);
+        }
 
         handleChangeStep(Steps.Step3);
     };

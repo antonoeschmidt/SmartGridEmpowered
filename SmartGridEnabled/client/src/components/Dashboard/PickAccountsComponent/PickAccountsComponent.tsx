@@ -49,12 +49,26 @@ const PickAccountsComponent = ({ type }: { type: string }) => {
                         );
                     })}
             </Select>
-            {currentAccount && (
-                <p className="light-text">
-                    Current account:
-                    <br />
-                    {currentAccount}
-                </p>
+            {type === "admin" ? (
+                <>
+                    {adminAccount && (
+                        <p className="light-text">
+                            Admin account:
+                            <br />
+                            {adminAccount}
+                        </p>
+                    )}
+                </>
+            ) : (
+                <>
+                    {currentAccount && (
+                        <p className="light-text">
+                            User account:
+                            <br />
+                            {currentAccount}
+                        </p>
+                    )}
+                </>
             )}
         </>
     );

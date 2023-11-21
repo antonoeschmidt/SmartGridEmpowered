@@ -27,7 +27,6 @@ const OnboardingPageBody = () => {
 
     return (
         <div className={styles.container}>
-            {/* <div className={styles.ellipsis}></div> */}
             <h2 className={styles.title}>Smart Grid Empowered.</h2>
             <div
                 className={`${styles.content} ${animate ? styles.animate : ""}`}

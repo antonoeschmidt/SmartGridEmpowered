@@ -18,11 +18,8 @@ const App = () => {
             <BrowserRouter>
                 <Routes>
                     <Route path="/" element={<MainPage />}>
-                        <Route path="/" element={<DashboardPage />} />
-                        <Route
-                            path="/marketplace"
-                            element={<MarketplacePage />}
-                        />
+                        <Route path="/" element={<MarketplacePage />} />
+                        <Route path="/settings" element={<DashboardPage />} />
                         <Route
                             path="/smartmeter"
                             element={<SmartMeterPage />}
