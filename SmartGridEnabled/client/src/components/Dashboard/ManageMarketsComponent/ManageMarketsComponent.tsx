@@ -3,13 +3,8 @@ import EthereumContext from "../../../contexts/ethereumContext";
 import Button from "../../Shared/Button/Button";
 
 const ManageMarketsComponent = () => {
-    const {
-        currentAccount,
-        setCurrentMarket,
-        setMarkets,
-        markets,
-        deployMarket,
-    } = useContext(EthereumContext);
+    const { currentAccount, setCurrentMarket, deployMarket } =
+        useContext(EthereumContext);
 
     const [newMarketCreated, setNewMarketCreated] = useState(false);
 
@@ -19,9 +14,10 @@ const ManageMarketsComponent = () => {
             return;
         }
         let marketAddress = await deployMarket();
+        console.log(marketAddress);
+
         setNewMarketCreated(true);
         setCurrentMarket(marketAddress);
-        setMarkets(markets ? [...markets, marketAddress] : [marketAddress]);
     };
 
     return (

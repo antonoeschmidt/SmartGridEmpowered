@@ -11,8 +11,8 @@
     flex-direction: column;
     background-color: white;
     border-radius: 30px;
-    width: 20em;
-    padding: 4em 5em;
+    width: 22em;
+    padding: 4em 4em;
     min-height: 20em;
     transform: translate(0);
     transition: 0.2s ease-in-out;
