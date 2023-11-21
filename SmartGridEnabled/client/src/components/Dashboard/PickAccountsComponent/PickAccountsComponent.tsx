@@ -4,9 +4,15 @@ import styles from "./PickAccountsComponent.module.css";
 import { getAccounts } from "../../../apis/web3";
 import EthereumContext from "../../../contexts/ethereumContext";
 
-const PickAccountsComponent = () => {
-    const { accounts, currentAccount, setAccounts, setCurrentAccount } =
-        useContext(EthereumContext);
+const PickAccountsComponent = ({ type }: { type: string }) => {
+    const {
+        accounts,
+        currentAccount,
+        setAccounts,
+        setCurrentAccount,
+        setAdminAccount,
+        adminAccount,
+    } = useContext(EthereumContext);
 
     useEffect(() => {
         if (accounts) return;
@@ -14,19 +20,24 @@ const PickAccountsComponent = () => {
         getAccounts().then((accounts) => {
             if (accounts) {
                 setAccounts(accounts);
+                if (type === "admin") return; // We do not want to pre set the admin account
                 if (!currentAccount) setCurrentAccount(accounts[0]);
             }
         });
-    }, [accounts, currentAccount, setAccounts, setCurrentAccount]);
+    }, [accounts, currentAccount, setAccounts, setCurrentAccount, type]);
 
     return (
         <>
             <Select
                 className={styles.pickAccountSelector}
-                value={currentAccount}
+                value={type === "admin" ? adminAccount : currentAccount}
                 label="Age"
                 onChange={(e) => {
-                    setCurrentAccount(e.target.value);
+                    if (type === "admin") {
+                        setAdminAccount(e.target.value);
+                    } else {
+                        setCurrentAccount(e.target.value);
+                    }
                 }}
             >
                 {accounts &&

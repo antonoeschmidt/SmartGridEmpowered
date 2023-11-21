@@ -33,7 +33,7 @@ const DashboardPage = () => {
                     <h3>Accounts</h3>
                     <DashboardItem
                         title="Choose account"
-                        content={<PickAccountsComponent />}
+                        content={<PickAccountsComponent type="user" />}
                     />
                 </div>
                 <div className={styles.col}>

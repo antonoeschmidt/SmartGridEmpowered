@@ -10,6 +10,8 @@ export type EthereumContextType = {
     setAccounts: (accounts: string[]) => void;
     currentAccount: string;
     setCurrentAccount: (account: string) => void;
+    adminAccount: string;
+    setAdminAccount: (account: string) => void;
     currentMarket: string;
     setCurrentMarket: (address: string) => void;
     markets: string[];
@@ -52,6 +54,7 @@ export type EthereumContextType = {
 export const useEthereumContext = (): EthereumContextType => {
     const [accounts, setAccounts] = useState<string[]>();
     const [currentAccount, setCurrentAccount] = useState<string>("");
+    const [adminAccount, setAdminAccount] = useState<string>("");
     const [currentMarket, setCurrentMarket] = useState<string>("");
     const [markets, setMarkets] = useState<string[]>();
     const [supplyContracts, setSupplyContracts] = useState<string[]>();
@@ -61,7 +64,7 @@ export const useEthereumContext = (): EthereumContextType => {
 
     // CableCompanyApi
     const deployCableCompany = async () => {
-        return await cableCompanyApi.deployCableCompany(currentAccount);
+        return await cableCompanyApi.deployCableCompany(adminAccount);
     };
 
     const isRegisteredKey = async (
@@ -77,10 +80,7 @@ export const useEthereumContext = (): EthereumContextType => {
 
     // MarketApi
     const deployMarket = async () => {
-        return await marketApi.deployMarket(
-            currentAccount,
-            cableCompanyAddress
-        );
+        return await marketApi.deployMarket(adminAccount, cableCompanyAddress);
     };
 
     const addOffer = async (offer: OfferDTO) => {
@@ -134,7 +134,7 @@ export const useEthereumContext = (): EthereumContextType => {
         smartMeterAddress: string
     ) => {
         return await smartMeterApi.registerSmartMeter(
-            currentAccount,
+            adminAccount,
             cableCompanyAddress,
             smartMeterPubKey,
             smartMeterAddress
@@ -161,6 +161,8 @@ export const useEthereumContext = (): EthereumContextType => {
         setAccounts,
         currentAccount,
         setCurrentAccount,
+        adminAccount,
+        setAdminAccount,
         currentMarket,
         setCurrentMarket,
         markets,

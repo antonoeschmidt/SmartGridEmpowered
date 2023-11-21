@@ -3,18 +3,12 @@ import StepComponent from "../StepComponent/StepComponent";
 import styles from "./StepsComponent.module.css";
 import StepContext, { Steps } from "../../../contexts/stepContext";
 
-const StepsComponent = () => {
-    const { currentStep, setCurrentStep, completedSteps, setCompletedSteps } =
-        useContext(StepContext);
+type StepsComponentProps = {
+    handleChangeStep: (step: Steps) => void;
+};
 
-    const handleChangeStep = (step: Steps) => {
-        if (completedSteps) {
-            setCompletedSteps((prev) => [...prev, currentStep]);
-        } else {
-            setCompletedSteps([currentStep]);
-        }
-        setCurrentStep(step);
-    };
+const StepsComponent = ({ handleChangeStep }: StepsComponentProps) => {
+    const { currentStep, completedSteps } = useContext(StepContext);
 
     return (
         <div className={styles.container}>
