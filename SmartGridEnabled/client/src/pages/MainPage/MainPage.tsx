@@ -3,6 +3,7 @@ import { Outlet } from "react-router-dom";
 import EthereumContext from "../../contexts/ethereumContext";
 import { scanBlocksForContractCreations } from "../../apis/web3";
 import PersistentDrawerLeft from "./PersistentDrawer";
+import { useNavigate } from "react-router-dom";
 
 const MainPage = () => {
     const {
@@ -13,6 +14,8 @@ const MainPage = () => {
         markets,
         setCableCompanyAddress,
     } = useContext(EthereumContext);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         const getData = () => {
@@ -50,6 +53,10 @@ const MainPage = () => {
     useEffect(() => {
         if (!currentMarket && markets) setCurrentMarket(markets[0]);
     }, [currentMarket, markets, setCurrentMarket]);
+
+    if (localStorage.getItem("onboarded") !== "true") {
+        navigate("/onboarding");
+    }
 
     return <PersistentDrawerLeft children={<Outlet />} />;
 };

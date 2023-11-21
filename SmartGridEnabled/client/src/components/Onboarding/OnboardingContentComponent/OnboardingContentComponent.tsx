@@ -72,6 +72,11 @@ const OnboardingContentComponent = ({
         handleChangeStep(Steps.Step3);
     };
 
+    const handleStep3 = () => {
+        localStorage.setItem("onboarded", "true");
+        navigate("/");
+    };
+
     return (
         <>
             <OnboardingDialogComponent />
@@ -113,7 +118,7 @@ const OnboardingContentComponent = ({
                     />
                     <Button
                         text={"Go to Marketplace"}
-                        onClick={() => navigate("/marketplace")}
+                        onClick={() => handleStep3()}
                         disabled={!currentMarket}
                     />
                 </>
