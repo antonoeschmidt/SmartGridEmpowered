@@ -30,6 +30,7 @@ const OnboardingContentComponent = ({
         setCurrentMarket,
         setMarkets,
         markets,
+        setSmartMeterMarketAddress,
     } = useContext(EthereumContext);
     const navigate = useNavigate();
 
@@ -60,7 +61,8 @@ const OnboardingContentComponent = ({
         setSmartMeterAddress(address);
 
         // Register Smart Meter
-        await registerSmartMeter(address, currentAccount);
+        let res = await registerSmartMeter(currentAccount, address);
+        console.log(res);
 
         // Create New Market
         if (!markets) {
@@ -72,7 +74,10 @@ const OnboardingContentComponent = ({
         handleChangeStep(Steps.Step3);
     };
 
-    const handleStep3 = () => {
+    const handleStep3 = async () => {
+        let res = await setSmartMeterMarketAddress();
+        console.log(res);
+
         localStorage.setItem("onboarded", "true");
         navigate("/");
     };

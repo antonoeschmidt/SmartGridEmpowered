@@ -27,13 +27,17 @@ const DashboardItem = ({ title, content }: DashboardItemProps) => {
 const DashboardPage = () => {
     return (
         <div className={styles.container}>
-            <h1>Dashboard</h1>
+            <h1>Settings</h1>
             <div className={styles.content}>
                 <div className={styles.col}>
                     <h3>Accounts</h3>
                     <DashboardItem
-                        title="Choose account"
+                        title="Choose user"
                         content={<PickAccountsComponent type="user" />}
+                    />
+                    <DashboardItem
+                        title="Choose admin"
+                        content={<PickAccountsComponent type="admin" />}
                     />
                 </div>
                 <div className={styles.col}>

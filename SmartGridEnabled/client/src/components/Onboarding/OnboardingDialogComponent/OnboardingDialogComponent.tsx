@@ -26,8 +26,9 @@ const OnboardingDialogComponent = () => {
             <DialogContent>
                 <DialogContentText id="alert-dialog-description">
                     This seems like this is your first run. We need to set a
-                    couple of things up. First off, we need to define an admin
-                    account, in order to configure the system.
+                    couple of things up. Just follow the instructions on screen,
+                    and the app will take care of the integration with the
+                    blockchain and setting the rest up.
                 </DialogContentText>
             </DialogContent>
             <DialogActions>
