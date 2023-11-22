@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import EthereumContext from "../../../contexts/ethereumContext";
 import Button from "../../Shared/Button/Button";
 
@@ -7,6 +7,8 @@ const ManageMarketsComponent = () => {
         useContext(EthereumContext);
 
     const [newMarketCreated, setNewMarketCreated] = useState(false);
+
+
 
     const newMarket = async () => {
         if (!currentAccount) {
@@ -19,6 +21,7 @@ const ManageMarketsComponent = () => {
         setNewMarketCreated(true);
         setCurrentMarket(marketAddress);
     };
+
 
     return (
         <>

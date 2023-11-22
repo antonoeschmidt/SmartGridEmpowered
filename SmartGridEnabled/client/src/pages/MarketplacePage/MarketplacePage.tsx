@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, FC } from "react";
 import DataTable from "../../components/Shared/DataTable/DataTable";
 import {
     buyOfferColumns,
@@ -7,11 +7,13 @@ import {
 } from "../../models/dataGridColumns";
 import styles from "./MarketplacePage.module.css";
 import EthereumContext from "../../contexts/ethereumContext";
-import AddOfferComponent from "../../components/Market/AddOfferComponent/AddOfferComponent";
 import { SupplyContractDTO } from "../../models/models";
 import SuggestedPriceComponent from "../../components/Market/SuggestedPriceComponent/SuggestedPriceComponent";
+import { AddButton } from "../../components/common/AddButton";
+import { OfferModal } from "../../components/Market/OfferModal/OfferModal";
+import { Box } from "@mui/material";
 
-const MarketplacePage = () => {
+const MarketplacePage: FC = () => {
     const {
         currentMarket,
         setSupplyContracts,
@@ -23,11 +25,10 @@ const MarketplacePage = () => {
         getSupplyContracts,
         getSupplyContractInfo,
     } = useContext(EthereumContext);
+
     const [supplyContractsDTO, setSupplyContractsDTO] =
         useState<SupplyContractDTO[]>();
 
-    const [amount, setAmount] = useState<number>();
-    const [price, setPrice] = useState<number>();
     const [suggestedPrice, setSuggestedPrice] = useState<string>();
 
     useEffect(() => {
@@ -67,18 +68,30 @@ const MarketplacePage = () => {
             .catch((err) => console.log(err));
     };
 
+    const [open, setOpen] = useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
     return (
         <div className={styles.container}>
+            <Box sx={{ justifyContent: 'space-between', display: 'flex'}}>            
             <h1>Marketplace</h1>
+                {currentMarket && 
+                <Box width="80px" height="80px" marginLeft={"auto"}>
+                <AddButton  onClick={() => handleClickOpen()} />
+                </Box>
+                }
+            </Box>
             {currentMarket ? (
                 <>
                     <div className={styles.row}>
-                        <AddOfferComponent
-                            amount={amount}
-                            setAmount={setAmount}
-                            price={price}
-                            setPrice={setPrice}
-                        />
+
                         <SuggestedPriceComponent
                             suggestedPrice={suggestedPrice}
                         />
@@ -114,6 +127,7 @@ const MarketplacePage = () => {
                             />
                         )}
                     </div>
+                    <OfferModal open={open} handleClose={handleClose} />
                 </>
             ) : (
                 <> Please choose a Market to view the Marketplace</>
