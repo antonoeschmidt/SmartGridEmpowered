@@ -1,17 +1,13 @@
 import React, { useContext, useEffect, useState, FC } from "react";
 import DataTable from "../../components/Shared/DataTable/DataTable";
-import {
-    buyOfferColumns,
-    offerColumns,
-    supplyContractColumns,
-} from "../../models/dataGridColumns";
+import { supplyContractColumns } from "../../models/dataGridColumns";
 import styles from "./MarketplacePage.module.css";
 import EthereumContext from "../../contexts/ethereumContext";
 import { SupplyContractDTO } from "../../models/models";
 import SuggestedPriceComponent from "../../components/Market/SuggestedPriceComponent/SuggestedPriceComponent";
 import { AddButton } from "../../components/common/AddButton";
 import { OfferModal } from "../../components/Market/OfferModal/OfferModal";
-import { Box } from "@mui/material";
+import OfferComponent from "../../components/Market/OfferComponent/OfferComponent";
 
 const MarketplacePage: FC = () => {
     const {
@@ -67,6 +63,11 @@ const MarketplacePage: FC = () => {
             })
             .catch((err) => console.log(err));
     };
+    const removeOffer = () => async (id: string) => {
+        console.log("called remove offer");
+
+        alert("Not implemented yet");
+    };
 
     const [open, setOpen] = useState(false);
 
@@ -80,45 +81,69 @@ const MarketplacePage: FC = () => {
 
     return (
         <div className={styles.container}>
-            <Box sx={{ justifyContent: 'space-between', display: 'flex'}}>            
-            <h1>Marketplace</h1>
-                {currentMarket && 
-                <Box width="80px" height="80px" marginLeft={"auto"}>
-                <AddButton  onClick={() => handleClickOpen()} />
-                </Box>
-                }
-            </Box>
+            <div className={styles.pageTop}>
+                <h1>Marketplace</h1>
+                {currentMarket && (
+                    <div
+                        style={{
+                            width: "80px",
+                            height: "80px",
+                            marginLeft: "auto",
+                        }}
+                    >
+                        <AddButton onClick={() => handleClickOpen()} />
+                    </div>
+                )}
+            </div>
             {currentMarket ? (
                 <>
                     <div className={styles.row}>
-
                         <SuggestedPriceComponent
                             suggestedPrice={suggestedPrice}
                         />
                     </div>
-                    <div className={styles.item}>
-                        <h3>Own offers</h3>
-                        {offers && (
-                            <DataTable
-                                rows={offers.filter(
-                                    (offer) => offer.owner === currentAccount
-                                )}
-                                columns={offerColumns}
-                            />
-                        )}
-                    </div>
-                    <div className={styles.item}>
-                        <h3>Other offers</h3>
-                        {offers && (
-                            <DataTable
-                                rows={offers.filter(
-                                    (offer) => offer.owner !== currentAccount
-                                )}
-                                columns={buyOfferColumns(handleBuyOffer())}
-                            />
-                        )}
-                    </div>
-                    <div className={styles.item}>
+                    {offers?.filter((offer) => offer.owner === currentAccount)
+                        .length > 0 && (
+                        <>
+                            <h3>Your offers</h3>
+                            <div className={styles.row}>
+                                {offers
+                                    .filter(
+                                        (offer) =>
+                                            offer.owner === currentAccount
+                                    )
+                                    .map((offer, index) => (
+                                        <OfferComponent
+                                            key={index}
+                                            offer={offer}
+                                            ownOffer={true}
+                                            onClickButton={removeOffer()}
+                                        />
+                                    ))}
+                            </div>
+                        </>
+                    )}
+                    {offers?.filter((offer) => offer.owner !== currentAccount)
+                        .length > 0 && (
+                        <>
+                            <h3>Market offers</h3>
+                            <div className={styles.row}>
+                                {offers
+                                    .filter(
+                                        (offer) =>
+                                            offer.owner !== currentAccount
+                                    )
+                                    .map((offer, index) => (
+                                        <OfferComponent
+                                            key={index}
+                                            offer={offer}
+                                            onClickButton={handleBuyOffer()}
+                                        />
+                                    ))}
+                            </div>
+                        </>
+                    )}
+                    <div className={styles.item} style={{ maxWidth: "100vh" }}>
                         <h3>Supply Contracts</h3>
                         {supplyContractsDTO && (
                             <DataTable

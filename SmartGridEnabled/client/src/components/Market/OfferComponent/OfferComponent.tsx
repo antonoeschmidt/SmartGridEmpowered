@@ -6,9 +6,10 @@ import Button from "../../Shared/Button/Button";
 type Props = {
     offer: OfferDTO;
     ownOffer?: boolean;
+    onClickButton: (id: string) => any;
 };
 
-const OfferComponent = ({ offer, ownOffer }: Props) => {
+const OfferComponent = ({ offer, ownOffer, onClickButton }: Props) => {
     const expirationToHours = (timestamp: number) => {
         const date = new Date(timestamp);
         if (date.getTime() < Date.now()) {
@@ -21,14 +22,16 @@ const OfferComponent = ({ offer, ownOffer }: Props) => {
 
     return (
         <div className={styles.card}>
-            <div className={styles.lightTextItalic}>Offer#{offer.id}</div>
+            <div className={styles.lightTextItalic}>
+                Offer#{offer.id.slice(0, 7)}
+            </div>
             {ownOffer ? (
                 <>
                     {" "}
                     <br />
                 </>
             ) : (
-                <> Seller: {offer.owner}</>
+                <> Seller: {offer.owner.slice(0, 7)}</>
             )}
             <div className={styles.header} style={{ marginTop: "0.7em" }}>
                 {offer.amount} kWh
@@ -44,7 +47,7 @@ const OfferComponent = ({ offer, ownOffer }: Props) => {
                 {ownOffer ? (
                     <Button
                         text="Remove"
-                        onClick={() => {}}
+                        onClick={() => onClickButton(offer.id)}
                         sx={{
                             width: "10em",
                             marginTop: "2em",
@@ -57,7 +60,7 @@ const OfferComponent = ({ offer, ownOffer }: Props) => {
                 ) : (
                     <Button
                         text="Buy"
-                        onClick={() => {}}
+                        onClick={() => onClickButton(offer.id)}
                         sx={{ width: "10em", marginTop: "2em" }}
                     />
                 )}
@@ -67,10 +70,3 @@ const OfferComponent = ({ offer, ownOffer }: Props) => {
 };
 
 export default OfferComponent;
-
-// id: string;
-// price: number;
-// expiration: number;
-// amount: number;
-// owner: string;
-// active: boolean;
