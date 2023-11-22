@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { OfferDTO, SupplyContractDTO } from "../models/models";
 import { cableCompanyApi } from "../apis/cableCompanyApi";
 import { marketApi } from "../apis/marketApi";
@@ -56,11 +56,46 @@ export const useEthereumContext = (): EthereumContextType => {
     const [currentAccount, setCurrentAccount] = useState<string>("");
     const [adminAccount, setAdminAccount] = useState<string>("");
     const [currentMarket, setCurrentMarket] = useState<string>("");
-    const [markets, setMarkets] = useState<string[]>();
+    const [markets, setMarkets] = useState<string[]>([]);
     const [supplyContracts, setSupplyContracts] = useState<string[]>();
     const [offers, setOffers] = useState<OfferDTO[]>();
     const [cableCompanyAddress, setCableCompanyAddress] = useState<string>();
     const [smartMeterAddress, setSmartMeterAddress] = useState<string>();
+
+    // triggers when the user changes account.
+    useEffect(() => {
+        if (!currentAccount) return;
+
+        const deployAndRegisterSmartMeter = async () => {
+            const smartMeterAddress = await deploySmartMeter(currentAccount);
+            setSmartMeterAddress(smartMeterAddress);
+            if (!cableCompanyAddress) return;
+            await registerSmartMeter(smartMeterAddress, currentAccount);
+        }
+        // i need to define a function if I want it to be async.
+            const storedJsonString = localStorage.getItem(currentAccount);
+            // deploys a smart meter and registers it
+            if (!storedJsonString) {
+                deployAndRegisterSmartMeter();
+                return;
+            }
+            const parsedJson = JSON.parse(storedJsonString);
+            const market = parsedJson?.currentMarket ? parsedJson?.currentMarket : markets.length > 0 ? markets[0] : "";
+            setCurrentMarket(market);
+            parsedJson?.cableCompanyAddress && setCableCompanyAddress(parsedJson.cableCompanyAddress);
+            if (!parsedJson.smartMeterAddress) {
+                deployAndRegisterSmartMeter();
+            } else {
+                setSmartMeterAddress(parsedJson.smartMeterAddress);
+            }
+    }, [currentAccount]);
+
+    // saves data to localstorage when the user changes a setting
+    useEffect(() => {
+        if (!currentAccount) return;
+        const json = { currentMarket, smartMeterAddress };
+        localStorage.setItem(currentAccount, JSON.stringify(json));
+    }, [currentMarket, smartMeterAddress]);
 
     // CableCompanyApi
     const deployCableCompany = async () => {
