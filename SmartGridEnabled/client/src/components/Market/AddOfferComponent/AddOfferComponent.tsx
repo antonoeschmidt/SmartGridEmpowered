@@ -1,5 +1,5 @@
 import styles from "./AddOfferComponent.module.css";
-import { Stack, TextField } from "@mui/material";
+import { TextField } from "@mui/material";
 import { FC } from "react";
 
 type AddOfferComponentProps = {
@@ -7,11 +7,14 @@ type AddOfferComponentProps = {
     amount: number;
     setPrice: React.Dispatch<React.SetStateAction<number>>;
     setAmount: React.Dispatch<React.SetStateAction<number>>;
-}
+};
 
-
-const AddOfferComponent: FC<AddOfferComponentProps> = ({amount, setAmount, price, setPrice}) => {
-
+const AddOfferComponent: FC<AddOfferComponentProps> = ({
+    amount,
+    setAmount,
+    price,
+    setPrice,
+}) => {
     return (
         <div className={`${styles.item}`}>
             <div className={styles.container}>
@@ -19,13 +22,13 @@ const AddOfferComponent: FC<AddOfferComponentProps> = ({amount, setAmount, price
                     label="Amount (Wh)"
                     variant="outlined"
                     value={amount}
-                    onChange={e => setAmount(Number(e.target.value))}
+                    onChange={(e) => setAmount(Number(e.target.value))}
                 />
                 <TextField
                     label="Price (€ cents)"
                     variant="outlined"
                     value={price}
-                    onChange={e => setPrice(Number(e.target.value))}
+                    onChange={(e) => setPrice(Number(e.target.value))}
                 />
             </div>
         </div>

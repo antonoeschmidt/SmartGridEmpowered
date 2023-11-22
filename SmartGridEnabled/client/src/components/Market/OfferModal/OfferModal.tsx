@@ -1,4 +1,12 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Box, Snackbar, Alert } from "@mui/material"
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Box,
+} from "@mui/material";
 import AddOfferComponent from "../AddOfferComponent/AddOfferComponent";
 import { FC, useContext, useState } from "react";
 import EthereumContext from "../../../contexts/ethereumContext";
@@ -9,17 +17,15 @@ import { useToast } from "../../../hooks/useToast";
 type OfferModalProps = {
     open: boolean;
     handleClose: () => void;
-}
+};
 
 export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
-
     const { currentAccount, setOffers, addOffer } = useContext(EthereumContext);
-
 
     const [price, setPrice] = useState<number>(0);
     const [amount, setAmount] = useState<number>(0);
 
-    const { setProps, setOpen, toast} = useToast();
+    const { setProps, setOpen, toast } = useToast();
 
     const onSubmit = () => {
         if (!currentAccount) {
@@ -39,38 +45,53 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
             owner: currentAccount,
             active: true,
         };
-        addOffer(newOffer).then((offer) => {            
+        addOffer(newOffer).then((offer) => {
             if (!offer) {
-                setProps({"text": "Not enough stored energy to make offer", "severity": "error"});
+                setProps({
+                    text: "Not enough stored energy to make offer",
+                    severity: "error",
+                });
                 setOpen(true);
                 return;
             }
-            setProps({"text": "Offer was created!", "severity": "success"});
+            setProps({ text: "Offer was created!", severity: "success" });
             setOpen(true);
             console.log(offer);
             setOffers((prev) => [...prev, offer]);
-            
+
             handleClose();
         });
-    }
+    };
 
     return (
         <Dialog open={open} onClose={handleClose} maxWidth={"md"}>
             <DialogTitle>Add offer</DialogTitle>
-            <DialogContent >
-                
+            <DialogContent>
                 <DialogContentText>
                     To add an offer, fill out the form
                 </DialogContentText>
-                <Box width="400px" sx={{display: "flex"}}>
-                        <AddOfferComponent price={price} setPrice={setPrice} amount={amount} setAmount={setAmount}/>
+                <Box width="400px" sx={{ display: "flex" }}>
+                    <AddOfferComponent
+                        price={price}
+                        setPrice={setPrice}
+                        amount={amount}
+                        setAmount={setAmount}
+                    />
                 </Box>
             </DialogContent>
             <DialogActions>
-                <Button onClick={handleClose} variant="contained" color="error">Cancel</Button>
-                <Button onClick={() => onSubmit()} variant="contained" color="primary">Add offer</Button>
+                <Button onClick={handleClose} variant="contained" color="error">
+                    Cancel
+                </Button>
+                <Button
+                    onClick={() => onSubmit()}
+                    variant="contained"
+                    color="primary"
+                >
+                    Add offer
+                </Button>
             </DialogActions>
             {toast}
         </Dialog>
-    )
-}
+    );
+};
