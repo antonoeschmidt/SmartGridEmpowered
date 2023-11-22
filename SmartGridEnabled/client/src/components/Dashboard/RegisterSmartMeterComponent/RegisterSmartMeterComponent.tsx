@@ -4,7 +4,7 @@ import EthereumContext from "../../../contexts/ethereumContext";
 import Button from "../../Shared/Button/Button";
 
 const RegisterSmartMeterComponent = () => {
-    const { currentAccount, registerSmartMeter,smartMeterAddress: contextSmartMeterAddress } = useContext(EthereumContext);
+    const { currentAccount, registerSmartMeter, smartMeterAddress: contextSmartMeterAddress } = useContext(EthereumContext);
     const [smartMeterPubKey, setSmartMeterPubKey] = useState<string>("");
     const [smartMeterAddress, setSmartMeterAddress] = useState<string>("");
 

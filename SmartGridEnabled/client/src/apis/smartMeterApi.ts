@@ -87,7 +87,6 @@ const registerSmartMeter = async (
         !smartMeterPubKey ||
         !smartMeterAddress
     ) {
-        console.log('!!sender !!cable !!smartmeterpubkey, !!smartmeteraddress', !!sender, !!cableCompanyAddress, !!smartMeterPubKey, !!smartMeterAddress);
         alert("Register Smart Meter is missing arguments");
         return;
     }
