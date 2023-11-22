@@ -70,24 +70,31 @@ export const useEthereumContext = (): EthereumContextType => {
             const smartMeterAddress = await deploySmartMeter(currentAccount);
             setSmartMeterAddress(smartMeterAddress);
             if (!cableCompanyAddress) return;
+            await setSmartMeterMarketAddress();
             await registerSmartMeter(smartMeterAddress, currentAccount);
-        }
+        };
         // i need to define a function if I want it to be async.
-            const storedJsonString = localStorage.getItem(currentAccount);
-            // deploys a smart meter and registers it
-            if (!storedJsonString) {
-                deployAndRegisterSmartMeter();
-                return;
-            }
-            const parsedJson = JSON.parse(storedJsonString);
-            const market = parsedJson?.currentMarket ? parsedJson?.currentMarket : markets.length > 0 ? markets[0] : "";
-            setCurrentMarket(market);
-            parsedJson?.cableCompanyAddress && setCableCompanyAddress(parsedJson.cableCompanyAddress);
-            if (!parsedJson.smartMeterAddress) {
-                deployAndRegisterSmartMeter();
-            } else {
-                setSmartMeterAddress(parsedJson.smartMeterAddress);
-            }
+        const storedJsonString = localStorage.getItem(currentAccount);
+        // deploys a smart meter and registers it
+        if (!storedJsonString) {
+            deployAndRegisterSmartMeter();
+            return;
+        }
+        const parsedJson = JSON.parse(storedJsonString);
+        const market = parsedJson?.currentMarket
+            ? parsedJson?.currentMarket
+            : markets.length > 0
+            ? markets[0]
+            : "";
+        setCurrentMarket(market);
+        parsedJson?.cableCompanyAddress &&
+            setCableCompanyAddress(parsedJson.cableCompanyAddress);
+        if (!parsedJson.smartMeterAddress) {
+            deployAndRegisterSmartMeter();
+        } else {
+            setSmartMeterAddress(parsedJson.smartMeterAddress);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentAccount]);
 
     // saves data to localstorage when the user changes a setting
@@ -95,6 +102,7 @@ export const useEthereumContext = (): EthereumContextType => {
         if (!currentAccount) return;
         const json = { currentMarket, smartMeterAddress };
         localStorage.setItem(currentAccount, JSON.stringify(json));
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentMarket, smartMeterAddress]);
 
     // CableCompanyApi
