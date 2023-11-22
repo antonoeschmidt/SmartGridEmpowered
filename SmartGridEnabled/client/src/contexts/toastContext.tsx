@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { createContext, useState } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 
@@ -9,20 +9,15 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export type ToastSeverities = "success" | "error" | "warning";
+export type ToastSeverities = "success" | "error" | "warning" | "info";
 
-interface useToastReturn {
+export type ToastContextType = {
     toast: JSX.Element;
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    setProps: React.Dispatch<
-        React.SetStateAction<{
-            text: string;
-            severity: ToastSeverities;
-        }>
-    >;
+    onOpen: () => void;
+    setToastProps: (text: string, severity: ToastSeverities) => void;
 }
 
-export const useToast = (): useToastReturn => {
+export const useToastContext = (): ToastContextType => {
     const [open, setOpen] = useState<boolean>(false);
 
     const [props, setProps] = useState<{
@@ -30,12 +25,18 @@ export const useToast = (): useToastReturn => {
         severity: ToastSeverities;
     }>({ text: "text", severity: "success" });
 
+    const setToastProps = (text: string, severity: ToastSeverities): void => {
+        setProps({text, severity});
+    }
+
     const handleClose = (reason?: string) => {
         if (reason === "clickaway") {
             return;
         }
         setOpen(false);
     };
+
+    const onOpen = () => setOpen(true);
 
     const toast = (
         <Snackbar
@@ -48,5 +49,9 @@ export const useToast = (): useToastReturn => {
         </Snackbar>
     );
 
-    return { toast, setOpen, setProps };
+    return { toast, onOpen, setToastProps };
 };
+
+const ToastContext = createContext<ToastContextType>(null);
+
+export default ToastContext;

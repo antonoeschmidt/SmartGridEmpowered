@@ -88,8 +88,13 @@ const registerSmartMeter = async (
         !smartMeterAddress
     ) {
         alert("Register Smart Meter is missing arguments");
+        console.log('sender', !!sender);
+        console.log('cableCompanyAddress', !!cableCompanyAddress)
+        console.log('!!smartMeterPubKey', !!smartMeterPubKey);
+        console.log('!!smartMeterAddress', !!smartMeterAddress);
         return;
     }
+    
     let contract = cableCompanyInstance(cableCompanyAddress);
     try {
         let res = await contract.methods

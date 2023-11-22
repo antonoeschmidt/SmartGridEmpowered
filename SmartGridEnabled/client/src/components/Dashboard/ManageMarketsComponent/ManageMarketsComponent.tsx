@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import EthereumContext from "../../../contexts/ethereumContext";
 import Button from "../../Shared/Button/Button";
+import ToastContext from "../../../contexts/toastContext";
 
 const ManageMarketsComponent = () => {
     const { currentAccount, setCurrentMarket, deployMarket } =
@@ -8,7 +9,7 @@ const ManageMarketsComponent = () => {
 
     const [newMarketCreated, setNewMarketCreated] = useState(false);
 
-
+    const { setToastProps, onOpen } = useContext(ToastContext);
 
     const newMarket = async () => {
         if (!currentAccount) {
@@ -17,6 +18,8 @@ const ManageMarketsComponent = () => {
         }
         let marketAddress = await deployMarket();
         console.log(marketAddress);
+        setToastProps("Created market!", "success");
+        onOpen();
 
         setNewMarketCreated(true);
         setCurrentMarket(marketAddress);
