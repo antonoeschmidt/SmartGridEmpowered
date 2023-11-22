@@ -1,5 +1,4 @@
 import {
-    Button,
     Dialog,
     DialogActions,
     DialogContent,
@@ -13,6 +12,7 @@ import EthereumContext from "../../../contexts/ethereumContext";
 import { v4 as uuidv4 } from "uuid";
 import { OfferDTO } from "../../../models/models";
 import { useToast } from "../../../hooks/useToast";
+import Button from "../../Shared/Button/Button";
 
 type OfferModalProps = {
     open: boolean;
@@ -64,13 +64,13 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
     };
 
     return (
-        <Dialog open={open} onClose={handleClose} maxWidth={"md"}>
+        <Dialog open={open} onClose={handleClose} maxWidth={"sm"}>
             <DialogTitle>Add offer</DialogTitle>
-            <DialogContent>
+            <DialogContent sx={{ paddingBottom: "0" }}>
                 <DialogContentText>
                     To add an offer, fill out the form
                 </DialogContentText>
-                <Box width="400px" sx={{ display: "flex" }}>
+                <Box width="25em" sx={{ display: "flex" }}>
                     <AddOfferComponent
                         price={price}
                         setPrice={setPrice}
@@ -79,17 +79,18 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
                     />
                 </Box>
             </DialogContent>
-            <DialogActions>
-                <Button onClick={handleClose} variant="contained" color="error">
-                    Cancel
-                </Button>
+            <DialogActions sx={{ justifyContent: "center" }}>
                 <Button
-                    onClick={() => onSubmit()}
-                    variant="contained"
-                    color="primary"
-                >
-                    Add offer
-                </Button>
+                    text="Cancel"
+                    onClick={handleClose}
+                    sx={{
+                        backgroundColor: "red",
+                        "&:hover": {
+                            backgroundColor: "#880b0b",
+                        },
+                    }}
+                />
+                <Button text="Add offer" onClick={onSubmit} />
             </DialogActions>
             {toast}
         </Dialog>

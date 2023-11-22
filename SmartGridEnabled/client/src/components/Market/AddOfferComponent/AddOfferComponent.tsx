@@ -21,13 +21,11 @@ const AddOfferComponent: FC<AddOfferComponentProps> = ({
                 <TextField
                     label="Amount (Wh)"
                     variant="outlined"
-                    value={amount}
                     onChange={(e) => setAmount(Number(e.target.value))}
                 />
                 <TextField
                     label="Price (€ cents)"
                     variant="outlined"
-                    value={price}
                     onChange={(e) => setPrice(Number(e.target.value))}
                 />
             </div>

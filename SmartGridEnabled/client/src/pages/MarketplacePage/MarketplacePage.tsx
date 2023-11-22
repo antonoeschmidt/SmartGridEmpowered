@@ -79,84 +79,75 @@ const MarketplacePage: FC = () => {
         setOpen(false);
     };
 
+    if (!currentMarket) {
+        return (
+            <div className={styles.container}>
+                Please choose a Market to view the Marketplace
+            </div>
+        );
+    }
+
     return (
         <div className={styles.container}>
             <div className={styles.pageTop}>
                 <h1>Marketplace</h1>
-                {currentMarket && (
-                    <div
-                        style={{
-                            width: "80px",
-                            height: "80px",
-                            marginLeft: "auto",
-                        }}
-                    >
-                        <AddButton onClick={() => handleClickOpen()} />
+                <div
+                    style={{
+                        width: "80px",
+                        height: "80px",
+                        marginLeft: "auto",
+                    }}
+                >
+                    <AddButton onClick={() => handleClickOpen()} />
+                </div>
+            </div>
+
+            <div className={styles.row}>
+                <SuggestedPriceComponent suggestedPrice={suggestedPrice} />
+            </div>
+            {offers && (
+                <>
+                    <h3>Your offers</h3>
+                    <div className={styles.row}>
+                        {offers
+                            .filter((offer) => offer.owner === currentAccount)
+                            .map((offer, index) => (
+                                <OfferComponent
+                                    key={index}
+                                    offer={offer}
+                                    ownOffer={true}
+                                    onClickButton={removeOffer()}
+                                />
+                            ))}
                     </div>
+                </>
+            )}
+            {offers && (
+                <>
+                    <h3>Market offers</h3>
+                    <div className={styles.row}>
+                        {offers
+                            .filter((offer) => offer.owner !== currentAccount)
+                            .map((offer, index) => (
+                                <OfferComponent
+                                    key={index}
+                                    offer={offer}
+                                    onClickButton={handleBuyOffer()}
+                                />
+                            ))}
+                    </div>
+                </>
+            )}
+            <div className={styles.item} style={{ maxWidth: "100vh" }}>
+                <h3>Supply Contracts</h3>
+                {supplyContractsDTO && (
+                    <DataTable
+                        rows={supplyContractsDTO}
+                        columns={supplyContractColumns}
+                    />
                 )}
             </div>
-            {currentMarket ? (
-                <>
-                    <div className={styles.row}>
-                        <SuggestedPriceComponent
-                            suggestedPrice={suggestedPrice}
-                        />
-                    </div>
-                    {offers?.filter((offer) => offer.owner === currentAccount)
-                        .length > 0 && (
-                        <>
-                            <h3>Your offers</h3>
-                            <div className={styles.row}>
-                                {offers
-                                    .filter(
-                                        (offer) =>
-                                            offer.owner === currentAccount
-                                    )
-                                    .map((offer, index) => (
-                                        <OfferComponent
-                                            key={index}
-                                            offer={offer}
-                                            ownOffer={true}
-                                            onClickButton={removeOffer()}
-                                        />
-                                    ))}
-                            </div>
-                        </>
-                    )}
-                    {offers?.filter((offer) => offer.owner !== currentAccount)
-                        .length > 0 && (
-                        <>
-                            <h3>Market offers</h3>
-                            <div className={styles.row}>
-                                {offers
-                                    .filter(
-                                        (offer) =>
-                                            offer.owner !== currentAccount
-                                    )
-                                    .map((offer, index) => (
-                                        <OfferComponent
-                                            key={index}
-                                            offer={offer}
-                                            onClickButton={handleBuyOffer()}
-                                        />
-                                    ))}
-                            </div>
-                        </>
-                    )}
-                    <div className={styles.item} style={{ maxWidth: "100vh" }}>
-                        <h3>Supply Contracts</h3>
-                        {supplyContractsDTO && (
-                            <DataTable
-                                rows={supplyContractsDTO}
-                                columns={supplyContractColumns}
-                            />
-                        )}
-                    </div>
-                    <OfferModal open={open} handleClose={handleClose} />
-                </>
-            ) : (
-                <> Please choose a Market to view the Marketplace</>
-            )}
+            <OfferModal open={open} handleClose={handleClose} />
         </div>
     );
 };
