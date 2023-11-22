@@ -9,17 +9,12 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
 });
 
-export type ToastSeverities = "success" | "error" | "warning";
+export type ToastSeverities = "success" | "error" | "warning" | "info";
 
 export type ToastContextType = {
     toast: JSX.Element;
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    setProps: React.Dispatch<
-        React.SetStateAction<{
-            text: string;
-            severity: ToastSeverities;
-        }>
-    >;
+    onOpen: () => void;
+    setToastProps: (text: string, severity: ToastSeverities) => void;
 }
 
 export const useToastContext = (): ToastContextType => {
@@ -30,12 +25,18 @@ export const useToastContext = (): ToastContextType => {
         severity: ToastSeverities;
     }>({ text: "text", severity: "success" });
 
+    const setToastProps = (text: string, severity: ToastSeverities): void => {
+        setProps({text, severity});
+    }
+
     const handleClose = (reason?: string) => {
         if (reason === "clickaway") {
             return;
         }
         setOpen(false);
     };
+
+    const onOpen = () => setOpen(true);
 
     const toast = (
         <Snackbar
@@ -48,7 +49,7 @@ export const useToastContext = (): ToastContextType => {
         </Snackbar>
     );
 
-    return { toast, setOpen, setProps };
+    return { toast, onOpen, setToastProps };
 };
 
 const ToastContext = createContext<ToastContextType>(null);

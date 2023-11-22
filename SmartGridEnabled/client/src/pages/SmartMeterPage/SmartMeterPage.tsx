@@ -3,6 +3,7 @@ import styles from "./SmartMeterPage.module.css";
 import { TextField } from "@mui/material";
 import EthereumContext from "../../contexts/ethereumContext";
 import Button from "../../components/Shared/Button/Button";
+import ToastContext from "../../contexts/toastContext";
 
 const SmartMeterPage = () => {
     const [consumption, setConsumption] = useState<number>();
@@ -11,6 +12,8 @@ const SmartMeterPage = () => {
     const { smartMeterAddress, getBatteryCharge, createSmartMeterLog } =
         useContext(EthereumContext);
 
+    const { setToastProps, onOpen} = useContext(ToastContext);
+
     const createLogClick = async () => {
         if (!consumption || !production || !smartMeterAddress) {
             alert("No energy data or smart meter selected");
@@ -18,11 +21,20 @@ const SmartMeterPage = () => {
         }
         let res = await createSmartMeterLog(consumption, production);
         console.log(res);
+        if (res.status < 299) {
+            setToastProps("Log created", "success");
+        } else {
+            setToastProps("Something went wrong", "error");
+        }
+        onOpen();
+
     };
 
     const getBatteryLevel = async () => {
         let batteryLevel = await getBatteryCharge();
         console.log(batteryLevel);
+        setToastProps(`battery level is ${batteryLevel}`, "info");
+        onOpen();
     };
 
     return (
