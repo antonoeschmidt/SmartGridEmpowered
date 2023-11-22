@@ -1,0 +1,27 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    width: 20em;
+    height: 20em;
+    border-radius: 20px;
+    padding: 1em;
+}
+
+.lightTextItalic {
+    font-style: italic;
+    color: #888;
+    font-size: 14px;
+    font-weight: normal;
+}
+
+.header {
+    font-size: 40px; 
+    font-weight: 500;
+}
+
+.button {
+    display: flex;
+    flex-grow: 1;
+    justify-content: center;
+}
