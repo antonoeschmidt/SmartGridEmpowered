@@ -53,6 +53,8 @@ const MarketplacePage = () => {
     }, []);
 
     const handleBuyOffer = () => async (id: string) => {
+        console.log("called handleBuyOffer");
+
         const address = await buyOffer(id);
         const newSC = await getSupplyContractInfo(address);
         setSupplyContracts((prevState) => [...prevState, address]);

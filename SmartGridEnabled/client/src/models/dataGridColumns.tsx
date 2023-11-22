@@ -62,7 +62,7 @@ export const buyOfferColumns = (
             return (
                 <Button
                     disabled={!params.row.active}
-                    onClick={buyOnClick(params.rowNode.id as string)}
+                    onClick={() => buyOnClick(params.rowNode.id as string)}
                     text="Buy"
                 />
             );
