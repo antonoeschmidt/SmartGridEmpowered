@@ -64,14 +64,17 @@ export const useEthereumContext = (): EthereumContextType => {
 
     // triggers when the user changes account.
     useEffect(() => {
-        if (!currentAccount) return;
+        if (!currentAccount || !currentMarket) return;
 
         const deployAndRegisterSmartMeter = async () => {
-            const smartMeterAddress = await deploySmartMeter(currentAccount);
-            setSmartMeterAddress(smartMeterAddress);
+            const deployedSmartMeterAddress = await deploySmartMeter(
+                currentAccount
+            );
+            setSmartMeterAddress(deployedSmartMeterAddress);
             if (!cableCompanyAddress) return;
-            await setSmartMeterMarketAddress();
-            await registerSmartMeter(smartMeterAddress, currentAccount);
+
+            await setSmartMeterMarketAddress(deployedSmartMeterAddress);
+            await registerSmartMeter(deployedSmartMeterAddress, currentAccount);
         };
         // i need to define a function if I want it to be async.
         const storedJsonString = localStorage.getItem(currentAccount);
@@ -152,10 +155,14 @@ export const useEthereumContext = (): EthereumContextType => {
         return await smartMeterApi.getBatteryCharge(smartMeterAddress);
     };
 
-    const setSmartMeterMarketAddress = async () => {
+    const setSmartMeterMarketAddress = async (
+        parsedSmartMeterAddress?: string
+    ) => {
         return await smartMeterApi.setCurrentMarketAddress(
             currentAccount,
-            smartMeterAddress,
+            parsedSmartMeterAddress
+                ? parsedSmartMeterAddress
+                : smartMeterAddress,
             currentMarket
         );
     };
