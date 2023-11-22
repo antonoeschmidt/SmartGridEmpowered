@@ -90,6 +90,7 @@ const registerSmartMeter = async (
         alert("Register Smart Meter is missing arguments");
         return;
     }
+    
     let contract = cableCompanyInstance(cableCompanyAddress);
     try {
         let res = await contract.methods

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { createContext, useState } from "react";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert, { AlertProps } from "@mui/material/Alert";
 
@@ -11,7 +11,7 @@ const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert(
 
 export type ToastSeverities = "success" | "error" | "warning";
 
-interface useToastReturn {
+export type ToastContextType = {
     toast: JSX.Element;
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     setProps: React.Dispatch<
@@ -22,7 +22,7 @@ interface useToastReturn {
     >;
 }
 
-export const useToastContext = (): useToastReturn => {
+export const useToastContext = (): ToastContextType => {
     const [open, setOpen] = useState<boolean>(false);
 
     const [props, setProps] = useState<{
@@ -50,3 +50,7 @@ export const useToastContext = (): useToastReturn => {
 
     return { toast, setOpen, setProps };
 };
+
+const ToastContext = createContext<ToastContextType>(null);
+
+export default ToastContext;

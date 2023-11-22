@@ -12,8 +12,8 @@ import { FC, useContext, useState } from "react";
 import EthereumContext from "../../../contexts/ethereumContext";
 import { v4 as uuidv4 } from "uuid";
 import { OfferDTO } from "../../../models/models";
-import { useToast } from "../../../hooks/useToast";
-
+import ToastContext from "../../../contexts/toastContext";
+    
 type OfferModalProps = {
     open: boolean;
     handleClose: () => void;
@@ -25,7 +25,7 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
     const [price, setPrice] = useState<number>(0);
     const [amount, setAmount] = useState<number>(0);
 
-    const { setProps, setOpen, toast } = useToast();
+    const { setProps, setOpen } = useContext(ToastContext);
 
     const onSubmit = () => {
         if (!currentAccount) {
@@ -91,7 +91,6 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
                     Add offer
                 </Button>
             </DialogActions>
-            {toast}
         </Dialog>
     );
 };
