@@ -1,4 +1,3 @@
-import React from "react";
 import StepContext, { useStepContextValue } from "../../contexts/stepContext";
 import OnboardingPageBody from "./OnboardingPage.body";
 

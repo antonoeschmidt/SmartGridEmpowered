@@ -11,7 +11,14 @@ const PickMarketComponent = () => {
         <>
             <Select
                 className={styles.pickMarketSelector}
-                value={currentMarket ? currentMarket.toLowerCase() : ""}
+                defaultValue=""
+                value={
+                    markets
+                        ? currentMarket
+                            ? currentMarket.toLowerCase()
+                            : ""
+                        : ""
+                }
                 label="Market"
                 onChange={(e) => {
                     setCurrentMarket(e.target.value);

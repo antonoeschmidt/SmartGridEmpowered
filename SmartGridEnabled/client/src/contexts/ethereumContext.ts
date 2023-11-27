@@ -4,6 +4,7 @@ import { cableCompanyApi } from "../apis/cableCompanyApi";
 import { marketApi } from "../apis/marketApi";
 import { smartMeterApi } from "../apis/smartMeterApi";
 import { supplyContractApi } from "../apis/supplyContractApi";
+import { getAccounts } from "../apis/web3";
 
 export type EthereumContextType = {
     accounts: string[];
@@ -62,25 +63,45 @@ export const useEthereumContext = (): EthereumContextType => {
     const [cableCompanyAddress, setCableCompanyAddress] = useState<string>();
     const [smartMeterAddress, setSmartMeterAddress] = useState<string>();
 
+    const deployAndRegisterSmartMeter = async () => {
+        const deployedSmartMeterAddress = await deploySmartMeter(
+            currentAccount
+        );
+        console.log("deployedSmartMeterAdress", deployedSmartMeterAddress);
+        setSmartMeterAddress(deployedSmartMeterAddress);
+        console.log("before cable company address");
+        if (!cableCompanyAddress) return;
+        console.log("after cable company address");
+        await setSmartMeterMarketAddress(deployedSmartMeterAddress);
+        await registerSmartMeter(deployedSmartMeterAddress, currentAccount);
+    };
+
+    // saves the new admin account to local storage
+    useEffect(() => {
+        if (!adminAccount) return;
+        localStorage.setItem("adminAccount", adminAccount);
+    }, [adminAccount]);
+    // retrieves the admin account on first load.
+    useEffect(() => {
+        const storedAdminAccount = localStorage.getItem("adminAccount");
+        setAdminAccount(storedAdminAccount);
+
+        getAccounts().then((accounts) => {
+            if (accounts) {
+                setAccounts(accounts);
+                if (!currentAccount) setCurrentAccount(accounts[0]);
+            }
+        });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     // triggers when the user changes account.
     useEffect(() => {
-        if (!currentAccount || !currentMarket) return;
-
-        const deployAndRegisterSmartMeter = async () => {
-            const deployedSmartMeterAddress = await deploySmartMeter(
-                currentAccount
-            );
-            setSmartMeterAddress(deployedSmartMeterAddress);
-            if (!cableCompanyAddress) return;
-
-            await setSmartMeterMarketAddress(deployedSmartMeterAddress);
-            await registerSmartMeter(deployedSmartMeterAddress, currentAccount);
-        };
-        // i need to define a function if I want it to be async.
+        if (!currentAccount) return;
         const storedJsonString = localStorage.getItem(currentAccount);
-        // deploys a smart meter and registers it
+        // by setting the smart meter to empty we initialize making a new one, but the other use effect only triggers if currentMarket is set.
         if (!storedJsonString) {
-            deployAndRegisterSmartMeter();
+            setSmartMeterAddress("");
             return;
         }
         const parsedJson = JSON.parse(storedJsonString);
@@ -92,11 +113,10 @@ export const useEthereumContext = (): EthereumContextType => {
         setCurrentMarket(market);
         parsedJson?.cableCompanyAddress &&
             setCableCompanyAddress(parsedJson.cableCompanyAddress);
-        if (!parsedJson.smartMeterAddress) {
-            deployAndRegisterSmartMeter();
-        } else {
-            setSmartMeterAddress(parsedJson.smartMeterAddress);
-        }
+        parsedJson.smartMeterAddress
+            ? setSmartMeterAddress(parsedJson.smartMeterAddress)
+            : setSmartMeterAddress("");
+
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentAccount]);
 
@@ -107,6 +127,13 @@ export const useEthereumContext = (): EthereumContextType => {
         localStorage.setItem(currentAccount, JSON.stringify(json));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentMarket, smartMeterAddress]);
+
+    useEffect(() => {
+        if (smartMeterAddress || !currentMarket || !currentAccount) return;
+
+        deployAndRegisterSmartMeter();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [currentMarket, currentAccount, smartMeterAddress]);
 
     // CableCompanyApi
     const deployCableCompany = async () => {
@@ -152,6 +179,10 @@ export const useEthereumContext = (): EthereumContextType => {
     };
 
     const getBatteryCharge = async () => {
+        if (!smartMeterAddress) {
+            console.log("get battery charge, no smartmeter address");
+            return;
+        }
         return await smartMeterApi.getBatteryCharge(smartMeterAddress);
     };
 
@@ -183,6 +214,11 @@ export const useEthereumContext = (): EthereumContextType => {
         smartMeterPubKey: string,
         smartMeterAddress: string
     ) => {
+        console.log("setting smart meter address");
+        console.log(smartMeterPubKey);
+        console.log(smartMeterAddress);
+        console.log(adminAccount);
+        console.log(cableCompanyAddress);
         return await smartMeterApi.registerSmartMeter(
             adminAccount,
             cableCompanyAddress,

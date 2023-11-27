@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { TextField } from "@mui/material";
 import EthereumContext from "../../../contexts/ethereumContext";
 import Button from "../../Shared/Button/Button";
+import ToastContext from "../../../contexts/toastContext";
 
 const IsRegisteredSmartMeterComponent = () => {
     const {
@@ -21,10 +22,14 @@ const IsRegisteredSmartMeterComponent = () => {
         setSmartMeterAddress(contextSmartMeterAddress);
     }, [contextSmartMeterAddress]);
 
+    const { setToastProps, onOpen} = useContext(ToastContext);
+
     const isKeyRegistered = async () => {
         if (!currentAccount) return;
         let res = await isRegisteredKey(smartMeterPubKey, smartMeterAddress);
         console.log(res);
+        setToastProps(`Response was: ${res}`, "info");
+        onOpen();
     };
 
     return (

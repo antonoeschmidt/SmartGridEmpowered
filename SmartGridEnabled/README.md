@@ -18,6 +18,6 @@ npm start
 
 
 ## IF you are using wsl
-Go to wsl, type ganache-cli to run instance
+Go to wsl, type ganache-cli -p 7545 to run instance
 Go to wsl, this repository -> truffle deploy
 and run the frontend (also form wsl) -> npm i & npm run start

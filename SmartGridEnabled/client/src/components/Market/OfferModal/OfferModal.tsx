@@ -11,9 +11,10 @@ import { FC, useContext, useState } from "react";
 import EthereumContext from "../../../contexts/ethereumContext";
 import { v4 as uuidv4 } from "uuid";
 import { OfferDTO } from "../../../models/models";
-import { useToast } from "../../../hooks/useToast";
 import Button from "../../Shared/Button/Button";
 
+import ToastContext from "../../../contexts/toastContext";
+    
 type OfferModalProps = {
     open: boolean;
     handleClose: () => void;
@@ -25,7 +26,7 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
     const [price, setPrice] = useState<number>(0);
     const [amount, setAmount] = useState<number>(0);
 
-    const { setProps, setOpen, toast } = useToast();
+    const { setToastProps, onOpen } = useContext(ToastContext);
 
     const onSubmit = () => {
         if (!currentAccount) {
@@ -47,18 +48,17 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
         };
         addOffer(newOffer).then((offer) => {
             if (!offer) {
-                setProps({
-                    text: "Not enough stored energy to make offer",
-                    severity: "error",
-                });
-                setOpen(true);
+                setToastProps(
+                    "Not enough stored energy to make offer",
+                    "error"
+                );
+                onOpen();
                 return;
             }
-            setProps({ text: "Offer was created!", severity: "success" });
-            setOpen(true);
+            setToastProps("Offer was created!", "success");
+            onOpen();
             console.log(offer);
             setOffers((prev) => [...prev, offer]);
-
             handleClose();
         });
     };
@@ -90,9 +90,8 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
                         },
                     }}
                 />
-                <Button text="Add offer" onClick={onSubmit} />
+                <Button text="Add offer" onClick={() => onSubmit()} />
             </DialogActions>
-            {toast}
         </Dialog>
     );
 };
