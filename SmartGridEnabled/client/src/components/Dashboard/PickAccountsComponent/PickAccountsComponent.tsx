@@ -15,8 +15,8 @@ const PickAccountsComponent = ({ type }: { type: string }) => {
     } = useContext(EthereumContext);
 
     useEffect(() => {
-        if (accounts) return;
-
+        if (accounts.length > 0) return;
+        console.log("pick accounts useEffect");
         getAccounts().then((accounts) => {
             if (accounts) {
                 setAccounts(accounts);
@@ -34,6 +34,7 @@ const PickAccountsComponent = ({ type }: { type: string }) => {
                 label="Age"
                 onChange={(e) => {
                     if (type === "admin") {
+                        console.log("set admin account");
                         setAdminAccount(e.target.value);
                     } else {
                         setCurrentAccount(e.target.value);

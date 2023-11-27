@@ -27,7 +27,6 @@ const SmartMeterPage = () => {
             setToastProps("Something went wrong", "error");
         }
         onOpen();
-
     };
 
     const getBatteryLevel = async () => {

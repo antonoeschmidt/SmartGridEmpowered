@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import { OfferDTO, SupplyContractDTO } from "../models/models";
 import { cableCompanyApi } from "../apis/cableCompanyApi";
 import { marketApi } from "../apis/marketApi";
@@ -52,8 +52,9 @@ export type EthereumContextType = {
     ) => Promise<SupplyContractDTO>;
 };
 
+
 export const useEthereumContext = (): EthereumContextType => {
-    const [accounts, setAccounts] = useState<string[]>();
+    const [accounts, setAccounts] = useState<string[]>([]);
     const [currentAccount, setCurrentAccount] = useState<string>("");
     const [adminAccount, setAdminAccount] = useState<string>("");
     const [currentMarket, setCurrentMarket] = useState<string>("");
@@ -63,17 +64,20 @@ export const useEthereumContext = (): EthereumContextType => {
     const [cableCompanyAddress, setCableCompanyAddress] = useState<string>();
     const [smartMeterAddress, setSmartMeterAddress] = useState<string>();
 
-    const deployAndRegisterSmartMeter = async () => {
+    const deployAndRegisterSmartMeter = async (account: string, market: string, admin: string) => {
+        let currAccount = account ?? currentAccount;
+        if (!currAccount) return;
+        console.log('currAccount', currAccount)
         const deployedSmartMeterAddress = await deploySmartMeter(
-            currentAccount
+            currAccount
         );
         console.log('deployedSmartMeterAdress', deployedSmartMeterAddress);
         setSmartMeterAddress(deployedSmartMeterAddress);
         console.log("before cable company address");
         if (!cableCompanyAddress) return;
         console.log("after cable company address");
-        await setSmartMeterMarketAddress(deployedSmartMeterAddress);
-        await registerSmartMeter(deployedSmartMeterAddress, currentAccount);
+        await setSmartMeterMarketAddress(deployedSmartMeterAddress, market);
+        await registerSmartMeter(currAccount, deployedSmartMeterAddress);
     };
 
     // saves the new admin account to local storage
@@ -81,27 +85,21 @@ export const useEthereumContext = (): EthereumContextType => {
         if (!adminAccount) return;
         localStorage.setItem("adminAccount", adminAccount);
     }, [adminAccount]);
+
     // retrieves the admin account on first load.
     useEffect(() => {
         const storedAdminAccount = localStorage.getItem("adminAccount");
+        if (!storedAdminAccount) return;
         setAdminAccount(storedAdminAccount);
-
-        getAccounts().then((accounts) => {
-            if (accounts) {
-                setAccounts(accounts);
-                if (!currentAccount) setCurrentAccount(accounts[0]);
-            }
-        });
     }, []);
 
-    // triggers when the user changes account.
-    useEffect(() => {
-        if (!currentAccount) return;        
-        const storedJsonString = localStorage.getItem(currentAccount);
+
+    const loadFromLocalStorage: any = (account: string) => {
+        const storedJsonString = localStorage.getItem(account);
         // by setting the smart meter to empty we initialize making a new one, but the other use effect only triggers if currentMarket is set.
         if (!storedJsonString) {
             setSmartMeterAddress("");
-            return;
+            return {};
         }
         const parsedJson = JSON.parse(storedJsonString);
         const market = parsedJson?.currentMarket
@@ -109,29 +107,42 @@ export const useEthereumContext = (): EthereumContextType => {
             : markets.length > 0
             ? markets[0]
             : "";
-        setCurrentMarket(market);
-        parsedJson?.cableCompanyAddress &&
-            setCableCompanyAddress(parsedJson.cableCompanyAddress);
-        parsedJson.smartMeterAddress ? setSmartMeterAddress(parsedJson.smartMeterAddress) : setSmartMeterAddress("");
-
-        
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentAccount]);
+        console.log('parsedJson.smartMeterAddress', parsedJson.smartMeterAddress)
+        const smartMeterAddress =  parsedJson.smartMeterAddress ? parsedJson.smartMeterAddress : "";
+        return { market, smartMeterAddress, cableCompanyAddress: parsedJson?.cableCompanyAddress ?? "" }
+    }
 
     // saves data to localstorage when the user changes a setting
     useEffect(() => {
         if (!currentAccount) return;
-        const json = { currentMarket, smartMeterAddress };
+        const json = { currentMarket, smartMeterAddress, cableCompanyAddress };
         localStorage.setItem(currentAccount, JSON.stringify(json));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [currentMarket, smartMeterAddress]);
 
-    useEffect(() => {
-        if (smartMeterAddress || !currentMarket || !currentAccount) return;
+    const changeUser = async(account: string) => {
+        if (!cableCompanyAddress) return;
+        let admin = adminAccount;
+        if (!admin) {
+            if (accounts.length < 1) return;
+            setAdminAccount(account[accounts.length - 1]);
+            admin = accounts[accounts.length - 1];
+        }
 
-        deployAndRegisterSmartMeter();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentMarket, currentAccount, smartMeterAddress]);
+        setCurrentAccount(account);
+        const loadedData = loadFromLocalStorage(account);
+        if (loadedData?.cableCompanyAddress && cableCompanyAddress) {
+            setCableCompanyAddress(loadedData.cableCompanyAddress);
+        }
+        let marketAddress = loadedData.market;
+        if (!marketAddress) {
+            marketAddress = await deployMarket(loadedData?.cableCompanyAddress, admin);
+        }
+        setCurrentMarket(marketAddress);
+        if (!loadedData.smartMeterAddress) {
+            deployAndRegisterSmartMeter(account, marketAddress, admin);
+        }
+    }
 
     // CableCompanyApi
     const deployCableCompany = async () => {
@@ -150,8 +161,8 @@ export const useEthereumContext = (): EthereumContextType => {
     };
 
     // MarketApi
-    const deployMarket = async () => {
-        return await marketApi.deployMarket(adminAccount, cableCompanyAddress);
+    const deployMarket = async (cableCompany?: string, admin?: string) => {
+        return await marketApi.deployMarket(admin ?? adminAccount, cableCompany ?? cableCompanyAddress);
     };
 
     const addOffer = async (offer: OfferDTO) => {
@@ -172,8 +183,8 @@ export const useEthereumContext = (): EthereumContextType => {
     };
 
     // SmartMeterApi
-    const deploySmartMeter = async (id: string) => {
-        return await smartMeterApi.deploySmartMeter(currentAccount);
+    const deploySmartMeter = async (acc?: string) => {
+        return await smartMeterApi.deploySmartMeter(acc ?? currentAccount);
     };
 
     const getBatteryCharge = async () => {
@@ -185,14 +196,14 @@ export const useEthereumContext = (): EthereumContextType => {
     };
 
     const setSmartMeterMarketAddress = async (
-        parsedSmartMeterAddress?: string
+        parsedSmartMeterAddress?: string,
+        market?: string
     ) => {
         return await smartMeterApi.setCurrentMarketAddress(
             currentAccount,
             parsedSmartMeterAddress
-                ? parsedSmartMeterAddress
-                : smartMeterAddress,
-            currentMarket
+                ?? smartMeterAddress,
+            market ?? currentMarket
         );
     };
 
@@ -209,14 +220,14 @@ export const useEthereumContext = (): EthereumContextType => {
     };
 
     const registerSmartMeter = async (
-        smartMeterPubKey: string,
-        smartMeterAddress: string
+       smartMeterPubKey: string,
+        smartMeterAddress: string,
     ) => {
-        console.log("setting smart meter address");
-        console.log(smartMeterPubKey);
-        console.log(smartMeterAddress);
-        console.log(adminAccount);
-        console.log(cableCompanyAddress);
+
+        console.log("register smart meter: ", adminAccount,
+         cableCompanyAddress,
+        smartMeterPubKey,
+        smartMeterAddress);
         return await smartMeterApi.registerSmartMeter(
             adminAccount,
             cableCompanyAddress,
@@ -226,7 +237,7 @@ export const useEthereumContext = (): EthereumContextType => {
     };
 
     // SupplyContractApi
-    const getSupplyContracts = async () => {
+    const getSupplyContracts = async() => {
         return await supplyContractApi.getSupplyContracts(
             supplyContracts,
             currentAccount
@@ -244,7 +255,7 @@ export const useEthereumContext = (): EthereumContextType => {
         accounts,
         setAccounts,
         currentAccount,
-        setCurrentAccount,
+        setCurrentAccount: changeUser,
         adminAccount,
         setAdminAccount,
         currentMarket,
