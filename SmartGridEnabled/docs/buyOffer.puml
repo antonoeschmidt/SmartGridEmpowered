@@ -1,0 +1,20 @@
+@startuml BuyOffer
+actor User
+participant Market
+participant SupplyContract
+
+autonumber
+
+User -> Market ++: buyOffer(id)
+Market -> Market: Check validity
+note over Market #WhiteSmoke
+expiration > now
+owner != buyer
+end note
+
+Market -> SupplyContract: Deploy new SupplyContract
+
+SupplyContract --> Market --:
+
+Market --> User: SupplyContract created!
+@enduml
