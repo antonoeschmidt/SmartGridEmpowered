@@ -3,25 +3,22 @@ import EthereumContext from "../../../contexts/ethereumContext";
 import Button from "../../Shared/Button/Button";
 
 const ManageMarketsComponent = () => {
-    const { currentAccount, setCurrentMarket, deployMarket } =
+    const { currentAccount, setCurrentMarket, deployMarket, setMarkets } =
         useContext(EthereumContext);
 
     const [newMarketCreated, setNewMarketCreated] = useState(false);
-
-
 
     const newMarket = async () => {
         if (!currentAccount) {
             alert("No account or cable company selected");
             return;
         }
-        let marketAddress = await deployMarket();
-        console.log(marketAddress);
-
-        setNewMarketCreated(true);
+        const marketAddress = await deployMarket();
+        console.log("New market created:", marketAddress);
+        setMarkets((prevState) => [...prevState, marketAddress]);
         setCurrentMarket(marketAddress);
+        setNewMarketCreated(true);
     };
-
 
     return (
         <>

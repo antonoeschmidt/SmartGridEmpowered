@@ -15,7 +15,7 @@ export type EthereumContextType = {
     currentMarket: string;
     setCurrentMarket: (address: string) => void;
     markets: string[];
-    setMarkets: (markets: string[]) => void;
+    setMarkets: React.Dispatch<React.SetStateAction<string[]>>;
     supplyContracts: string[];
     setSupplyContracts: React.Dispatch<React.SetStateAction<string[]>>;
     offers: OfferDTO[];

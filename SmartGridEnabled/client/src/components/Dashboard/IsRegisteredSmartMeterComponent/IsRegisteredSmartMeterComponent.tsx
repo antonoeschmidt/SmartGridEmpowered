@@ -4,7 +4,11 @@ import EthereumContext from "../../../contexts/ethereumContext";
 import Button from "../../Shared/Button/Button";
 
 const IsRegisteredSmartMeterComponent = () => {
-    const { currentAccount, isRegisteredKey, smartMeterAddress: contextSmartMeterAddress } = useContext(EthereumContext);
+    const {
+        currentAccount,
+        isRegisteredKey,
+        smartMeterAddress: contextSmartMeterAddress,
+    } = useContext(EthereumContext);
 
     const [smartMeterPubKey, setSmartMeterPubKey] = useState<string>("");
     const [smartMeterAddress, setSmartMeterAddress] = useState<string>("");
@@ -29,14 +33,14 @@ const IsRegisteredSmartMeterComponent = () => {
                 id="outlined-basic"
                 label="Public Key"
                 variant="outlined"
-                value={smartMeterPubKey}
+                value={smartMeterPubKey ? smartMeterPubKey : ""}
                 onChange={(e) => setSmartMeterPubKey(e.target.value)}
             />
             <TextField
                 id="outlined-basic"
                 label="Address"
                 variant="outlined"
-                value={smartMeterAddress}
+                value={smartMeterAddress ? smartMeterAddress : ""}
                 onChange={(e) => setSmartMeterAddress(e.target.value)}
             />
 
