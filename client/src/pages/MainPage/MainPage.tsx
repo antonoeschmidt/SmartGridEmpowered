@@ -59,7 +59,7 @@ const MainPage = () => {
 
     useEffect(() => {
         if (!currentMarket && markets) setCurrentMarket(markets[0]);
-    }, [currentMarket, markets]);
+    }, [currentMarket, markets, setCurrentMarket]);
 
     useEffect(() => {
         console.log("called mainPage useeffect");
