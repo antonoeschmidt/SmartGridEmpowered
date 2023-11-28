@@ -16,7 +16,7 @@ const PickAccountsComponent = ({ type }: { type: string }) => {
         if (!accounts) return;
         if (type === "admin") setAdminAccount(accounts[0]);
         if (!currentAccount) setCurrentAccount(accounts[1]);
-    }, [accounts, currentAccount, setAdminAccount, setCurrentAccount, type]);
+    }, [accounts, currentAccount, setAdminAccount, setCurrentAccount]);
 
     return (
         <>
