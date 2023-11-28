@@ -65,10 +65,10 @@ const OnboardingContentComponent = ({
         console.log("onboarding register smart meter", res);
 
         // Create New Market
-        if (!markets) {
+        if (markets?.length < 1) {
             const marketAddress = await deployMarket();
             setCurrentMarket(marketAddress);
-            setMarkets(prev => [...prev, marketAddress]);
+            setMarkets((prev) => [...prev, marketAddress]);
         }
 
         handleChangeStep(Steps.Step3);

@@ -23,7 +23,8 @@ const PickAccountsComponent = ({ type }: { type: string }) => {
             <Select
                 className={styles.pickAccountSelector}
                 value={type === "admin" ? adminAccount : currentAccount}
-                label="Age"
+                label="Account"
+                defaultValue=""
                 onChange={(e) => {
                     if (type === "admin") {
                         console.log("set admin account");

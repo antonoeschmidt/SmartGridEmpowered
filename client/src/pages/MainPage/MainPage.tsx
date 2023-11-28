@@ -34,8 +34,6 @@ const MainPage = () => {
                         cableCompanyAddresses,
                     }) => {
                         console.log("Scan completed.");
-                        setMarkets(marketAddresses);
-                        setSupplyContracts(supplyContractAddresses);
                         console.log("marketAddresses", marketAddresses);
                         console.log(
                             "supplyContractAddresses",
@@ -45,6 +43,8 @@ const MainPage = () => {
                             "cableCompanyAddresses",
                             cableCompanyAddresses
                         );
+                        setMarkets(marketAddresses);
+                        setSupplyContracts(supplyContractAddresses);
                         if (cableCompanyAddresses.length > 0) {
                             setCableCompanyAddress(cableCompanyAddresses[0]);
                         }
