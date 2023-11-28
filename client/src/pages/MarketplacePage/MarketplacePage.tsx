@@ -21,13 +21,19 @@ const MarketplacePage: FC = () => {
         getOffers,
         getSupplyContracts,
         getSupplyContractInfo,
-        supplyContractAddresses: supplyContracts
+        supplyContractAddresses: supplyContracts,
+        removeOffer
     } = useContext(EthereumContext);
+
+    const roundToDecimalPlaces = (number, decimalPlaces) => {
+        const factor = 10 ** decimalPlaces;
+        return Math.round(number * factor) / factor;
+      };
 
     const [supplyContractsDTO, setSupplyContractsDTO] =
         useState<SupplyContractDTO[]>();
 
-    const [suggestedPrice, setSuggestedPrice] = useState<string>();
+    const [suggestedPrice, setSuggestedPrice] = useState<number>(roundToDecimalPlaces(Math.random(), 3));
 
     useEffect(() => {
         if (offers || !currentMarket) return;
@@ -47,19 +53,28 @@ const MarketplacePage: FC = () => {
             .catch((err) => console.error(err));
     }, [getSupplyContracts, setSupplyContractAddresses, supplyContracts.length, currentAccount]);
 
+    useEffect(() => {
+        const changeSuggestedPrice = () => {
+            const change = ((Math.random() - 0.5) * 0.05);
+            setSuggestedPrice(prevPrice => roundToDecimalPlaces((prevPrice + change), 3));
+        }
+        const intervalId = setInterval(changeSuggestedPrice, 5000);
+        return () => clearInterval(intervalId)
+    }, []);
+
+
     const handleBuyOffer = () => async (id: string) => {
         console.log("called handleBuyOffer");
 
-        const address = await buyOffer(id);
-        console.log('sc address', address);
-        if (!address) {
+        const supplyContractAddress = await buyOffer(id);
+        console.log('sc address', supplyContractAddress);
+        if (!supplyContractAddress) {
             alert("Buy offer didn't return an address");
             return;
         }
-        const newSC = await getSupplyContractInfo(address);
-        console.log('newSC', newSC)
-        setSupplyContractAddresses((prevState) => [...prevState, address]);
-        setSupplyContractsDTO((prevState) => [...prevState, newSC]);
+        const newSupplyContract = await getSupplyContractInfo(supplyContractAddress);
+        setSupplyContractAddresses((prevState) => [...prevState, supplyContractAddress]);
+        setSupplyContractsDTO((prevState) => [...prevState, newSupplyContract]);
 
         getOffers()
             .then((data) => {
@@ -67,10 +82,10 @@ const MarketplacePage: FC = () => {
             })
             .catch((err) => console.log(err));
     };
-    const removeOffer = () => async (id: string) => {
-        console.log("called remove offer");
 
-        alert("Not implemented yet");
+    const handleRemoveOffer = () => async (id: string) => {
+        await removeOffer(id);
+        setOffers(prev => [...prev.filter(offer => offer.id !== id)]);
     };
 
     const [open, setOpen] = useState(false);
@@ -107,7 +122,7 @@ const MarketplacePage: FC = () => {
             </div>
 
             <div className={styles.row}>
-                <SuggestedPriceComponent suggestedPrice={String(Math.random().toFixed(3))} />
+                <SuggestedPriceComponent suggestedPrice={suggestedPrice} />
             </div>
             {offers && (
                 <>
@@ -120,7 +135,7 @@ const MarketplacePage: FC = () => {
                                     key={index}
                                     offer={offer}
                                     ownOffer={true}
-                                    onClickButton={removeOffer()}
+                                    onClickButton={handleRemoveOffer()}
                                 />
                             ))}
                     </div>
