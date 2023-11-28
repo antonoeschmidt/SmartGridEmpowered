@@ -41,7 +41,7 @@ const MarketplacePage: FC = () => {
                 setSupplyContractsDTO(data);
             })
             .catch((err) => console.error(err));
-    }, [currentAccount, getSupplyContracts]);
+    }, [currentAccount]);
 
     const handleBuyOffer = () => async (id: string) => {
         const address = await buyOffer(id);
