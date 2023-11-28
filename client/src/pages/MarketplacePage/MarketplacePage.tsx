@@ -35,9 +35,6 @@ const MarketplacePage: FC = () => {
     }, [currentMarket, getOffers, offers, setOffers]);
 
     useEffect(() => {
-        console.log("logggg");
-        console.log(currentAccount);
-
         if (!currentAccount) return;
         getSupplyContracts()
             .then((data) => {
