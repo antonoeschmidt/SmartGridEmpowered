@@ -1,37 +1,22 @@
 import React, { useEffect, useContext } from "react";
 import { MenuItem, Select } from "@mui/material";
 import styles from "./PickAccountsComponent.module.css";
-import { getAccounts } from "../../../apis/web3";
 import EthereumContext from "../../../contexts/ethereumContext";
 
 const PickAccountsComponent = ({ type }: { type: string }) => {
     const {
         accounts,
         currentAccount,
-        setAccounts,
         setCurrentAccount,
         setAdminAccount,
         adminAccount,
     } = useContext(EthereumContext);
 
     useEffect(() => {
-        if (accounts.length > 0) return;
-        console.log("pick accounts useEffect");
-        getAccounts().then((accounts) => {
-            if (accounts) {
-                setAccounts(accounts);
-                if (type === "admin") setAdminAccount(accounts[0]);
-                if (!currentAccount) setCurrentAccount(accounts[1]);
-            }
-        });
-    }, [
-        accounts,
-        currentAccount,
-        setAccounts,
-        setAdminAccount,
-        setCurrentAccount,
-        type,
-    ]);
+        if (!accounts) return;
+        if (type === "admin") setAdminAccount(accounts[0]);
+        if (!currentAccount) setCurrentAccount(accounts[1]);
+    }, [accounts, currentAccount, setAdminAccount, setCurrentAccount, type]);
 
     return (
         <>

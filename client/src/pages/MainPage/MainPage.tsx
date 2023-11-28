@@ -12,10 +12,10 @@ const MainPage = () => {
         currentMarket,
         markets,
         setCableCompanyAddress,
-        accounts, 
+        accounts,
         setAccounts,
         currentAccount,
-        setCurrentAccount
+        setCurrentAccount,
     } = useContext(EthereumContext);
 
     const navigate = useNavigate();
@@ -62,14 +62,26 @@ const MainPage = () => {
     }, [currentMarket, markets, setCurrentMarket]);
 
     useEffect(() => {
+        console.log("called mainPage useeffect");
         if (accounts.length > 0) return;
-        console.log("pick accounts useEffect");
-        getAccounts().then((accounts) => {
-            if (accounts) {
-                setAccounts(accounts);
-                if (!currentAccount) setCurrentAccount(accounts[0]);
+        getAccounts().then((fetchedAccounts) => {
+            console.log("inside accounts", fetchedAccounts);
+            console.log("inside currentAccount", currentAccount);
+
+            if (fetchedAccounts.length > 0) {
+                setAccounts(fetchedAccounts);
+
+                if (!currentAccount) {
+                    console.log(
+                        "No current user, set it to: ",
+                        fetchedAccounts[0]
+                    );
+
+                    setCurrentAccount(fetchedAccounts[0]);
+                }
             }
         });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (localStorage.getItem("onboarded") !== "true") {

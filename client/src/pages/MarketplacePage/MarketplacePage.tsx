@@ -8,7 +8,6 @@ import SuggestedPriceComponent from "../../components/Market/SuggestedPriceCompo
 import { AddButton } from "../../components/common/AddButton";
 import { OfferModal } from "../../components/Market/OfferModal/OfferModal";
 import OfferComponent from "../../components/Market/OfferComponent/OfferComponent";
-import { getAccounts, scanBlocksForContractCreations } from "../../apis/web3";
 
 const MarketplacePage: FC = () => {
     const {
@@ -21,13 +20,10 @@ const MarketplacePage: FC = () => {
         getOffers,
         getSupplyContracts,
         getSupplyContractInfo,
-        supplyContractAddresses: supplyContracts
     } = useContext(EthereumContext);
 
     const [supplyContractsDTO, setSupplyContractsDTO] =
         useState<SupplyContractDTO[]>();
-
-    const [suggestedPrice, setSuggestedPrice] = useState<string>();
 
     useEffect(() => {
         if (offers || !currentMarket) return;
@@ -39,25 +35,25 @@ const MarketplacePage: FC = () => {
     }, [currentMarket, getOffers, offers, setOffers]);
 
     useEffect(() => {
+        console.log("logggg");
+        console.log(currentAccount);
+
+        if (!currentAccount) return;
         getSupplyContracts()
             .then((data) => {
-                console.log("getSupply contracts", data);
                 setSupplyContractsDTO(data);
             })
             .catch((err) => console.error(err));
-    }, [getSupplyContracts, setSupplyContractAddresses, supplyContracts.length, currentAccount]);
+    }, [currentAccount, getSupplyContracts]);
 
     const handleBuyOffer = () => async (id: string) => {
-        console.log("called handleBuyOffer");
-
         const address = await buyOffer(id);
-        console.log('sc address', address);
         if (!address) {
             alert("Buy offer didn't return an address");
             return;
         }
         const newSC = await getSupplyContractInfo(address);
-        console.log('newSC', newSC)
+        console.log("newSC", newSC);
         setSupplyContractAddresses((prevState) => [...prevState, address]);
         setSupplyContractsDTO((prevState) => [...prevState, newSC]);
 
@@ -107,7 +103,9 @@ const MarketplacePage: FC = () => {
             </div>
 
             <div className={styles.row}>
-                <SuggestedPriceComponent suggestedPrice={String(Math.random().toFixed(3))} />
+                <SuggestedPriceComponent
+                    suggestedPrice={String(Math.random().toFixed(3))}
+                />
             </div>
             {offers && (
                 <>

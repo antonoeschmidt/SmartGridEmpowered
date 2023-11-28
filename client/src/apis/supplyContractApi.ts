@@ -35,7 +35,10 @@ const getSupplyContracts = async (
     const supplyContractList: SupplyContractDTO[] = [];
     try {
         for (let i = 0; i < supplyContracts?.length; i++) {
-            const supplyContract = await getSupplyContractInfo(supplyContracts[i], sender);
+            const supplyContract = await getSupplyContractInfo(
+                supplyContracts[i],
+                sender
+            );
 
             supplyContractList.push(supplyContract);
         }
@@ -49,7 +52,9 @@ const getSupplyContracts = async (
 const getSupplyContractInfo = async (address: string, sender: string) => {
     const supplyContractInstance = getSupplyContractInstance(address);
     if (!supplyContractInstance) return;
-    const res = await supplyContractInstance.methods.getInfo().call({ from: sender });
+    const res = await supplyContractInstance.methods
+        .getInfo()
+        .call({ from: sender });
     return supplyContractParser({ ...res, id: address });
 };
 

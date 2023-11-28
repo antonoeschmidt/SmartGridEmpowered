@@ -12,13 +12,14 @@ const SmartMeterPage = () => {
     const { smartMeterAddress, getBatteryCharge, createSmartMeterLog } =
         useContext(EthereumContext);
 
-    const { setToastProps, onOpen} = useContext(ToastContext);
+    const { setToastProps, onOpen } = useContext(ToastContext);
 
     const createLogClick = async () => {
         if (!consumption || !production || !smartMeterAddress) {
             alert("No energy data or smart meter selected");
             return;
         }
+        debugger;
         let res = await createSmartMeterLog(consumption, production);
         console.log(res);
         if (res) {

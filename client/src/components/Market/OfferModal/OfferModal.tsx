@@ -14,7 +14,7 @@ import { OfferDTO } from "../../../models/models";
 import Button from "../../Shared/Button/Button";
 
 import ToastContext from "../../../contexts/toastContext";
-    
+
 type OfferModalProps = {
     open: boolean;
     handleClose: () => void;
@@ -57,7 +57,6 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
             }
             setToastProps("Offer was created!", "success");
             onOpen();
-            console.log(offer);
             setOffers((prev) => [...prev, offer]);
             handleClose();
         });

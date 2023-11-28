@@ -91,7 +91,11 @@ contract Market {
 
     function buyOffer(string memory id) public returns (address) {
         Offer memory offer = offers[id];
-        require(keccak256(bytes(offer.id)) == keccak256(bytes(id)), "No offer found");
+        require(
+            keccak256(bytes(offer.id)) == keccak256(bytes(id)),
+            "No offer found"
+        );
+
         address buyer = msg.sender;
         address seller = offer.owner;
         uint amount = offer.amount;

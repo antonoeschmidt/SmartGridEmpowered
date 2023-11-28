@@ -30,7 +30,7 @@ contract SmartMeter {
         uint256 intervalConsumption,
         uint256 intervalProduction
     ) public {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "Only owner can create logs");
         require(
             block.timestamp - lastDataSent > transmissionInterval,
             "Logs cannot appear more frequently than the transmission interval"
