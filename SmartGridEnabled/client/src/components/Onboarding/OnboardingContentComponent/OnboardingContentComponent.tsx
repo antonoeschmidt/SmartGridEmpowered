@@ -62,13 +62,13 @@ const OnboardingContentComponent = ({
 
         // Register Smart Meter
         let res = await registerSmartMeter(currentAccount, address);
-        console.log(res);
+        console.log("onboarding register smart meter", res);
 
         // Create New Market
         if (!markets) {
             const marketAddress = await deployMarket();
             setCurrentMarket(marketAddress);
-            setMarkets(markets ? [...markets, marketAddress] : [marketAddress]);
+            setMarkets(prev => [...prev, marketAddress]);
         }
 
         handleChangeStep(Steps.Step3);

@@ -9,11 +9,11 @@ export const smartMeterInstance = (address: string) => {
 
 const deploySmartMeter = async (sender: string) => {
     const web3 = getWeb3();
-    let newContract = new web3.eth.Contract(SmartMeter.abi);
-    let contract = newContract.deploy({
+    const newSmartMeterContract = new web3.eth.Contract(SmartMeter.abi);
+    const deployedSmartMeterContract = newSmartMeterContract.deploy({
         data: SmartMeter.bytecode,
     });
-    let res = await contract.send({
+    const res = await deployedSmartMeterContract.send({
         from: sender,
         gas: "2500000",
         gasPrice: "30000000000",
@@ -27,19 +27,19 @@ const getBatteryCharge = async (address: string) => {
 };
 
 const setCurrentMarketAddress = async (
-    sender: string,
+    adminAccount: string,
     smartMeterAddress: string,
     marketAddress: string
 ) => {
-    const contract = smartMeterInstance(smartMeterAddress);
+    const smartMeterContract = smartMeterInstance(smartMeterAddress);
     try {
-        let res = await contract.methods
+        const res = await smartMeterContract.methods
             .setCurrentMarketAddress(
                 // @ts-ignore
                 marketAddress
             )
             .send({
-                from: sender,
+                from: adminAccount,
                 gas: "1500000",
                 gasPrice: "30000000000",
             });
@@ -55,9 +55,9 @@ const createLog = async (
     intervalConsumption: number,
     intervalProduction: number
 ) => {
-    const contract = smartMeterInstance(smartMeterAddress);
+    const smartMeterContract = smartMeterInstance(smartMeterAddress);
     try {
-        let res = await contract.methods
+        let res = await smartMeterContract.methods
             .createLog(
                 // @ts-ignore
                 intervalConsumption,
@@ -76,35 +76,30 @@ const createLog = async (
 };
 
 const registerSmartMeter = async (
-    sender: string,
+    adminAccount: string,
     cableCompanyAddress: string,
     smartMeterPubKey: string,
     smartMeterAddress: string
 ) => {
     if (
-        !sender ||
+        !adminAccount ||
         !cableCompanyAddress ||
         !smartMeterPubKey ||
         !smartMeterAddress
     ) {
-        alert("Register Smart Meter is missing arguments");
-        console.log('sender', !!sender);
-        console.log('cableCompanyAddress', !!cableCompanyAddress)
-        console.log('!!smartMeterPubKey', !!smartMeterPubKey);
-        console.log('!!smartMeterAddress', !!smartMeterAddress);
         return;
     }
     
-    let contract = cableCompanyInstance(cableCompanyAddress);
+    let cableCompanyContract = cableCompanyInstance(cableCompanyAddress);
     try {
-        let res = await contract.methods
+        const res = await cableCompanyContract.methods
             .registerKey(
                 // @ts-ignore
                 smartMeterPubKey,
                 smartMeterAddress
             )
             .send({
-                from: sender,
+                from: adminAccount,
                 gas: "1500000",
                 gasPrice: "30000000000",
             });

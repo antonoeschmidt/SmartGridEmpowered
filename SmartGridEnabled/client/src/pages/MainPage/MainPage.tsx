@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 const MainPage = () => {
     const {
         setMarkets,
-        setSupplyContracts,
+        setSupplyContractAddresses: setSupplyContracts,
         setCurrentMarket,
         currentMarket,
         markets,

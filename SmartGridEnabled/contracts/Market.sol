@@ -91,6 +91,7 @@ contract Market {
 
     function buyOffer(string memory id) public returns (address) {
         Offer memory offer = offers[id];
+        require(keccak256(bytes(offer.id)) == keccak256(bytes(id)), "No offer found");
         address buyer = msg.sender;
         address seller = offer.owner;
         uint amount = offer.amount;
@@ -145,8 +146,8 @@ contract Market {
 }
 
 contract SupplyContract {
-    address private buyer;
-    address private seller;
+    address public buyer;
+    address public seller;
     uint256 private amount; // Wh
     uint256 private price; // Euro cents
     uint256 timestamp; // Unix
@@ -165,7 +166,7 @@ contract SupplyContract {
         address _seller,
         uint256 _amount,
         uint256 _price
-    ) payable {
+    ) {
         buyer = _buyer;
         seller = _seller;
         amount = _amount;
@@ -192,15 +193,16 @@ contract SupplyContract {
     }
 
     function getInfo() public view returns (SupplyContractDTO memory) {
-        uint256 priceDTO;
-        uint256 amountDTO;
+        uint256 priceDTO = 0;
+        uint256 amountDTO = 0;
 
-        if ((msg.sender == buyer) || (msg.sender == seller)) {
+        if (msg.sender == buyer) {
             priceDTO = price;
             amountDTO = amount;
-        } else {
-            priceDTO = 0;
-            amountDTO = 0;
+        }
+        if (msg.sender == seller) {
+            priceDTO = price;
+            amountDTO = amount;
         }
 
         SupplyContractDTO memory scDTO = SupplyContractDTO({

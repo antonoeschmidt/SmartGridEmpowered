@@ -21,7 +21,7 @@ const SmartMeterPage = () => {
         }
         let res = await createSmartMeterLog(consumption, production);
         console.log(res);
-        if (res.status < 299) {
+        if (res) {
             setToastProps("Log created", "success");
         } else {
             setToastProps("Something went wrong", "error");

@@ -3,7 +3,7 @@ import SupplyContract from "../contracts/SupplyContract.json";
 import { SupplyContractDTO } from "../models/models";
 import { supplyContractParser } from "../utils/parsers";
 
-export const supplyContractInstance = (address: string) => {
+export const getSupplyContractInstance = (address: string) => {
     const web3 = getWeb3();
     return new web3.eth.Contract(SupplyContract.abi, address);
 };
@@ -13,8 +13,8 @@ export const deploySupplyContract = async (
     sc: SupplyContractDTO
 ) => {
     const web3 = getWeb3();
-    let newContract = new web3.eth.Contract(SupplyContract.abi);
-    let res = await newContract
+    const supplyContract = new web3.eth.Contract(SupplyContract.abi);
+    const res = await supplyContract
         .deploy({
             data: SupplyContract.bytecode,
             // @ts-ignore
@@ -32,23 +32,24 @@ const getSupplyContracts = async (
     supplyContracts: string[],
     sender: string
 ) => {
-    let scList: SupplyContractDTO[] = [];
+    const supplyContractList: SupplyContractDTO[] = [];
     try {
         for (let i = 0; i < supplyContracts?.length; i++) {
-            let sc = await getSupplyContractInfo(supplyContracts[i], sender);
+            const supplyContract = await getSupplyContractInfo(supplyContracts[i], sender);
 
-            scList.push(sc);
+            supplyContractList.push(supplyContract);
         }
     } catch (error) {
         console.error(error);
     }
 
-    return scList;
+    return supplyContractList;
 };
 
 const getSupplyContractInfo = async (address: string, sender: string) => {
-    const instance = supplyContractInstance(address);
-    let res = await instance.methods.getInfo().call({ from: sender });
+    const supplyContractInstance = getSupplyContractInstance(address);
+    if (!supplyContractInstance) return;
+    const res = await supplyContractInstance.methods.getInfo().call({ from: sender });
     return supplyContractParser({ ...res, id: address });
 };
 

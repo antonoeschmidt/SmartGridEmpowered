@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { marketInstance } from "./marketApi";
-import { supplyContractInstance } from "./supplyContractApi";
+import { getSupplyContractInstance } from "./supplyContractApi";
 import { cableCompanyInstance } from "./cableCompanyApi";
 
 export const getWeb3 = (): Web3 => {
@@ -54,7 +54,7 @@ export const scanBlocksForContractCreations = async () => {
 
                 if (receipt.contractAddress) {
                     let mInstance = marketInstance(receipt.contractAddress);
-                    let scInstance = supplyContractInstance(
+                    let scInstance = getSupplyContractInstance(
                         receipt.contractAddress
                     );
 

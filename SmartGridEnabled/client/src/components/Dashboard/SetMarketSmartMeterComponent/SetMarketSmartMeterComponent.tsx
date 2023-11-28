@@ -7,11 +7,11 @@ const SetMarketSmartMeterComponent = () => {
     const { currentAccount, currentMarket, setSmartMeterMarketAddress } =
         useContext(EthereumContext);
 
-        const { setToastProps, onOpen} = useContext(ToastContext);
+    const { setToastProps, onOpen } = useContext(ToastContext);
 
     const setMarketAddressSmartMeter = async () => {
         if (!currentAccount || !currentMarket) return;
-        let res = await setSmartMeterMarketAddress();
+        await setSmartMeterMarketAddress();
         setToastProps(`Success!`, "success");
         onOpen();
     };

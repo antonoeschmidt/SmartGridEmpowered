@@ -4,8 +4,8 @@ import Button from "../../Shared/Button/Button";
 import ToastContext from "../../../contexts/toastContext";
 
 const ManageMarketsComponent = () => {
-    const { currentAccount, setCurrentMarket, deployMarket } =
-        useContext(EthereumContext);
+    const { currentAccount, setCurrentMarket, deployMarket, setMarkets } =
+     useContext(EthereumContext);
 
     const [newMarketCreated, setNewMarketCreated] = useState(false);
 
@@ -16,15 +16,14 @@ const ManageMarketsComponent = () => {
             alert("No account or cable company selected");
             return;
         }
-        let marketAddress = await deployMarket();
-        console.log(marketAddress);
+        const marketAddress = await deployMarket();
+        console.log("New market created:", marketAddress);
         setToastProps("Created market!", "success");
         onOpen();
-
-        setNewMarketCreated(true);
+        setMarkets((prevState) => [...prevState, marketAddress]);
         setCurrentMarket(marketAddress);
+        setNewMarketCreated(true);
     };
-
 
     return (
         <>

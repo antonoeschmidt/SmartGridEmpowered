@@ -1,10 +1,9 @@
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { OfferDTO, SupplyContractDTO } from "../models/models";
 import { cableCompanyApi } from "../apis/cableCompanyApi";
 import { marketApi } from "../apis/marketApi";
 import { smartMeterApi } from "../apis/smartMeterApi";
 import { supplyContractApi } from "../apis/supplyContractApi";
-import { getAccounts } from "../apis/web3";
 
 export type EthereumContextType = {
     accounts: string[];
@@ -16,9 +15,9 @@ export type EthereumContextType = {
     currentMarket: string;
     setCurrentMarket: (address: string) => void;
     markets: string[];
-    setMarkets: (markets: string[]) => void;
-    supplyContracts: string[];
-    setSupplyContracts: React.Dispatch<React.SetStateAction<string[]>>;
+    setMarkets: React.Dispatch<React.SetStateAction<string[]>>;
+    supplyContractAddresses: string[];
+    setSupplyContractAddresses: React.Dispatch<React.SetStateAction<string[]>>;
     offers: OfferDTO[];
     setOffers: React.Dispatch<React.SetStateAction<OfferDTO[]>>;
     cableCompanyAddress: string;
@@ -59,7 +58,7 @@ export const useEthereumContext = (): EthereumContextType => {
     const [adminAccount, setAdminAccount] = useState<string>("");
     const [currentMarket, setCurrentMarket] = useState<string>("");
     const [markets, setMarkets] = useState<string[]>([]);
-    const [supplyContracts, setSupplyContracts] = useState<string[]>();
+    const [supplyContractAddresses, setSupplyContractAddresses] = useState<string[]>([]);
     const [offers, setOffers] = useState<OfferDTO[]>();
     const [cableCompanyAddress, setCableCompanyAddress] = useState<string>();
     const [smartMeterAddress, setSmartMeterAddress] = useState<string>();
@@ -67,16 +66,12 @@ export const useEthereumContext = (): EthereumContextType => {
     const deployAndRegisterSmartMeter = async (account: string, market: string, admin: string) => {
         let currAccount = account ?? currentAccount;
         if (!currAccount) return;
-        console.log('currAccount', currAccount)
         const deployedSmartMeterAddress = await deploySmartMeter(
             currAccount
         );
-        console.log('deployedSmartMeterAdress', deployedSmartMeterAddress);
         setSmartMeterAddress(deployedSmartMeterAddress);
-        console.log("before cable company address");
         if (!cableCompanyAddress) return;
-        console.log("after cable company address");
-        await setSmartMeterMarketAddress(deployedSmartMeterAddress, market);
+        await setSmartMeterMarketAddress(deployedSmartMeterAddress, market, account);
         await registerSmartMeter(currAccount, deployedSmartMeterAddress);
     };
 
@@ -107,7 +102,6 @@ export const useEthereumContext = (): EthereumContextType => {
             : markets.length > 0
             ? markets[0]
             : "";
-        console.log('parsedJson.smartMeterAddress', parsedJson.smartMeterAddress)
         const smartMeterAddress =  parsedJson.smartMeterAddress ? parsedJson.smartMeterAddress : "";
         return { market, smartMeterAddress, cableCompanyAddress: parsedJson?.cableCompanyAddress ?? "" }
     }
@@ -125,8 +119,8 @@ export const useEthereumContext = (): EthereumContextType => {
         let admin = adminAccount;
         if (!admin) {
             if (accounts.length < 1) return;
-            setAdminAccount(account[accounts.length - 1]);
-            admin = accounts[accounts.length - 1];
+            admin = [...accounts].pop();
+            setAdminAccount(admin);
         }
 
         setCurrentAccount(account);
@@ -134,7 +128,7 @@ export const useEthereumContext = (): EthereumContextType => {
         if (loadedData?.cableCompanyAddress && cableCompanyAddress) {
             setCableCompanyAddress(loadedData.cableCompanyAddress);
         }
-        let marketAddress = loadedData.market;
+        let marketAddress = loadedData.market ?? markets[0];
         if (!marketAddress) {
             marketAddress = await deployMarket(loadedData?.cableCompanyAddress, admin);
         }
@@ -175,10 +169,14 @@ export const useEthereumContext = (): EthereumContextType => {
     };
 
     const getOffers = async () => {
-        return await marketApi.getOffers(currentMarket);
+            return await marketApi.getOffers(currentMarket);
     };
 
     const buyOffer = async (id: string) => {
+        if (!currentAccount) {
+            alert("No account selected");
+            return;
+        }
         return await marketApi.buyOffer(currentMarket, id, currentAccount);
     };
 
@@ -197,10 +195,11 @@ export const useEthereumContext = (): EthereumContextType => {
 
     const setSmartMeterMarketAddress = async (
         parsedSmartMeterAddress?: string,
-        market?: string
+        market?: string,
+        account?: string
     ) => {
         return await smartMeterApi.setCurrentMarketAddress(
-            currentAccount,
+            account ?? currentAccount,
             parsedSmartMeterAddress
                 ?? smartMeterAddress,
             market ?? currentMarket
@@ -223,11 +222,6 @@ export const useEthereumContext = (): EthereumContextType => {
        smartMeterPubKey: string,
         smartMeterAddress: string,
     ) => {
-
-        console.log("register smart meter: ", adminAccount,
-         cableCompanyAddress,
-        smartMeterPubKey,
-        smartMeterAddress);
         return await smartMeterApi.registerSmartMeter(
             adminAccount,
             cableCompanyAddress,
@@ -239,12 +233,13 @@ export const useEthereumContext = (): EthereumContextType => {
     // SupplyContractApi
     const getSupplyContracts = async() => {
         return await supplyContractApi.getSupplyContracts(
-            supplyContracts,
+            supplyContractAddresses,
             currentAccount
         );
     };
 
     const getSupplyContractInfo = async (supplyContractAddress: string) => {
+        console.log("getSupplyContractInfo currentAccount: ", currentAccount);
         return await supplyContractApi.getSupplyContractInfo(
             supplyContractAddress,
             currentAccount
@@ -262,8 +257,8 @@ export const useEthereumContext = (): EthereumContextType => {
         setCurrentMarket,
         markets,
         setMarkets,
-        supplyContracts,
-        setSupplyContracts,
+        supplyContractAddresses,
+        setSupplyContractAddresses,
         offers,
         setOffers,
         cableCompanyAddress,

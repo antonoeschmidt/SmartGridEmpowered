@@ -42,7 +42,7 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
             id: uuidv4(),
             price: price,
             amount: amount,
-            expiration: Date.now() + 24 * 60 * 60 * 1000, // 24 hours in ms
+            expiration: Date.now() + 10 * 24 * 60 * 60 * 1000, // 10 days in ms
             owner: currentAccount,
             active: true,
         };

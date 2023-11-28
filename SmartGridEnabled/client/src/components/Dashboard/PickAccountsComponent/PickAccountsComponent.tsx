@@ -20,11 +20,18 @@ const PickAccountsComponent = ({ type }: { type: string }) => {
         getAccounts().then((accounts) => {
             if (accounts) {
                 setAccounts(accounts);
-                if (type === "admin") return; // We do not want to pre set the admin account
-                if (!currentAccount) setCurrentAccount(accounts[0]);
+                if (type === "admin") setAdminAccount(accounts[0]);
+                if (!currentAccount) setCurrentAccount(accounts[1]);
             }
         });
-    }, [accounts, currentAccount, setAccounts, setCurrentAccount, type]);
+    }, [
+        accounts,
+        currentAccount,
+        setAccounts,
+        setAdminAccount,
+        setCurrentAccount,
+        type,
+    ]);
 
     return (
         <>

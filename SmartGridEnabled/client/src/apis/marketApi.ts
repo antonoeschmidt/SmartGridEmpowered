@@ -3,7 +3,7 @@ import Market from "../contracts/Market.json";
 import { OfferDTO } from "../models/models";
 import { offerParser, supplyContractParser } from "../utils/parsers";
 import {
-    supplyContractInstance,
+    getSupplyContractInstance,
     deploySupplyContract,
 } from "./supplyContractApi";
 
@@ -14,13 +14,13 @@ export const marketInstance = (address: string) => {
 
 const deployMarket = async (sender: string, cableCompanyAddress: string) => {
     const web3 = getWeb3();
-    let newContract = new web3.eth.Contract(Market.abi);
-    let contract = newContract.deploy({
+    const newMarketContract = new web3.eth.Contract(Market.abi);
+    const contract = newMarketContract.deploy({
         data: Market.bytecode,
         // @ts-ignore
         arguments: [cableCompanyAddress],
     });
-    let res = await contract.send({
+    const res = await contract.send({
         from: sender,
         gas: "3000000",
         gasPrice: "30000000000",
@@ -35,9 +35,9 @@ const addOffer = async (
     account: string,
     smartMeterAddress: string
 ) => {
-    const contract = marketInstance(market);
+    const marketContract = marketInstance(market);
     try {
-        await contract.methods
+        await marketContract.methods
             .addOffer(
                 // @ts-ignore
                 offer.id,
@@ -59,20 +59,20 @@ const addOffer = async (
 };
 
 const getOffers = async (market: string) => {
-    const contract = marketInstance(market);
+    const marketContract = marketInstance(market);
     try {
-        let res = (await contract.methods.getOffers().call()) as any[];
+        const response = (await marketContract.methods.getOffers().call()) as any[];
 
-        return res.map((d) => offerParser(d));
+        return response.map((d) => offerParser(d));
     } catch (error) {
         console.error(error);
     }
 };
 
 const buyOffer = async (market: string, id: string, account: string) => {
-    const contract = marketInstance(market);
+    const marketContract = marketInstance(market);
     try {
-        await contract.methods
+        await marketContract.methods
             // @ts-ignore
             .buyOffer(id)
             .send({
@@ -80,19 +80,18 @@ const buyOffer = async (market: string, id: string, account: string) => {
                 gas: "1500000",
                 gasPrice: "30000000000",
             });
-
-        let address = (await contract.methods
+        const supplyContractAddress = (await marketContract.methods
             .getLatestSupplyContract()
             .call()) as unknown as string;
-
-        let scInstance = supplyContractInstance(address);
-        let supplyContractInfo = supplyContractParser(
-            await scInstance.methods.getInfo().call()
+        const supplyContractInstance = getSupplyContractInstance(supplyContractAddress);
+        const supplyContractInfo = supplyContractParser(
+            await supplyContractInstance.methods.getInfo().call({from: account})
         );
+
 
         return await deploySupplyContract(account, supplyContractInfo);
     } catch (error) {
-        console.error(error);
+        console.error("try catch err", error);
     }
 };
 
