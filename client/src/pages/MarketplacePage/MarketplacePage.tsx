@@ -8,7 +8,6 @@ import SuggestedPriceComponent from "../../components/Market/SuggestedPriceCompo
 import { AddButton } from "../../components/common/AddButton";
 import { OfferModal } from "../../components/Market/OfferModal/OfferModal";
 import OfferComponent from "../../components/Market/OfferComponent/OfferComponent";
-import { getAccounts, scanBlocksForContractCreations } from "../../apis/web3";
 
 const MarketplacePage: FC = () => {
     const {
@@ -64,10 +63,8 @@ const MarketplacePage: FC = () => {
 
 
     const handleBuyOffer = () => async (id: string) => {
-        console.log("called handleBuyOffer");
 
         const supplyContractAddress = await buyOffer(id);
-        console.log('sc address', supplyContractAddress);
         if (!supplyContractAddress) {
             alert("Buy offer didn't return an address");
             return;

@@ -248,9 +248,7 @@ export const useEthereumContext = (): EthereumContextType => {
     };
 
     const removeOffer = async(offerId: string) => {
-        console.log("removing offer");
         const res = await marketApi.removeOffer(currentMarket, offerId, smartMeterAddress, currentAccount);
-        console.log("remove offer response: ", res);
         return res;
     }
 
