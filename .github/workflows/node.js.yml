@@ -20,5 +20,6 @@ jobs:
                   node-version: 14.x
             - run: ls
             - run: cd client
-            - run: npm ci
+            - run: ls
+            - run: npm install
             - run: npm run build --if-present
