@@ -62,21 +62,11 @@ const MainPage = () => {
     }, [currentMarket, markets, setCurrentMarket]);
 
     useEffect(() => {
-        console.log("called mainPage useeffect");
         if (accounts.length > 0) return;
         getAccounts().then((fetchedAccounts) => {
-            console.log("inside accounts", fetchedAccounts);
-            console.log("inside currentAccount", currentAccount);
-
             if (fetchedAccounts.length > 0) {
                 setAccounts(fetchedAccounts);
-
                 if (!currentAccount) {
-                    console.log(
-                        "No current user, set it to: ",
-                        fetchedAccounts[0]
-                    );
-
                     setCurrentAccount(fetchedAccounts[0]);
                 }
             }
