@@ -1,0 +1,17 @@
+@startuml SystemSetup
+
+partition Admin {
+  (*) --> "Deploy CableCompany"
+  "Deploy CableCompany" --> "Deploy Market"
+}
+
+partition User #LightSkyBlue {
+  "Deploy Market" --> "Deploy SmartMeter"
+  "Deploy SmartMeter" --> "Register Current Market"
+}
+
+partition CableCompany #YellowGreen {
+  "Register Current Market" --> "Register SmartMeter"
+}
+  "Register SmartMeter" --> (*)
+@enduml
