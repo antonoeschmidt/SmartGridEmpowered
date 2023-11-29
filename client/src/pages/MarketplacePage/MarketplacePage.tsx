@@ -20,6 +20,8 @@ const MarketplacePage: FC = () => {
         getOffers,
         getSupplyContracts,
         getSupplyContractInfo,
+        loading,
+        setLoading,
     } = useContext(EthereumContext);
 
     const [supplyContractsDTO, setSupplyContractsDTO] =
@@ -27,12 +29,16 @@ const MarketplacePage: FC = () => {
 
     useEffect(() => {
         if (offers || !currentMarket) return;
+        setLoading(true);
+        console.log("true here");
+
         getOffers()
             .then((data) => {
                 setOffers(data);
+                setLoading(false);
             })
             .catch((err) => console.log(err));
-    }, [currentMarket, getOffers, offers, setOffers]);
+    }, [currentMarket, getOffers, offers, setLoading, setOffers]);
 
     useEffect(() => {
         if (!currentAccount) return;
@@ -104,48 +110,60 @@ const MarketplacePage: FC = () => {
                     suggestedPrice={String(Math.random().toFixed(3))}
                 />
             </div>
-            {offers && (
+            {loading ? (
+                <div>loading..</div>
+            ) : (
                 <>
-                    <h3>Your offers</h3>
-                    <div className={styles.row}>
-                        {offers
-                            .filter((offer) => offer.owner === currentAccount)
-                            .map((offer, index) => (
-                                <OfferComponent
-                                    key={index}
-                                    offer={offer}
-                                    ownOffer={true}
-                                    onClickButton={removeOffer()}
-                                />
-                            ))}
+                    {offers && (
+                        <>
+                            <h3>Your offers</h3>
+                            <div className={styles.row}>
+                                {offers
+                                    .filter(
+                                        (offer) =>
+                                            offer.owner === currentAccount
+                                    )
+                                    .map((offer, index) => (
+                                        <OfferComponent
+                                            key={index}
+                                            offer={offer}
+                                            ownOffer={true}
+                                            onClickButton={removeOffer()}
+                                        />
+                                    ))}
+                            </div>
+                        </>
+                    )}
+                    {offers && (
+                        <>
+                            <h3>Market offers</h3>
+                            <div className={styles.row}>
+                                {offers
+                                    .filter(
+                                        (offer) =>
+                                            offer.owner !== currentAccount
+                                    )
+                                    .map((offer, index) => (
+                                        <OfferComponent
+                                            key={index}
+                                            offer={offer}
+                                            onClickButton={handleBuyOffer()}
+                                        />
+                                    ))}
+                            </div>
+                        </>
+                    )}
+                    <div className={styles.item} style={{ maxWidth: "100vh" }}>
+                        <h3>Supply Contracts</h3>
+                        {supplyContractsDTO && (
+                            <DataTable
+                                rows={supplyContractsDTO}
+                                columns={supplyContractColumns}
+                            />
+                        )}
                     </div>
                 </>
             )}
-            {offers && (
-                <>
-                    <h3>Market offers</h3>
-                    <div className={styles.row}>
-                        {offers
-                            .filter((offer) => offer.owner !== currentAccount)
-                            .map((offer, index) => (
-                                <OfferComponent
-                                    key={index}
-                                    offer={offer}
-                                    onClickButton={handleBuyOffer()}
-                                />
-                            ))}
-                    </div>
-                </>
-            )}
-            <div className={styles.item} style={{ maxWidth: "100vh" }}>
-                <h3>Supply Contracts</h3>
-                {supplyContractsDTO && (
-                    <DataTable
-                        rows={supplyContractsDTO}
-                        columns={supplyContractColumns}
-                    />
-                )}
-            </div>
             <OfferModal open={open} handleClose={handleClose} />
         </div>
     );

@@ -40,7 +40,7 @@ const OfferComponent = ({ offer, ownOffer, onClickButton }: Props) => {
                 {offer.price} €
             </div>
             <div>
-                {(offer.amount / offer.price).toFixed(2)} €/kWh <br />
+                {(offer.price / offer.amount).toFixed(2)} €/kWh <br />
                 {expirationToHours(offer.expiration)}
             </div>
             <div className={styles.button}>

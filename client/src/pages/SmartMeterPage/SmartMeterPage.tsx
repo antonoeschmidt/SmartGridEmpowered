@@ -19,7 +19,6 @@ const SmartMeterPage = () => {
             alert("No energy data or smart meter selected");
             return;
         }
-        debugger;
         let res = await createSmartMeterLog(consumption, production);
         console.log(res);
         if (res) {

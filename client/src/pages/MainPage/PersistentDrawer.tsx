@@ -106,7 +106,7 @@ export default function PersistentDrawerLeft({ children }: Props) {
             />
             <Main
                 open={open}
-                style={{ backgroundColor: "#e6edf9" }}
+                style={{ backgroundColor: "#e6edf9", padding: "0" }}
                 onClick={() => setOpen(false)}
             >
                 <DrawerHeader />

@@ -49,6 +49,8 @@ export type EthereumContextType = {
     getSupplyContractInfo: (
         supplyContractAddress: string
     ) => Promise<SupplyContractDTO>;
+    loading: boolean;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 export const useEthereumContext = (): EthereumContextType => {
@@ -63,6 +65,7 @@ export const useEthereumContext = (): EthereumContextType => {
     const [offers, setOffers] = useState<OfferDTO[]>();
     const [cableCompanyAddress, setCableCompanyAddress] = useState<string>();
     const [smartMeterAddress, setSmartMeterAddress] = useState<string>();
+    const [loading, setLoading] = useState(false);
 
     const deployAndRegisterSmartMeter = async (
         account: string,
@@ -297,6 +300,9 @@ export const useEthereumContext = (): EthereumContextType => {
 
         getSupplyContracts,
         getSupplyContractInfo,
+
+        loading,
+        setLoading,
     };
 };
 
