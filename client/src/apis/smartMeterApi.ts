@@ -27,7 +27,7 @@ const getBatteryCharge = async (address: string) => {
 };
 
 const setCurrentMarketAddress = async (
-    adminAccount: string,
+    owner: string,
     smartMeterAddress: string,
     marketAddress: string
 ) => {
@@ -39,7 +39,7 @@ const setCurrentMarketAddress = async (
                 marketAddress
             )
             .send({
-                from: adminAccount,
+                from: owner,
                 gas: "1500000",
                 gasPrice: "30000000000",
             });
@@ -89,7 +89,7 @@ const registerSmartMeter = async (
     ) {
         return;
     }
-    
+
     let cableCompanyContract = cableCompanyInstance(cableCompanyAddress);
     try {
         const res = await cableCompanyContract.methods

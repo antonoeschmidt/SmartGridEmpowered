@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 import styles from "./MarketplacePage.module.css";
 import DataTable from "../../components/Shared/DataTable/DataTable";
 import { supplyContractColumns } from "../../models/dataGridColumns";
-import SuggestedPriceComponent from "../../components/Market/SuggestedPriceComponent/SuggestedPriceComponent";
+// import SuggestedPriceComponent from "../../components/Market/SuggestedPriceComponent/SuggestedPriceComponent";
 import { AddButton } from "../../components/common/AddButton";
 import OfferComponent from "../../components/Market/OfferComponent/OfferComponent";
 import { OfferDTO, SupplyContractDTO } from "../../models/models";
+import { CircularProgress } from "@mui/material";
 
 type MarketplacePageBodyProps = {
     offers: OfferDTO[];
@@ -14,6 +15,8 @@ type MarketplacePageBodyProps = {
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     handleBuyOffer: () => (id: string) => Promise<void>;
     removeOffer: () => (id: string) => Promise<void>;
+    loading: boolean;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const MarketplacePageBody = ({
@@ -23,7 +26,24 @@ const MarketplacePageBody = ({
     setOpen,
     handleBuyOffer,
     removeOffer,
+    loading,
+    setLoading,
 }: MarketplacePageBodyProps) => {
+    useEffect(() => {
+        setTimeout(() => {
+            setLoading(false);
+        }, 1000);
+    }, [setLoading]);
+
+    if (loading) {
+        return (
+            <div className={styles.loadingContainer}>
+                <CircularProgress size={"5em"} />
+                <h3>Fetching data..</h3>
+            </div>
+        );
+    }
+
     return (
         <>
             <div className={styles.pageTop}>
@@ -40,9 +60,9 @@ const MarketplacePageBody = ({
             </div>
 
             <div className={styles.row}>
-                <SuggestedPriceComponent
+                {/* <SuggestedPriceComponent //TODO: fix
                     suggestedPrice={String(Math.random().toFixed(3))}
-                />
+                /> */}
             </div>
             {offers && (
                 <>

@@ -31,6 +31,7 @@ const OnboardingContentComponent = ({
         setMarkets,
         markets,
         setSmartMeterMarketAddress,
+        setLoading,
     } = useContext(EthereumContext);
     const navigate = useNavigate();
 
@@ -50,7 +51,12 @@ const OnboardingContentComponent = ({
     };
 
     const handleStep1 = async () => {
-        const cableCompanyAddress = await deployCableCompany();
+        // Deploy CableCompany
+        let cableCompanyAddress = localStorage.getItem("cableCompany");
+        if (!cableCompanyAddress) {
+            cableCompanyAddress = await deployCableCompany();
+            localStorage.setItem("cableCompany", cableCompanyAddress);
+        }
         setCableCompanyAddress(cableCompanyAddress);
         handleChangeStep(Steps.Step2);
     };
@@ -75,10 +81,12 @@ const OnboardingContentComponent = ({
     };
 
     const handleStep3 = async () => {
+        // Set Market Address for SmartMeter
         let res = await setSmartMeterMarketAddress();
         console.log(res);
-
         localStorage.setItem("onboarded", "true");
+
+        setLoading(true);
         navigate("/");
     };
 

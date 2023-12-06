@@ -16,6 +16,8 @@ const MarketplacePage: FC = () => {
         getOffers,
         getSupplyContracts,
         getSupplyContractInfo,
+        loading,
+        setLoading,
     } = useContext(EthereumContext);
 
     const [supplyContractsDTO, setSupplyContractsDTO] =
@@ -23,8 +25,6 @@ const MarketplacePage: FC = () => {
 
     useEffect(() => {
         if (offers || !currentMarket) return;
-        console.log("true here");
-
         getOffers()
             .then((data) => {
                 setOffers(data);
@@ -87,6 +87,8 @@ const MarketplacePage: FC = () => {
                 setOpen={setOpen}
                 handleBuyOffer={handleBuyOffer}
                 removeOffer={removeOffer}
+                loading={loading}
+                setLoading={setLoading}
             />
             <OfferModal open={open} handleClose={handleClose} />
         </div>
