@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import {
     Drawer,
@@ -14,6 +14,7 @@ import DashboardIcon from "@mui/icons-material/Dashboard";
 import StoreIcon from "@mui/icons-material/Store";
 import ElectricMeterIcon from "@mui/icons-material/ElectricMeter";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
+import EthereumContext from "../../../contexts/ethereumContext";
 
 type Props = {
     drawerWidth: number;
@@ -29,6 +30,8 @@ const DrawerComponent = ({
     DrawerHeader,
 }: Props) => {
     const navigate = useNavigate();
+
+    const { setLoading } = useContext(EthereumContext);
 
     return (
         <Drawer
@@ -52,7 +55,12 @@ const DrawerComponent = ({
             <Divider />
             <List>
                 <ListItem key={"marketplace"} disablePadding>
-                    <ListItemButton onClick={() => navigate("/")}>
+                    <ListItemButton
+                        onClick={() => {
+                            setLoading(true);
+                            navigate("/");
+                        }}
+                    >
                         <ListItemIcon>{<StoreIcon />}</ListItemIcon>
                         <ListItemText primary={"Marketplace"} />
                     </ListItemButton>

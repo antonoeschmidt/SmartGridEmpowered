@@ -2,19 +2,20 @@
     display: flex;
     flex-direction: column;
     gap: 15px;
-    padding: 1em;
+    padding: 2em;
+    max-width: 100vw;
 }
 
 .row {
     display: flex;
     gap: 15px;
     align-items: center;
-    transition: height 0.5s ease-in-out;
+    min-height: 150px;
+    overflow-x: scroll;
+    /* overflow-y: hidden; */
+    /* width: 100%; */
 }
 
-.hidden {
-    height: 0;
-}
 
 .item {
     display: flex;
@@ -29,4 +30,13 @@
 .pageTop {
     display: flex;
     justify-content: space-between;
+}
+
+.loadingContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20em;
+    flex-direction: column;
+    gap: 20px;
 }

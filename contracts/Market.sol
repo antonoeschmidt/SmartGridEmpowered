@@ -57,7 +57,7 @@ contract Market {
             "Smart Meter not registered by Cable Company"
         );
 
-        ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);
+        ISmartMeter smartMeter = ISmartMeter(smartMeterAddress); // maybe here
         require(
             smartMeter.subtractBatteryCharge(amount),
             "Not enough stored energy"
@@ -91,11 +91,6 @@ contract Market {
 
     function buyOffer(string memory id) public returns (address) {
         Offer memory offer = offers[id];
-        require(
-            keccak256(bytes(offer.id)) == keccak256(bytes(id)),
-            "No offer found"
-        );
-
         address buyer = msg.sender;
         address seller = offer.owner;
         uint amount = offer.amount;

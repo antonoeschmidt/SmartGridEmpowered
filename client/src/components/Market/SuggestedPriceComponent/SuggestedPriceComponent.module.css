@@ -6,8 +6,8 @@
     border-radius: 20px;
     padding: 1em;
     overflow: hidden;
-    max-width: 33%;
-    flex-grow: 1;
+    /* max-width: 33%; */
+    /* flex-grow: 1; */
     align-items: center;
 }
 

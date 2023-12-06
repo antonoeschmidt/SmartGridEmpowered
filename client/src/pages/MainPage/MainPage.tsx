@@ -63,11 +63,11 @@ const MainPage = () => {
 
     useEffect(() => {
         if (accounts.length > 0) return;
-        getAccounts().then((fetchedAccounts) => {
-            if (fetchedAccounts.length > 0) {
-                setAccounts(fetchedAccounts);
+        getAccounts().then((_accounts) => {
+            if (_accounts.length > 0) {
+                setAccounts(_accounts);
                 if (!currentAccount) {
-                    setCurrentAccount(fetchedAccounts[0]);
+                    setCurrentAccount(_accounts[0]);
                 }
             }
         });
