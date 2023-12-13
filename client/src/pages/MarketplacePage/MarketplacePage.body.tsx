@@ -2,12 +2,12 @@ import React, { useEffect } from "react";
 import styles from "./MarketplacePage.module.css";
 import DataTable from "../../components/Shared/DataTable/DataTable";
 import { supplyContractColumns } from "../../models/dataGridColumns";
-// import SuggestedPriceComponent from "../../components/Market/SuggestedPriceComponent/SuggestedPriceComponent";
 import { AddButton } from "../../components/common/AddButton";
 import OfferComponent from "../../components/Market/OfferComponent/OfferComponent";
 import { OfferDTO, SupplyContractDTO } from "../../models/models";
 import { CircularProgress } from "@mui/material";
 import SupplyContractComponent from "../../components/Market/SupplyContractComponent/SupplyContractComponent";
+import SuggestedPriceComponent from "../../components/Market/SuggestedPriceComponent/SuggestedPriceComponent";
 
 type MarketplacePageBodyProps = {
     offers: OfferDTO[];
@@ -18,6 +18,7 @@ type MarketplacePageBodyProps = {
     removeOffer: (id: string) => Promise<void>;
     loading: boolean;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    suggestedPrice: number;
 };
 
 const MarketplacePageBody = ({
@@ -29,13 +30,13 @@ const MarketplacePageBody = ({
     removeOffer,
     loading,
     setLoading,
+    suggestedPrice,
 }: MarketplacePageBodyProps) => {
     useEffect(() => {
         setTimeout(() => {
             setLoading(false);
         }, 1000);
     }, [setLoading]);
-
 
     if (loading) {
         return (
@@ -62,9 +63,7 @@ const MarketplacePageBody = ({
             </div>
 
             <div className={styles.row}>
-                {/* <SuggestedPriceComponent //TODO: fix
-                    suggestedPrice={String(Math.random().toFixed(3))}
-                /> */}
+                <SuggestedPriceComponent suggestedPrice={suggestedPrice} />
             </div>
             {offers && (
                 <>
