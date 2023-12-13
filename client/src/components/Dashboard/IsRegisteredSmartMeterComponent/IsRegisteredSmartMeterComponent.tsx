@@ -22,12 +22,11 @@ const IsRegisteredSmartMeterComponent = () => {
         setSmartMeterAddress(contextSmartMeterAddress);
     }, [contextSmartMeterAddress]);
 
-    const { setToastProps, onOpen} = useContext(ToastContext);
+    const { setToastProps, onOpen } = useContext(ToastContext);
 
     const isKeyRegistered = async () => {
         if (!currentAccount) return;
         let res = await isRegisteredKey(smartMeterPubKey, smartMeterAddress);
-        console.log(res);
         setToastProps(`Response was: ${res}`, "info");
         onOpen();
     };

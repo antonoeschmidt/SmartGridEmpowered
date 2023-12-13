@@ -92,10 +92,10 @@ export const useEthereumContext = (): EthereumContextType => {
             deployedSmartMeterAddress,
             currentMarket
         );
-        console.log(res);
+        console.log("setSmartMeterMarketAddress", res);
 
         res = await registerSmartMeter(account, deployedSmartMeterAddress);
-        console.log(res);
+        console.log("registerSmartMeter", res);
     };
 
     // saves the new admin account to local storage

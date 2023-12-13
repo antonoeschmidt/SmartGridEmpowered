@@ -21,7 +21,7 @@ const RegisterSmartMeterComponent = () => {
         setSmartMeterAddress(contextSmartMeterAddress);
     }, [contextSmartMeterAddress]);
 
-    const { setToastProps, onOpen} = useContext(ToastContext);
+    const { setToastProps, onOpen } = useContext(ToastContext);
 
     const handleRegisterSmartMeter = async () => {
         if (!currentAccount) return;
@@ -33,7 +33,7 @@ const RegisterSmartMeterComponent = () => {
             setToastProps("Something went wrong", "error");
         }
         onOpen();
-        console.log(res);
+        console.log("handleRegisterSmartMeter", res);
     };
 
     return (
