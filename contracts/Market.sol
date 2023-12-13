@@ -25,6 +25,7 @@ interface ISmartMeter {
 contract Market {
     address owner;
     ICableCompany cableCompany;
+    string groupPublicKey;
 
     struct Offer {
         string id;
@@ -34,15 +35,18 @@ contract Market {
         address owner;
         address smartMeterAddress;
         bool active;
+        string sellerSignature;
     }
 
     mapping(string => Offer) private offers;
+    mapping(string => Offer) private pendingConfirmation;
     string[] public offerIds;
     address public lastestSupplyChainAddress;
 
-    constructor(address _cableCompanyAddress) payable {
+    constructor(address _cableCompanyAddress, string memory _groupPublicKey) payable {
         owner = msg.sender;
         cableCompany = ICableCompany(_cableCompanyAddress);
+        groupPublicKey = _groupPublicKey;
     }
 
     function addOffer(
@@ -50,7 +54,8 @@ contract Market {
         uint256 amount,
         uint256 price,
         uint256 expiration,
-        address smartMeterAddress
+        address smartMeterAddress,
+        string memory sellerSignature
     ) public returns (bool) {
         require(
             cableCompany.isRegisteredKey(msg.sender, smartMeterAddress),
@@ -70,7 +75,8 @@ contract Market {
             expiration: expiration,
             owner: msg.sender,
             smartMeterAddress: smartMeterAddress,
-            active: true
+            active: true,
+            sellerSignature: sellerSignature
         });
         offerIds.push(id);
 
@@ -89,9 +95,10 @@ contract Market {
         return true;
     }
 
-    function buyOffer(string memory id) public returns (address) {
+    function buyOffer(string memory id, string memory buyerSignature) public returns (address) {
         Offer memory offer = offers[id];
-        address buyer = msg.sender;
+        require(keccak256(bytes(offer.id)) == keccak256(bytes(id)), "No offer found");
+        string memory sellerSignature = offer.sellerSignature;
         address seller = offer.owner;
         uint amount = offer.amount;
         uint price = offer.price;
@@ -101,8 +108,8 @@ contract Market {
         require(msg.sender != seller, "Owner cannot buy own offer");
 
         SupplyContract sc = new SupplyContract({
-            _buyer: buyer,
-            _seller: seller,
+            _buyerSignature: buyerSignature,
+            _sellerSignature: sellerSignature,
             _amount: amount,
             _price: price
         });
@@ -142,77 +149,87 @@ contract Market {
     function getLatestSupplyContract() public view returns (address) {
         return lastestSupplyChainAddress;
     }
+
+    function getPendingOffers() public view returns (address) {
+        return lastestSupplyChainAddress;
+    }
+
+    function getGroupPublicKey() public view returns(string memory) {
+        return groupPublicKey;
+    }
+
+    function setGroupPublicKey(string memory _groupPublicKey) public {
+        require(msg.sender == address(cableCompany), "Only cable compnay can change the group key");
+        groupPublicKey = _groupPublicKey;
+    }
 }
 
 contract SupplyContract {
-    address public buyer;
-    address public seller;
+    string public buyerSignature;
+    string public sellerSignature;
     uint256 private amount; // Wh
     uint256 private price; // Euro cents
     uint256 timestamp; // Unix
+    bool confirmed;
+    address dso;
 
     struct SupplyContractDTO {
         address scAddress;
-        address buyer;
-        address seller;
+        string buyerSignature;
+        string sellerSignature;
         uint256 price;
         uint256 amount;
         uint256 timestamp;
+        bool confirmed;
     }
 
     constructor(
-        address _buyer,
-        address _seller,
+        string memory _buyerSignature,
+        string memory _sellerSignature,
         uint256 _amount,
         uint256 _price
     ) {
-        buyer = _buyer;
-        seller = _seller;
+        buyerSignature = _buyerSignature;
+        sellerSignature = _sellerSignature;
         amount = _amount;
         price = _price;
         timestamp = block.timestamp;
+        confirmed = false;
     }
 
-    function getBuyer() public view returns (address) {
-        return buyer;
+    function getBuyer() public view returns (string memory) {
+        return buyerSignature;
     }
 
-    function getSeller() public view returns (address) {
-        return seller;
+    function getSeller() public view returns (string memory) {
+        return sellerSignature;
     }
 
     function getAmount() public view returns (uint256) {
-        require((msg.sender == buyer) || (msg.sender == seller));
         return amount;
     }
 
     function getPrice() public view returns (uint256) {
-        require((msg.sender == buyer) || (msg.sender == seller));
         return price;
     }
 
     function getInfo() public view returns (SupplyContractDTO memory) {
-        uint256 priceDTO = 0;
-        uint256 amountDTO = 0;
-
-        if (msg.sender == buyer) {
-            priceDTO = price;
-            amountDTO = amount;
-        }
-        if (msg.sender == seller) {
-            priceDTO = price;
-            amountDTO = amount;
-        }
 
         SupplyContractDTO memory scDTO = SupplyContractDTO({
             scAddress: address(this),
-            buyer: buyer,
-            seller: seller,
-            price: priceDTO,
-            amount: amountDTO,
-            timestamp: timestamp
+            buyerSignature: buyerSignature,
+            sellerSignature: sellerSignature,
+            price: price,
+            amount: amount,
+            timestamp: timestamp,
+            confirmed: confirmed
         });
 
         return scDTO;
+    }
+
+    function aproveContract() public {
+        require(msg.sender == dso, "only the DSO can approve a contract");
+        confirmed = true;
     }
 }

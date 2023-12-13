@@ -55,6 +55,7 @@ export type EthereumContextType = {
     ) => Promise<SupplyContractDTO>;
     loading: boolean;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    removeOffer: (offerId: string) => any;
 };
 
 export const useEthereumContext = (): EthereumContextType => {
@@ -276,6 +277,11 @@ export const useEthereumContext = (): EthereumContextType => {
         );
     };
 
+    const removeOffer = async(offerId: string) => {
+        const res = await marketApi.removeOffer(currentMarket, offerId, smartMeterAddress, currentAccount);
+        return res;
+    }
+
     return {
         accounts,
         setAccounts,
@@ -303,6 +309,7 @@ export const useEthereumContext = (): EthereumContextType => {
         addOffer,
         getOffers,
         buyOffer,
+        removeOffer,
 
         deploySmartMeter,
         getBatteryCharge,

@@ -4,7 +4,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import TrendingDownIcon from '@mui/icons-material/TrendingDown';
 
 type Props = {
-    suggestedPrice: string,
+    suggestedPrice: number,
 }
 
 const SuggestedPriceComponent = ({suggestedPrice}: Props) => {
@@ -18,11 +18,11 @@ const SuggestedPriceComponent = ({suggestedPrice}: Props) => {
             <h3>Suggested Price</h3>
             <p
                 className={styles.text}
-                style={{ color: parseFloat(suggestedPrice) > 0.5 ? colors.green : colors.red }}
+                style={{ color: suggestedPrice > 0.5 ? colors.green : colors.red }}
             >
                 {suggestedPrice} €/kWh
             </p>
-            {parseFloat(suggestedPrice) > 0.5 ? ( <TrendingUpIcon sx={{fontSize: "50px", color: colors.green}}/>) 
+            {suggestedPrice > 0.5 ? ( <TrendingUpIcon sx={{fontSize: "50px", color: colors.green}}/>) 
             : ( <TrendingDownIcon sx={{fontSize: "50px", color: colors.red}}/>)}
                
         </div>

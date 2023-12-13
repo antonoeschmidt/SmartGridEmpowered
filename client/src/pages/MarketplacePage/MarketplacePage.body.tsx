@@ -15,7 +15,7 @@ type MarketplacePageBodyProps = {
     supplyContractsDTO: SupplyContractDTO[];
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     handleBuyOffer: () => (id: string) => Promise<void>;
-    removeOffer: () => (id: string) => Promise<void>;
+    removeOffer: (id: string) => Promise<void>;
     loading: boolean;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 };
@@ -35,6 +35,7 @@ const MarketplacePageBody = ({
             setLoading(false);
         }, 1000);
     }, [setLoading]);
+
 
     if (loading) {
         return (
@@ -76,7 +77,7 @@ const MarketplacePageBody = ({
                                     key={index}
                                     offer={offer}
                                     ownOffer={true}
-                                    onClickButton={removeOffer()}
+                                    onClickButton={() => removeOffer(offer.id)}
                                 />
                             ))}
                     </div>
