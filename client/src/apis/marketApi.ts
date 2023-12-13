@@ -95,9 +95,24 @@ const buyOffer = async (market: string, id: string, account: string) => {
     }
 };
 
+const removeOffer = async(marketAddress: string, offerId: string, smartMeterAddress: string, currentAccount: string) => {
+    const marketContract = marketInstance(marketAddress);
+    try {
+        // @ts-ignore
+        return await marketContract.methods.removeOffer(offerId, smartMeterAddress).send({
+            from: currentAccount,
+            gas: "1500000",
+            gasPrice: "30000000000",
+        });
+    } catch (err) {
+        console.log("Remove offer err", err)
+    }
+}
+
 export const marketApi = {
     deployMarket,
     addOffer,
     getOffers,
     buyOffer,
+    removeOffer
 };

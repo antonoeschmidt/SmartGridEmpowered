@@ -4,6 +4,7 @@ pragma solidity ^0.8.9;
 
 contract CableCompany {
     address owner;
+    // in case people don't trust our api and wan't to verify themselves.
     mapping(address => address) pubKeys;
 
     constructor() {
@@ -26,5 +27,7 @@ contract CableCompany {
 
      function getOwner() public view returns(address) {
         return owner;
-    } 
+    }
+
+    
 }
