@@ -20,7 +20,7 @@ const SmartMeterPage = () => {
             return;
         }
         let res = await createSmartMeterLog(consumption, production);
-        console.log(res);
+        console.log("createSmartMeterLog", res);
         if (res) {
             setToastProps("Log created", "success");
         } else {

@@ -83,7 +83,7 @@ const OnboardingContentComponent = ({
     const handleStep3 = async () => {
         // Set Market Address for SmartMeter
         let res = await setSmartMeterMarketAddress();
-        console.log(res);
+        console.log("setSmartMeterMarketAddress", res);
         localStorage.setItem("onboarded", "true");
 
         setLoading(true);

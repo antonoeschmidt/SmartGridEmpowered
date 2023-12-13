@@ -26,9 +26,16 @@
     justify-content: center;
 }
 
+.dateString {
+    margin-top: 0.5em;
+    font-style: italic;
+    color: #44cd54;
+}
+
 .greenEnergyLogo {
     width: 3em;
     height: 3em;
     position: absolute;
     left: 18em;
 }
+

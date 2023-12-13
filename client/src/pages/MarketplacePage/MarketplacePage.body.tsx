@@ -7,6 +7,7 @@ import { AddButton } from "../../components/common/AddButton";
 import OfferComponent from "../../components/Market/OfferComponent/OfferComponent";
 import { OfferDTO, SupplyContractDTO } from "../../models/models";
 import { CircularProgress } from "@mui/material";
+import SupplyContractComponent from "../../components/Market/SupplyContractComponent/SupplyContractComponent";
 
 type MarketplacePageBodyProps = {
     offers: OfferDTO[];
@@ -97,6 +98,20 @@ const MarketplacePageBody = ({
                     </div>
                 </>
             )}
+            {supplyContractsDTO && (
+                <>
+                    <h3>Supply Contracts</h3>
+                    <div className={styles.row}>
+                        {supplyContractsDTO.map((supplyContract, index) => (
+                            <SupplyContractComponent
+                                key={index}
+                                supplyContract={supplyContract}
+                            />
+                        ))}
+                    </div>
+                </>
+            )}
+
             <div className={styles.item} style={{ maxWidth: "100vh" }}>
                 <h3>Supply Contracts</h3>
                 {supplyContractsDTO && (
