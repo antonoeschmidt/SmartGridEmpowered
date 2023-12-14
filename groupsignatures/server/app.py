@@ -1,9 +1,14 @@
 from flask import Flask, request
 from pygroupsig import signature, grpkey, constants, groupsig, memkey
 from flask_cors import CORS
+import os
+from dotenv import load_dotenv
 import traceback
 app = Flask(__name__)
 CORS(app)
+
+load_dotenv()
+app.config['API_KEY'] = os.getenv("API_KEY", "default")
 
 ## maps a key to a user id.
 users = []
@@ -27,9 +32,12 @@ def verify_signature():
     message = body.get("message")
     if not signature_str or not message:
         return "Missing a parameter", 400
-    signature_object = signature.signature_import(code, signature_str)
+    try:
+        signature_object = signature.signature_import(code, signature_str)
+    except Exception as e:
+        return {"Valid": False}, 401
     is_ok = groupsig.verify(signature_object, message, group_public_key)
-    return {"Valid": is_ok}, 200
+    return {"Valid": is_ok}, 200 if is_ok else 401
 
 ## open for all
 @app.route('/sign', methods=["POST"])
@@ -49,6 +57,10 @@ def sign():
 
 @app.route("/open", methods=["POST"])
 def open():
+        api_key = request.headers.get('x-api-key')
+        if not api_key or api_key != app.config['API_KEY']:
+            return "Unauthroized", 401
+
         body = request.get_json()
         signature_str = body.get("signature")
         if not signature_str:
@@ -76,6 +88,10 @@ def open():
 ## and then the DSO generate a token and the user calls this endpoint, probably best.
 @app.route("/add-member/<name>", methods=["POST"])
 def add_member(name):
+    api_key = request.headers.get('x-api-key')
+    if not api_key or api_key != app.config['API_KEY']:
+        return "Unauthroized", 401
+    
     try:
         if not name:
             return "No name", 400
@@ -92,8 +108,6 @@ def add_member(name):
     except Exception as e:
         traceback(str(e))
         return "Something went terribly terribly wrong"
-
-
 
 @app.route("/group-key")
 def get_group_key():
