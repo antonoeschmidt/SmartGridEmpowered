@@ -21,7 +21,13 @@ type OfferModalProps = {
 };
 
 export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
-    const { currentAccount, setOffers, addOffer } = useContext(EthereumContext);
+    const {
+        currentAccount,
+        setOffers,
+        addOffer,
+        currentAccountSignature,
+        newSignatureDialog,
+    } = useContext(EthereumContext);
 
     const [price, setPrice] = useState<number>(0);
     const [amount, setAmount] = useState<number>(0);
@@ -38,6 +44,14 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
             alert("Amount and price must have a value");
             return;
         }
+        let signature = currentAccountSignature;
+        if (!signature) {
+            signature = newSignatureDialog();
+            if (!signature) {
+                return;
+            }
+        }
+
         const newOffer: OfferDTO = {
             id: uuidv4(),
             price: price,
@@ -45,6 +59,7 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
             expiration: Date.now() + 10 * 24 * 60 * 60 * 1000, // 10 days in ms
             owner: currentAccount,
             active: true,
+            sellerSignature: signature,
         };
         addOffer(newOffer).then((offer) => {
             if (!offer) {

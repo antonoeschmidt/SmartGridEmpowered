@@ -25,7 +25,7 @@ interface ISmartMeter {
 contract Market {
     address owner;
     ICableCompany cableCompany;
-    string groupPublicKey;
+    // string groupPublicKey;
 
     struct Offer {
         string id;
@@ -43,10 +43,12 @@ contract Market {
     string[] public offerIds;
     address public lastestSupplyChainAddress;
 
-    constructor(address _cableCompanyAddress, string memory _groupPublicKey) payable {
+    constructor(
+        address _cableCompanyAddress // string memory _groupPublicKey
+    ) payable {
         owner = msg.sender;
         cableCompany = ICableCompany(_cableCompanyAddress);
-        groupPublicKey = _groupPublicKey;
+        // groupPublicKey = _groupPublicKey;
     }
 
     function addOffer(
@@ -62,7 +64,7 @@ contract Market {
             "Smart Meter not registered by Cable Company"
         );
 
-        ISmartMeter smartMeter = ISmartMeter(smartMeterAddress); // maybe here
+        ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);
         require(
             smartMeter.subtractBatteryCharge(amount),
             "Not enough stored energy"
@@ -74,7 +76,7 @@ contract Market {
             price: price,
             expiration: expiration,
             owner: msg.sender,
-            smartMeterAddress: smartMeterAddress,
+            smartMeterAddress: smartMeterAddress, // are we using this?
             active: true,
             sellerSignature: sellerSignature
         });
@@ -95,9 +97,15 @@ contract Market {
         return true;
     }
 
-    function buyOffer(string memory id, string memory buyerSignature) public returns (address) {
+    function buyOffer(
+        string memory id,
+        string memory buyerSignature
+    ) public returns (address) {
         Offer memory offer = offers[id];
-        require(keccak256(bytes(offer.id)) == keccak256(bytes(id)), "No offer found");
+        require(
+            keccak256(bytes(offer.id)) == keccak256(bytes(id)),
+            "No offer found"
+        );
         string memory sellerSignature = offer.sellerSignature;
         address seller = offer.owner;
         uint amount = offer.amount;
@@ -154,24 +162,27 @@ contract Market {
         return lastestSupplyChainAddress;
     }
 
-    function getGroupPublicKey() public view returns(string memory) {
-        return groupPublicKey;
-    }
+    // function getGroupPublicKey() public view returns (string memory) {
+    //     return groupPublicKey;
+    // }
 
-    function setGroupPublicKey(string memory _groupPublicKey) public {
-        require(msg.sender == address(cableCompany), "Only cable compnay can change the group key");
-        groupPublicKey = _groupPublicKey;
-    }
+    // function setGroupPublicKey(string memory _groupPublicKey) public {
+    //     require(
+    //         msg.sender == address(cableCompany),
+    //         "Only cable compnay can change the group key"
+    //     );
+    //     groupPublicKey = _groupPublicKey;
+    // }
 }
 
 contract SupplyContract {
-    string public buyerSignature;
-    string public sellerSignature;
-    uint256 private amount; // Wh
-    uint256 private price; // Euro cents
+    string buyerSignature;
+    string sellerSignature;
+    uint256 amount; // Wh
+    uint256 price; // Euro cents
     uint256 timestamp; // Unix
     bool confirmed;
-    address dso;
+    // address dso;
 
     struct SupplyContractDTO {
         address scAddress;
@@ -214,7 +225,6 @@ contract SupplyContract {
     }
 
     function getInfo() public view returns (SupplyContractDTO memory) {
-
         SupplyContractDTO memory scDTO = SupplyContractDTO({
             scAddress: address(this),
             buyerSignature: buyerSignature,
@@ -228,8 +238,8 @@ contract SupplyContract {
         return scDTO;
     }
 
-    function aproveContract() public {
-        require(msg.sender == dso, "only the DSO can approve a contract");
-        confirmed = true;
-    }
+    // function aproveContract() public {
+    //     require(msg.sender == dso, "only the DSO can approve a contract");
+    //     confirmed = true;
+    // }
 }

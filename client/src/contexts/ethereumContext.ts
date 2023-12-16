@@ -56,6 +56,10 @@ export type EthereumContextType = {
     loading: boolean;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     removeOffer: (offerId: string) => any;
+    currentAccountSignature: string;
+    setCurrentAccountSignature: React.Dispatch<React.SetStateAction<string>>;
+
+    newSignatureDialog: () => string;
 };
 
 export const useEthereumContext = (): EthereumContextType => {
@@ -71,6 +75,8 @@ export const useEthereumContext = (): EthereumContextType => {
     const [cableCompanyAddress, setCableCompanyAddress] = useState<string>();
     const [smartMeterAddress, setSmartMeterAddress] = useState<string>();
     const [loading, setLoading] = useState(false);
+    const [currentAccountSignature, setCurrentAccountSignature] =
+        useState<string>();
 
     const deployAndRegisterSmartMeter = async (account: string) => {
         if (!account) {
@@ -129,15 +135,17 @@ export const useEthereumContext = (): EthereumContextType => {
         const smartMeterAddress = parsedJson.smartMeterAddress
             ? parsedJson.smartMeterAddress
             : "";
+        const signature = parsedJson.signature ? parsedJson.signature : "";
         return {
             smartMeterAddress,
+            signature,
         };
     };
 
     // saves data to localstorage when the user changes a setting
     useEffect(() => {
         if (!currentAccount) return;
-        const json = { smartMeterAddress };
+        const json = { smartMeterAddress, signature: currentAccountSignature };
         localStorage.setItem(currentAccount, JSON.stringify(json));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [smartMeterAddress]);
@@ -154,6 +162,7 @@ export const useEthereumContext = (): EthereumContextType => {
             }
 
             const loadedData = loadFromLocalStorage(currentAccount);
+            setCurrentAccountSignature(loadedData.signature);
             if (!loadedData.smartMeterAddress) {
                 console.log(
                     "No SmartMeter found for current user. Deploying new one."
@@ -210,7 +219,39 @@ export const useEthereumContext = (): EthereumContextType => {
             alert("No account selected");
             return;
         }
-        return await marketApi.buyOffer(currentMarket, id, currentAccount);
+        let signature = currentAccountSignature;
+        if (!signature) {
+            signature = newSignatureDialog();
+            if (!signature) {
+                return;
+            }
+        }
+
+        return await marketApi.buyOffer(
+            currentMarket,
+            id,
+            currentAccount,
+            signature
+        );
+    };
+
+    const newSignatureDialog = () => {
+        // eslint-disable-next-line no-restricted-globals
+        const con = confirm(
+            "No group signature provided for current user. You want to add it?"
+        );
+        if (!con) {
+            return;
+        }
+        const signature = prompt("Please enter your group signature");
+
+        // check formatting is base64
+
+        if (!signature) {
+            return;
+        }
+        setCurrentAccountSignature(signature);
+        return signature;
     };
 
     // SmartMeterApi
@@ -277,10 +318,15 @@ export const useEthereumContext = (): EthereumContextType => {
         );
     };
 
-    const removeOffer = async(offerId: string) => {
-        const res = await marketApi.removeOffer(currentMarket, offerId, smartMeterAddress, currentAccount);
+    const removeOffer = async (offerId: string) => {
+        const res = await marketApi.removeOffer(
+            currentMarket,
+            offerId,
+            smartMeterAddress,
+            currentAccount
+        );
         return res;
-    }
+    };
 
     return {
         accounts,
@@ -322,6 +368,10 @@ export const useEthereumContext = (): EthereumContextType => {
 
         loading,
         setLoading,
+        currentAccountSignature,
+        setCurrentAccountSignature,
+
+        newSignatureDialog,
     };
 };
 

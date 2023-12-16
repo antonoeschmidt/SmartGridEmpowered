@@ -18,7 +18,12 @@ export const deploySupplyContract = async (
         .deploy({
             data: SupplyContract.bytecode,
             // @ts-ignore
-            arguments: [sc.buyer, sc.seller, sc.amount, sc.price],
+            arguments: [
+                sc.buyerSignature,
+                sc.sellerSignature,
+                sc.amount,
+                sc.price,
+            ],
         })
         .send({
             from: sender,

@@ -15,17 +15,18 @@ export const offerParser = (d: any): OfferDTO => {
         expiration: Number(d.expiration),
         owner: d.owner,
         active: d.active,
-    } as OfferDTO;
+        sellerSignature: d.sellerSignature,
+    };
 };
 
 export const supplyContractParser = (d: any): SupplyContractDTO => {
     return {
         id: d.id,
         address: d.scAddress,
-        buyer: d.buyer,
-        seller: d.seller,
+        buyerSignature: d.buyerSignature,
+        sellerSignature: d.sellerSignature,
         price: Number(d.price),
         amount: Number(d.amount),
-        timestamp: Number(d.timestamp) * 1000
-    } as SupplyContractDTO;
+        timestamp: Number(d.timestamp) * 1000,
+    };
 };

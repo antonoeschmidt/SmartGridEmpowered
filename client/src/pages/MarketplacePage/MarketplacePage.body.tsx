@@ -1,7 +1,5 @@
 import React, { useEffect } from "react";
 import styles from "./MarketplacePage.module.css";
-import DataTable from "../../components/Shared/DataTable/DataTable";
-import { supplyContractColumns } from "../../models/dataGridColumns";
 import { AddButton } from "../../components/common/AddButton";
 import OfferComponent from "../../components/Market/OfferComponent/OfferComponent";
 import { OfferDTO, SupplyContractDTO } from "../../models/models";
@@ -111,16 +109,6 @@ const MarketplacePageBody = ({
                     </div>
                 </>
             )}
-
-            <div className={styles.item} style={{ maxWidth: "100vh" }}>
-                <h3>Supply Contracts</h3>
-                {supplyContractsDTO && (
-                    <DataTable
-                        rows={supplyContractsDTO}
-                        columns={supplyContractColumns}
-                    />
-                )}
-            </div>
         </>
     );
 };

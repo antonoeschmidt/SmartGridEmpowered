@@ -18,9 +18,9 @@ const SupplyContractComponent = ({
             <div className={styles.lightTextItalic}>
                 Supply Contract#{supplyContract.id.slice(0, 7)}
             </div>
-            Buyer: {supplyContract.buyer.slice(0, 7)}
+            Buyer: {supplyContract.buyerSignature.slice(0, 7)}
             <br />
-            Seller: {supplyContract.seller.slice(0, 7)}
+            Seller: {supplyContract.sellerSignature.slice(0, 7)}
             <img
                 className={styles.greenEnergyLogo}
                 src="/images/greenEnergyLogo.png"
