@@ -14,9 +14,8 @@
     font-size: 14px;
     font-weight: normal;
 }
-
 .header {
-    font-size: 40px; 
+    font-size: 40px;
     font-weight: 500;
 }
 
@@ -35,7 +34,9 @@
 .greenEnergyLogo {
     width: 3em;
     height: 3em;
-    position: absolute;
-    left: 18em;
 }
 
+.cardTop {
+    display: flex;
+    justify-content: space-between;
+}

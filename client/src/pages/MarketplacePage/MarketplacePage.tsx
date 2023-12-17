@@ -4,6 +4,7 @@ import EthereumContext from "../../contexts/ethereumContext";
 import { SupplyContractDTO } from "../../models/models";
 import { OfferModal } from "../../components/Market/OfferModal/OfferModal";
 import MarketplacePageBody from "./MarketplacePage.body";
+import SupplyContractInfoModal from "../../components/Market/SupplyContractInfoModal/SupplyContractInfoModal";
 
 const MarketplacePage: FC = () => {
     const {
@@ -95,6 +96,16 @@ const MarketplacePage: FC = () => {
         setOpen(false);
     };
 
+    const [openSupplyContractInfoModal, setOpenSupplyContractInfoModal] =
+        useState(false);
+
+    const handleCloseSupplyContractInfoModal = () => {
+        setOpenSupplyContractInfoModal(false);
+    };
+
+    const [currentSupplyContract, setCurrentSupplyContract] =
+        useState<SupplyContractDTO>();
+
     if (!currentMarket) {
         return (
             <div className={styles.container}>
@@ -115,8 +126,15 @@ const MarketplacePage: FC = () => {
                 loading={loading}
                 setLoading={setLoading}
                 suggestedPrice={suggestedPrice}
+                setOpenSupplyContractInfoModal={setOpenSupplyContractInfoModal}
+                setCurrentSupplyContract={setCurrentSupplyContract}
             />
             <OfferModal open={open} handleClose={handleClose} />
+            <SupplyContractInfoModal
+                open={openSupplyContractInfoModal}
+                handleClose={handleCloseSupplyContractInfoModal}
+                supplyContract={currentSupplyContract}
+            />
         </div>
     );
 };

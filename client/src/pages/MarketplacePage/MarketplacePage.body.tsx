@@ -17,6 +17,12 @@ type MarketplacePageBodyProps = {
     loading: boolean;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     suggestedPrice: number;
+    setOpenSupplyContractInfoModal: React.Dispatch<
+        React.SetStateAction<boolean>
+    >;
+    setCurrentSupplyContract: React.Dispatch<
+        React.SetStateAction<SupplyContractDTO>
+    >;
 };
 
 const MarketplacePageBody = ({
@@ -29,6 +35,8 @@ const MarketplacePageBody = ({
     loading,
     setLoading,
     suggestedPrice,
+    setOpenSupplyContractInfoModal,
+    setCurrentSupplyContract,
 }: MarketplacePageBodyProps) => {
     useEffect(() => {
         setTimeout(() => {
@@ -104,6 +112,10 @@ const MarketplacePageBody = ({
                             <SupplyContractComponent
                                 key={index}
                                 supplyContract={supplyContract}
+                                handleShowClick={() => {
+                                    setCurrentSupplyContract(supplyContract);
+                                    setOpenSupplyContractInfoModal(true);
+                                }}
                             />
                         ))}
                     </div>
