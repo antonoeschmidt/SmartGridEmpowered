@@ -31,6 +31,7 @@ contract("Add Offer", (accounts) => {
         const price = 1;
         const date = Date.now();
         const sellerSignature = "signature1";
+        const nonce = Math.floor(Math.random() * 1000);
 
         await market.addOffer(
             offerId,
@@ -39,20 +40,21 @@ contract("Add Offer", (accounts) => {
             date,
             smartMeter.address,
             sellerSignature,
+            nonce,
+            user,
             {
                 from: user,
             }
         );
 
         const offer = await market.getOffer(offerId);
-        const nonce = await (await market.getNonce()).toString();
 
         assert.equal(offer.id, offerId);
         assert.equal(offer.price, 1);
         assert.equal(offer.amount, 1);
         assert.equal(offer.owner, user);
         assert.equal(offer.active, true);
-        assert.equal(offer.nonce, nonce - 1); // nonce is incremented after the offer is added
+        assert.equal(offer.nonce, nonce); // nonce is incremented after the offer is added
     });
 
     it("Should fail to make an offer", async () => {
@@ -62,6 +64,7 @@ contract("Add Offer", (accounts) => {
         const date = Date.now();
         let errorMessage;
         const sellerSignature = "signature1";
+        const nonce = Math.floor(Math.random() * 1000);
 
         try {
             await market.addOffer(
@@ -71,6 +74,8 @@ contract("Add Offer", (accounts) => {
                 date,
                 smartMeter.address,
                 sellerSignature,
+                nonce,
+                user,
                 {
                     from: user,
                 }

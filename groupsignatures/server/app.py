@@ -35,9 +35,9 @@ def verify_signature():
     try:
         signature_object = signature.signature_import(code, signature_str)
     except Exception as e:
-        return {"Valid": False}, 401
+        return {"valid": False}, 401
     is_ok = groupsig.verify(signature_object, message, group_public_key)
-    return {"Valid": is_ok}, 200 if is_ok else 401
+    return {"valid": is_ok}, 200 if is_ok else 401
 
 ## open for all
 @app.route('/sign', methods=["POST"])

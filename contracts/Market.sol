@@ -25,7 +25,7 @@ interface ISmartMeter {
 contract Market {
     address owner;
     ICableCompany cableCompany;
-    uint nonce;
+    // uint nonce;
     // string groupPublicKey;
 
     struct Offer {
@@ -50,7 +50,7 @@ contract Market {
     ) payable {
         owner = msg.sender;
         cableCompany = ICableCompany(_cableCompanyAddress);
-        nonce = 1;
+        // nonce = 1;
         // groupPublicKey = _groupPublicKey;
     }
 
@@ -60,7 +60,9 @@ contract Market {
         uint price,
         uint expiration,
         address smartMeterAddress,
-        string memory sellerSignature
+        string memory sellerSignature,
+        uint nonce,
+        address sellerAddress
     ) public returns (bool) {
         require(
             cableCompany.isRegisteredKey(msg.sender, smartMeterAddress),
@@ -72,6 +74,8 @@ contract Market {
             smartMeter.subtractBatteryCharge(amount),
             "Not enough stored energy"
         );
+
+        require(sellerAddress == msg.sender, "Only owner can add offer");
 
         offers[id] = Offer({
             id: id,
@@ -171,9 +175,9 @@ contract Market {
         return lastestSupplyChainAddress;
     }
 
-    function getNonce() public view returns (uint) {
-        return nonce;
-    }
+    // function getNonce() public view returns (uint) {
+    //     return nonce;
+    // }
 
     // function getGroupPublicKey() public view returns (string memory) {
     //     return groupPublicKey;

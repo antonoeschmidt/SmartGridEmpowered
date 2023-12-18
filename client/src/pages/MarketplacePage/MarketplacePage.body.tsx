@@ -12,7 +12,7 @@ type MarketplacePageBodyProps = {
     currentAccount: string;
     supplyContractsDTO: SupplyContractDTO[];
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    handleBuyOffer: () => (id: string) => Promise<void>;
+    handleBuyOffer: () => (id: string, offer: OfferDTO) => Promise<void>;
     removeOffer: (id: string) => Promise<void>;
     loading: boolean;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;

@@ -4,6 +4,7 @@ import { cableCompanyApi } from "../apis/cableCompanyApi";
 import { marketApi } from "../apis/marketApi";
 import { smartMeterApi } from "../apis/smartMeterApi";
 import { supplyContractApi } from "../apis/supplyContractApi";
+import { sign } from "../apis/groupSignature";
 
 export type EthereumContextType = {
     accounts: string[];
@@ -33,7 +34,7 @@ export type EthereumContextType = {
     deployMarket: () => Promise<string>;
     addOffer: (offer: OfferDTO) => Promise<OfferDTO>;
     getOffers: () => Promise<OfferDTO[]>;
-    buyOffer: (id: string) => Promise<any>;
+    buyOffer: (id: string, offer: OfferDTO) => Promise<any>;
     deploySmartMeter: (id: string) => Promise<string>;
     getBatteryCharge: () => Promise<void | [] | (unknown[] & [])>;
     setSmartMeterMarketAddress: (
@@ -214,7 +215,7 @@ export const useEthereumContext = (): EthereumContextType => {
         return await marketApi.getOffers(currentMarket);
     };
 
-    const buyOffer = async (id: string) => {
+    const buyOffer = async (id: string, offer: OfferDTO) => {
         if (!currentAccount) {
             alert("No account selected");
             return;
@@ -227,11 +228,21 @@ export const useEthereumContext = (): EthereumContextType => {
             }
         }
 
+        const buyerSignature = await sign(
+            JSON.stringify({
+                amount: offer.amount,
+                price: offer.price,
+                sellerSignature: offer.sellerSignature,
+                nonce: Number(offer.nonce),
+            }),
+            signature
+        );
+
         return await marketApi.buyOffer(
             currentMarket,
             id,
             currentAccount,
-            signature
+            buyerSignature
         );
     };
 

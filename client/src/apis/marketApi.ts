@@ -45,7 +45,9 @@ const addOffer = async (
                 offer.price,
                 offer.expiration,
                 smartMeterAddress,
-                offer.sellerSignature
+                offer.sellerSignature,
+                offer.nonce,
+                account
             )
             .send({
                 from: account,
@@ -79,7 +81,6 @@ const buyOffer = async (
     account: string,
     buyerSignature: string
 ) => {
-    debugger;
     const marketContract = marketInstance(market);
     try {
         await marketContract.methods

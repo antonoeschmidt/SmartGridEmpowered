@@ -16,6 +16,7 @@ contract("Buy Offer", (accounts) => {
     const date = Date.now();
     const sellerSignature = "signature1";
     const buyerSignature = "signature2";
+    const nonce = Math.floor(Math.random() * 1000);
 
     beforeEach(async () => {
         cableCompany = await CableCompany.new({ from: admin });
@@ -37,6 +38,8 @@ contract("Buy Offer", (accounts) => {
             date,
             smartMeter.address,
             sellerSignature,
+            nonce,
+            user,
             {
                 from: user,
             }
@@ -68,6 +71,8 @@ contract("Buy Offer", (accounts) => {
             expiredDate,
             smartMeter.address,
             sellerSignature,
+            nonce,
+            user,
             {
                 from: user,
             }

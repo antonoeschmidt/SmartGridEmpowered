@@ -14,6 +14,7 @@ import { OfferDTO } from "../../../models/models";
 import Button from "../../Shared/Button/Button";
 
 import ToastContext from "../../../contexts/toastContext";
+import { sign } from "../../../apis/groupSignature";
 
 type OfferModalProps = {
     open: boolean;
@@ -34,7 +35,7 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
 
     const { setToastProps, onOpen } = useContext(ToastContext);
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         if (!currentAccount) {
             alert("Please select an account before creating new offer!");
             return;
@@ -52,6 +53,18 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
             }
         }
 
+        const randomNonce = Math.floor(Math.random() * 1000000000);
+
+        // Seller signs offer
+        const sellerSignature = await sign(
+            JSON.stringify({
+                amount: amount,
+                price: price,
+                nonce: randomNonce,
+            }),
+            signature
+        );
+
         const newOffer: OfferDTO = {
             id: uuidv4(),
             price: price,
@@ -59,9 +72,10 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
             expiration: Date.now() + 10 * 24 * 60 * 60 * 1000, // 10 days in ms
             owner: currentAccount,
             active: true,
-            sellerSignature: signature,
-            nonce: 0, // This does not matter, since it set by the Market smart contract
+            sellerSignature: sellerSignature,
+            nonce: randomNonce,
         };
+
         addOffer(newOffer).then((offer) => {
             if (!offer) {
                 setToastProps(
