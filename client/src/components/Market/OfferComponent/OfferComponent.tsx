@@ -6,7 +6,7 @@ import Button from "../../Shared/Button/Button";
 type Props = {
     offer: OfferDTO;
     ownOffer?: boolean;
-    onClickButton: (id: string) => any;
+    onClickButton: (id: string, offer?: OfferDTO) => any;
 };
 
 const OfferComponent = ({ offer, ownOffer, onClickButton }: Props) => {
@@ -60,7 +60,7 @@ const OfferComponent = ({ offer, ownOffer, onClickButton }: Props) => {
                 ) : (
                     <Button
                         text="Buy"
-                        onClick={() => onClickButton(offer.id)}
+                        onClick={() => onClickButton(offer.id, offer)}
                         sx={{ width: "10em", marginTop: "2em" }}
                     />
                 )}

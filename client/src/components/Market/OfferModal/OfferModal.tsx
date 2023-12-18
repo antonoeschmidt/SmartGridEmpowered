@@ -14,6 +14,7 @@ import { OfferDTO } from "../../../models/models";
 import Button from "../../Shared/Button/Button";
 
 import ToastContext from "../../../contexts/toastContext";
+import { sign } from "../../../apis/groupSignature";
 
 type OfferModalProps = {
     open: boolean;
@@ -21,14 +22,20 @@ type OfferModalProps = {
 };
 
 export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
-    const { currentAccount, setOffers, addOffer } = useContext(EthereumContext);
+    const {
+        currentAccount,
+        setOffers,
+        addOffer,
+        currentAccountSignature,
+        newSignatureDialog,
+    } = useContext(EthereumContext);
 
     const [price, setPrice] = useState<number>(0);
     const [amount, setAmount] = useState<number>(0);
 
     const { setToastProps, onOpen } = useContext(ToastContext);
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
         if (!currentAccount) {
             alert("Please select an account before creating new offer!");
             return;
@@ -38,6 +45,26 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
             alert("Amount and price must have a value");
             return;
         }
+        let signature = currentAccountSignature;
+        if (!signature) {
+            signature = newSignatureDialog();
+            if (!signature) {
+                return;
+            }
+        }
+
+        const randomNonce = Math.floor(Math.random() * 1000000000);
+
+        // Seller signs offer
+        const sellerSignature = await sign(
+            JSON.stringify({
+                amount: amount,
+                price: price,
+                nonce: randomNonce,
+            }),
+            signature
+        );
+
         const newOffer: OfferDTO = {
             id: uuidv4(),
             price: price,
@@ -45,7 +72,10 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
             expiration: Date.now() + 10 * 24 * 60 * 60 * 1000, // 10 days in ms
             owner: currentAccount,
             active: true,
+            sellerSignature: sellerSignature,
+            nonce: randomNonce,
         };
+
         addOffer(newOffer).then((offer) => {
             if (!offer) {
                 setToastProps(

@@ -1,0 +1,4 @@
+flask
+pygroupsig
+flask-cors
+python-dotenv

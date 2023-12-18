@@ -14,6 +14,9 @@ contract("Buy Offer", (accounts) => {
     const amount = 1;
     const price = 1;
     const date = Date.now();
+    const sellerSignature = "signature1";
+    const buyerSignature = "signature2";
+    const nonce = Math.floor(Math.random() * 1000);
 
     beforeEach(async () => {
         cableCompany = await CableCompany.new({ from: admin });
@@ -34,6 +37,9 @@ contract("Buy Offer", (accounts) => {
             price,
             date,
             smartMeter.address,
+            sellerSignature,
+            nonce,
+            user,
             {
                 from: user,
             }
@@ -44,7 +50,7 @@ contract("Buy Offer", (accounts) => {
         let errorMessage;
         const validErrorMessage = "Owner cannot buy own offer";
         try {
-            await market.buyOffer(offerId, { from: user });
+            await market.buyOffer(offerId, buyerSignature, { from: user });
         } catch (error) {
             errorMessage = error.reason;
         }
@@ -64,13 +70,18 @@ contract("Buy Offer", (accounts) => {
             price,
             expiredDate,
             smartMeter.address,
+            sellerSignature,
+            nonce,
+            user,
             {
                 from: user,
             }
         );
 
         try {
-            await market.buyOffer(expiredOfferId, { from: user });
+            await market.buyOffer(expiredOfferId, buyerSignature, {
+                from: user,
+            });
         } catch (error) {
             errorMessage = error.reason;
         }
@@ -82,7 +93,7 @@ contract("Buy Offer", (accounts) => {
         let offers = await market.getOfferIDs();
         assert.equal(offers.length, 1, "No offers found");
 
-        await market.buyOffer(offerId, { from: validBuyer });
+        await market.buyOffer(offerId, buyerSignature, { from: validBuyer });
 
         offers = await market.getOfferIDs();
         assert.equal(offers.length, 0, "Too many offers");

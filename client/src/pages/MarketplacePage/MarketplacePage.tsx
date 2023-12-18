@@ -1,9 +1,11 @@
 import React, { useContext, useEffect, useState, FC } from "react";
 import styles from "./MarketplacePage.module.css";
 import EthereumContext from "../../contexts/ethereumContext";
-import { SupplyContractDTO } from "../../models/models";
+import { OfferDTO, SupplyContractDTO } from "../../models/models";
 import { OfferModal } from "../../components/Market/OfferModal/OfferModal";
 import MarketplacePageBody from "./MarketplacePage.body";
+import SupplyContractInfoModal from "../../components/Market/SupplyContractInfoModal/SupplyContractInfoModal";
+import { verify, openSignature } from "../../apis/groupSignature";
 
 const MarketplacePage: FC = () => {
     const {
@@ -18,10 +20,20 @@ const MarketplacePage: FC = () => {
         getSupplyContractInfo,
         loading,
         setLoading,
+        removeOffer,
     } = useContext(EthereumContext);
+
+    const roundToDecimalPlaces = (number, decimalPlaces) => {
+        const factor = 10 ** decimalPlaces;
+        return Math.round(number * factor) / factor;
+    };
 
     const [supplyContractsDTO, setSupplyContractsDTO] =
         useState<SupplyContractDTO[]>();
+
+    const [suggestedPrice, setSuggestedPrice] = useState<number>(
+        roundToDecimalPlaces(Math.random(), 3)
+    );
 
     useEffect(() => {
         if (offers || !currentMarket) return;
@@ -41,16 +53,31 @@ const MarketplacePage: FC = () => {
             .catch((err) => console.error(err));
     }, [currentAccount, getSupplyContracts]);
 
-    const handleBuyOffer = () => async (id: string) => {
-        const address = await buyOffer(id);
-        if (!address) {
+    useEffect(() => {
+        const changeSuggestedPrice = () => {
+            const change = (Math.random() - 0.5) * 0.05;
+            setSuggestedPrice((prevPrice) =>
+                roundToDecimalPlaces(prevPrice + change, 3)
+            );
+        };
+        const intervalId = setInterval(changeSuggestedPrice, 5000);
+        return () => clearInterval(intervalId);
+    }, []);
+
+    const handleBuyOffer = () => async (id: string, offer: OfferDTO) => {
+        const supplyContractAddress = await buyOffer(id, offer);
+        if (!supplyContractAddress) {
             alert("Buy offer didn't return an address");
             return;
         }
-        const newSC = await getSupplyContractInfo(address);
-        console.log("newSC", newSC);
-        setSupplyContractAddresses((prevState) => [...prevState, address]);
-        setSupplyContractsDTO((prevState) => [...prevState, newSC]);
+        const newSupplyContract = await getSupplyContractInfo(
+            supplyContractAddress
+        );
+        setSupplyContractAddresses((prevState) => [
+            ...prevState,
+            supplyContractAddress,
+        ]);
+        setSupplyContractsDTO((prevState) => [...prevState, newSupplyContract]);
 
         getOffers()
             .then((data) => {
@@ -58,10 +85,10 @@ const MarketplacePage: FC = () => {
             })
             .catch((err) => console.log(err));
     };
-    const removeOffer = () => async (id: string) => {
-        console.log("called remove offer");
 
-        alert("Not implemented yet");
+    const handleRemoveOffer = async (id: string) => {
+        await removeOffer(id);
+        setOffers((prev) => [...prev.filter((offer) => offer.id !== id)]);
     };
 
     const [open, setOpen] = useState(false);
@@ -69,6 +96,16 @@ const MarketplacePage: FC = () => {
     const handleClose = () => {
         setOpen(false);
     };
+
+    const [openSupplyContractInfoModal, setOpenSupplyContractInfoModal] =
+        useState(false);
+
+    const handleCloseSupplyContractInfoModal = () => {
+        setOpenSupplyContractInfoModal(false);
+    };
+
+    const [currentSupplyContract, setCurrentSupplyContract] =
+        useState<SupplyContractDTO>();
 
     if (!currentMarket) {
         return (
@@ -78,6 +115,66 @@ const MarketplacePage: FC = () => {
         );
     }
 
+    const verifySupplyContract = async (supplyContract: SupplyContractDTO) => {
+        const buyerMessage = JSON.stringify({
+            amount: supplyContract.amount,
+            price: supplyContract.price,
+            sellerSignature: supplyContract.sellerSignature,
+            nonce: Number(supplyContract.nonce),
+        });
+        const sellerMessage = JSON.stringify({
+            amount: supplyContract.amount,
+            price: supplyContract.price,
+            nonce: Number(supplyContract.nonce),
+        });
+        let buyerSignatureVerified = await verify(
+            supplyContract.buyerSignature,
+            buyerMessage
+        );
+        let sellerSignatureVerified = await verify(
+            supplyContract.sellerSignature,
+            sellerMessage
+        );
+        console.log("Verify sellerMessage");
+        console.log(
+            JSON.stringify({
+                message: sellerMessage,
+                signature: supplyContract.sellerSignature,
+            })
+        );
+        console.log("Verify buyerMessage");
+        console.log(
+            JSON.stringify({
+                message: buyerMessage,
+                signature: supplyContract.buyerSignature,
+            })
+        );
+        console.log("buyerSignatureVerified", buyerSignatureVerified);
+        console.log("sellerSignatureVerified", sellerSignatureVerified);
+
+        if (buyerSignatureVerified && sellerSignatureVerified) {
+            alert("Supply Contract is verified!");
+        } else {
+            alert("Supply Contract is not verified!");
+        }
+    };
+
+    const revealIdentities = async (supplyContract: SupplyContractDTO) => {
+        const sellerIdentity = await openSignature(
+            supplyContract.sellerSignature
+        );
+        const buyerIdentity = await openSignature(
+            supplyContract.buyerSignature
+        );
+
+        console.log("sellerIdentity", sellerIdentity);
+        console.log("buyerIdentity", buyerIdentity);
+
+        alert(
+            `Seller identity: ${sellerIdentity}\nBuyer identity: ${buyerIdentity}`
+        );
+    };
+
     return (
         <div className={styles.container}>
             <MarketplacePageBody
@@ -86,11 +183,21 @@ const MarketplacePage: FC = () => {
                 supplyContractsDTO={supplyContractsDTO}
                 setOpen={setOpen}
                 handleBuyOffer={handleBuyOffer}
-                removeOffer={removeOffer}
+                removeOffer={handleRemoveOffer}
                 loading={loading}
                 setLoading={setLoading}
+                suggestedPrice={suggestedPrice}
+                setOpenSupplyContractInfoModal={setOpenSupplyContractInfoModal}
+                setCurrentSupplyContract={setCurrentSupplyContract}
             />
             <OfferModal open={open} handleClose={handleClose} />
+            <SupplyContractInfoModal
+                open={openSupplyContractInfoModal}
+                handleClose={handleCloseSupplyContractInfoModal}
+                supplyContract={currentSupplyContract}
+                verifySupplyContract={verifySupplyContract}
+                revealIdentities={revealIdentities}
+            />
         </div>
     );
 };

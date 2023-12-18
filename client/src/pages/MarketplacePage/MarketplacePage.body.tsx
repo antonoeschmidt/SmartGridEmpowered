@@ -1,23 +1,28 @@
 import React, { useEffect } from "react";
 import styles from "./MarketplacePage.module.css";
-import DataTable from "../../components/Shared/DataTable/DataTable";
-import { supplyContractColumns } from "../../models/dataGridColumns";
-// import SuggestedPriceComponent from "../../components/Market/SuggestedPriceComponent/SuggestedPriceComponent";
 import { AddButton } from "../../components/common/AddButton";
 import OfferComponent from "../../components/Market/OfferComponent/OfferComponent";
 import { OfferDTO, SupplyContractDTO } from "../../models/models";
 import { CircularProgress } from "@mui/material";
 import SupplyContractComponent from "../../components/Market/SupplyContractComponent/SupplyContractComponent";
+import SuggestedPriceComponent from "../../components/Market/SuggestedPriceComponent/SuggestedPriceComponent";
 
 type MarketplacePageBodyProps = {
     offers: OfferDTO[];
     currentAccount: string;
     supplyContractsDTO: SupplyContractDTO[];
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-    handleBuyOffer: () => (id: string) => Promise<void>;
-    removeOffer: () => (id: string) => Promise<void>;
+    handleBuyOffer: () => (id: string, offer: OfferDTO) => Promise<void>;
+    removeOffer: (id: string) => Promise<void>;
     loading: boolean;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    suggestedPrice: number;
+    setOpenSupplyContractInfoModal: React.Dispatch<
+        React.SetStateAction<boolean>
+    >;
+    setCurrentSupplyContract: React.Dispatch<
+        React.SetStateAction<SupplyContractDTO>
+    >;
 };
 
 const MarketplacePageBody = ({
@@ -29,6 +34,9 @@ const MarketplacePageBody = ({
     removeOffer,
     loading,
     setLoading,
+    suggestedPrice,
+    setOpenSupplyContractInfoModal,
+    setCurrentSupplyContract,
 }: MarketplacePageBodyProps) => {
     useEffect(() => {
         setTimeout(() => {
@@ -61,9 +69,7 @@ const MarketplacePageBody = ({
             </div>
 
             <div className={styles.row}>
-                {/* <SuggestedPriceComponent //TODO: fix
-                    suggestedPrice={String(Math.random().toFixed(3))}
-                /> */}
+                <SuggestedPriceComponent suggestedPrice={suggestedPrice} />
             </div>
             {offers && (
                 <>
@@ -76,7 +82,7 @@ const MarketplacePageBody = ({
                                     key={index}
                                     offer={offer}
                                     ownOffer={true}
-                                    onClickButton={removeOffer()}
+                                    onClickButton={() => removeOffer(offer.id)}
                                 />
                             ))}
                     </div>
@@ -106,21 +112,15 @@ const MarketplacePageBody = ({
                             <SupplyContractComponent
                                 key={index}
                                 supplyContract={supplyContract}
+                                handleShowClick={() => {
+                                    setCurrentSupplyContract(supplyContract);
+                                    setOpenSupplyContractInfoModal(true);
+                                }}
                             />
                         ))}
                     </div>
                 </>
             )}
-
-            <div className={styles.item} style={{ maxWidth: "100vh" }}>
-                <h3>Supply Contracts</h3>
-                {supplyContractsDTO && (
-                    <DataTable
-                        rows={supplyContractsDTO}
-                        columns={supplyContractColumns}
-                    />
-                )}
-            </div>
         </>
     );
 };

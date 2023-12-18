@@ -17,6 +17,10 @@ const OnboardingPage = () => {
         });
     }, [accounts.length, setAccounts]);
 
+    useEffect(() => {
+        localStorage.clear();
+    }, []);
+
     return (
         <StepContext.Provider value={stepContextValue}>
             <OnboardingPageBody />

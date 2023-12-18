@@ -12,6 +12,7 @@ const RoutesApp = () => {
 
     const { toast } = useContext(ToastContext);
 
+
     return (
         <BrowserRouter>
             <Routes>
