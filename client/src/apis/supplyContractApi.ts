@@ -23,6 +23,7 @@ export const deploySupplyContract = async (
                 sc.sellerSignature,
                 sc.amount,
                 sc.price,
+                sc.nonce,
             ],
         })
         .send({

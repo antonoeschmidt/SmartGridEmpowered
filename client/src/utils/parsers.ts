@@ -16,6 +16,7 @@ export const offerParser = (d: any): OfferDTO => {
         owner: d.owner,
         active: d.active,
         sellerSignature: d.sellerSignature,
+        nonce: d.nonce,
     };
 };
 
@@ -28,5 +29,6 @@ export const supplyContractParser = (d: any): SupplyContractDTO => {
         price: Number(d.price),
         amount: Number(d.amount),
         timestamp: Number(d.timestamp) * 1000,
+        nonce: Number(d.nonce),
     };
 };

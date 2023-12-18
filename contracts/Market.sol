@@ -25,17 +25,19 @@ interface ISmartMeter {
 contract Market {
     address owner;
     ICableCompany cableCompany;
+    uint nonce;
     // string groupPublicKey;
 
     struct Offer {
         string id;
-        uint256 price;
-        uint256 amount;
-        uint256 expiration;
+        uint price;
+        uint amount;
+        uint expiration;
         address owner;
         address smartMeterAddress;
         bool active;
         string sellerSignature;
+        uint nonce;
     }
 
     mapping(string => Offer) private offers;
@@ -48,14 +50,15 @@ contract Market {
     ) payable {
         owner = msg.sender;
         cableCompany = ICableCompany(_cableCompanyAddress);
+        nonce = 1;
         // groupPublicKey = _groupPublicKey;
     }
 
     function addOffer(
         string memory id,
-        uint256 amount,
-        uint256 price,
-        uint256 expiration,
+        uint amount,
+        uint price,
+        uint expiration,
         address smartMeterAddress,
         string memory sellerSignature
     ) public returns (bool) {
@@ -78,9 +81,13 @@ contract Market {
             owner: msg.sender,
             smartMeterAddress: smartMeterAddress, // are we using this?
             active: true,
-            sellerSignature: sellerSignature
+            sellerSignature: sellerSignature,
+            nonce: nonce
         });
         offerIds.push(id);
+
+        // Increment nonce
+        nonce += 1;
 
         return true;
     }
@@ -111,6 +118,7 @@ contract Market {
         uint amount = offer.amount;
         uint price = offer.price;
         uint expiration = offer.expiration;
+        uint offerNonce = offer.nonce;
 
         require(expiration > block.timestamp, "Cannot buy expired offer");
         require(msg.sender != seller, "Owner cannot buy own offer");
@@ -119,7 +127,8 @@ contract Market {
             _buyerSignature: buyerSignature,
             _sellerSignature: sellerSignature,
             _amount: amount,
-            _price: price
+            _price: price,
+            _nonce: offerNonce
         });
         lastestSupplyChainAddress = address(sc);
         delete offers[id];
@@ -162,6 +171,10 @@ contract Market {
         return lastestSupplyChainAddress;
     }
 
+    function getNonce() public view returns (uint) {
+        return nonce;
+    }
+
     // function getGroupPublicKey() public view returns (string memory) {
     //     return groupPublicKey;
     // }
@@ -178,27 +191,30 @@ contract Market {
 contract SupplyContract {
     string buyerSignature;
     string sellerSignature;
-    uint256 amount; // Wh
-    uint256 price; // Euro cents
-    uint256 timestamp; // Unix
+    uint amount; // Wh
+    uint price; // Euro cents
+    uint timestamp; // Unix
     bool confirmed;
+    uint nonce;
     // address dso;
 
     struct SupplyContractDTO {
         address scAddress;
         string buyerSignature;
         string sellerSignature;
-        uint256 price;
-        uint256 amount;
-        uint256 timestamp;
+        uint price;
+        uint amount;
+        uint timestamp;
         bool confirmed;
+        uint nonce;
     }
 
     constructor(
         string memory _buyerSignature,
         string memory _sellerSignature,
-        uint256 _amount,
-        uint256 _price
+        uint _amount,
+        uint _price,
+        uint _nonce
     ) {
         buyerSignature = _buyerSignature;
         sellerSignature = _sellerSignature;
@@ -206,6 +222,7 @@ contract SupplyContract {
         price = _price;
         timestamp = block.timestamp;
         confirmed = false;
+        nonce = _nonce;
     }
 
     function getBuyer() public view returns (string memory) {
@@ -216,11 +233,11 @@ contract SupplyContract {
         return sellerSignature;
     }
 
-    function getAmount() public view returns (uint256) {
+    function getAmount() public view returns (uint) {
         return amount;
     }
 
-    function getPrice() public view returns (uint256) {
+    function getPrice() public view returns (uint) {
         return price;
     }
 
@@ -232,7 +249,8 @@ contract SupplyContract {
             price: price,
             amount: amount,
             timestamp: timestamp,
-            confirmed: confirmed
+            confirmed: confirmed,
+            nonce: nonce
         });
 
         return scDTO;

@@ -79,6 +79,7 @@ const buyOffer = async (
     account: string,
     buyerSignature: string
 ) => {
+    debugger;
     const marketContract = marketInstance(market);
     try {
         await marketContract.methods

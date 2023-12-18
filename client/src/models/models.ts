@@ -6,6 +6,7 @@ export type OfferDTO = {
     owner: string;
     active: boolean;
     sellerSignature: string;
+    nonce: number;
 };
 
 export interface SupplyContractDTO {
@@ -16,4 +17,5 @@ export interface SupplyContractDTO {
     amount: number;
     price: number;
     timestamp: number;
+    nonce: number;
 }

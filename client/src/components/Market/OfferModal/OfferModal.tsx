@@ -60,6 +60,7 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
             owner: currentAccount,
             active: true,
             sellerSignature: signature,
+            nonce: 0, // This does not matter, since it set by the Market smart contract
         };
         addOffer(newOffer).then((offer) => {
             if (!offer) {
