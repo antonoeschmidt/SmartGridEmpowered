@@ -27,6 +27,7 @@ contract Market {
     ICableCompany cableCompany;
     // uint nonce;
     // string groupPublicKey;
+    uint maxOfferLivespan = 1000*60*60*24*7;
 
     struct Offer {
         string id;
@@ -45,12 +46,23 @@ contract Market {
     string[] public offerIds;
     address public lastestSupplyChainAddress;
 
+    // mapping is nonce to the timestamp it was used at.
+    mapping(uint => uint) private usedNonces;
+
+    modifier nonceGuard(uint nonce) {
+        uint timestamp = usedNonces[nonce];
+        // nonce was used within the last two weeks.
+        if (timestamp + maxOfferLivespan * 2 > block.timestamp * 1000) {
+            revert("Nonce was used recently");
+        }
+        _;
+    }
+
     constructor(
         address _cableCompanyAddress // string memory _groupPublicKey
     ) payable {
         owner = msg.sender;
         cableCompany = ICableCompany(_cableCompanyAddress);
-        // nonce = 1;
         // groupPublicKey = _groupPublicKey;
     }
 
@@ -63,11 +75,17 @@ contract Market {
         string memory sellerSignature,
         uint nonce,
         address sellerAddress
-    ) public returns (bool) {
+    ) public nonceGuard(nonce) returns (bool) {
         require(
             cableCompany.isRegisteredKey(msg.sender, smartMeterAddress),
             "Smart Meter not registered by Cable Company"
         );
+
+        uint maxOfferExpiration = block.timestamp * 1000 + maxOfferLivespan;
+
+        require(maxOfferExpiration > expiration, "Offers lifespan is too long");
+
+        require(sellerAddress == msg.sender, "Only owner can add offer");
 
         ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);
         require(
@@ -75,7 +93,7 @@ contract Market {
             "Not enough stored energy"
         );
 
-        require(sellerAddress == msg.sender, "Only owner can add offer");
+        usedNonces[nonce] = block.timestamp * 1000;
 
         offers[id] = Offer({
             id: id,
@@ -89,9 +107,6 @@ contract Market {
             nonce: nonce
         });
         offerIds.push(id);
-
-        // Increment nonce
-        nonce += 1;
 
         return true;
     }

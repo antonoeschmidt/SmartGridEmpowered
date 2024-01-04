@@ -57,7 +57,7 @@ const addOffer = async (
 
         return offer;
     } catch (error) {
-        console.error(error);
+        console.error("add offer error", error);
     }
 };
 
