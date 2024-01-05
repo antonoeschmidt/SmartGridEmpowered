@@ -69,7 +69,7 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
             id: uuidv4(),
             price: price,
             amount: amount,
-            expiration: Date.now() + 10 * 24 * 60 * 60 * 1000, // 10 days in ms
+            expiration: Date.now() + 6 * 24 * 60 * 60 * 1000, // 6 days in ms. 7 days exceeded the limit.
             owner: currentAccount,
             active: true,
             sellerSignature: sellerSignature,
