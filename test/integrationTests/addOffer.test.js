@@ -3,36 +3,9 @@ const Market = artifacts.require("Market");
 const CableCompany = artifacts.require("CableCompany");
 const SmartMeter = artifacts.require("SmartMeter");
 const web3 = require("web3");
-const BN = require('bn.js');
-const {
-    createHash,
-  } = require('node:crypto');
 
-  const hash = createHash('sha256');
-
-function numStringToBytes32(num) { 
-    console.log("before")
-    var bn = new BN(num, 16).toTwos(256);
-    console.log("after bn")
-    return padToBytes32(bn.toString(16));
- }
- 
- function bytes32ToNumString(bytes32str) {
-     bytes32str = bytes32str.replace(/^0x/, '');
-     var bn = new BN(bytes32str, 16).fromTwos(256);
-     return bn.toString();
- }
- 
- function padToBytes32(n) {
-     while (n.length < 64) {
-         n = "0" + n;
-     }
-     return "0x" + n;
- }
-
- let blindingFactor = "12321312";
- hash.update(blindingFactor);
- const digest = hash.digest();
+const encodedSecretString = web3.eth.abi.encodeParameters(['string'],['test1'])
+const hash = web3.utils.soliditySha3(encodedSecretString);
 
 contract("Add Offer", (accounts) => {
     let market;
@@ -41,14 +14,11 @@ contract("Add Offer", (accounts) => {
 
     const admin = accounts[0];
     const user = accounts[1];
-    let blindingFactor = "12321312";
-    // hash.update(blindingFactor);
 
     beforeEach(async () => {
         cableCompany = await CableCompany.new({ from: admin });
         market = await Market.new(cableCompany.address, { from: admin });
-        let bytes32 = web3.eth.abi.encodeParameter('bytes32', digest);
-        smartMeter = await SmartMeter.new((bytes32), { from: user });
+        smartMeter = await SmartMeter.new(hash, { from: user });
         await smartMeter.setCurrentMarketAddress(market.address, {
             from: user,
         });
@@ -67,10 +37,6 @@ contract("Add Offer", (accounts) => {
         const date = Date.now();
         const sellerSignature = "signature1";
         const nonce = Math.floor(Math.random() * 1000);
-        const encoder = new TextEncoder();
-        const bytes = encoder.encode(blindingFactor);
-        let byteEncondedBlind = web3.eth.abi.encodeParameter('bytes32', bytes);
-        // hash.update("Should add an offer")
         await market.addOffer(
             offerId,
             amount,
@@ -80,13 +46,12 @@ contract("Add Offer", (accounts) => {
             sellerSignature,
             nonce,
             user,
-            byteEncondedBlind,
-            byteEncondedBlind,
+            encodedSecretString,
+            hash,
             {
                 from: user,
             },
         );
-        blindingFactor = "Should add an offer";
 
         const offer = await market.getOffer(offerId);
 
@@ -98,7 +63,7 @@ contract("Add Offer", (accounts) => {
         assert.equal(offer.nonce, nonce);
     });
 
-    it("Should fail to make an offer", async () => {
+    it("Should fail to make an offer because the amount is too high", async () => {
         const offerId = "id";
         const amount = 100; // Too much energy
         const price = 1;
@@ -117,8 +82,8 @@ contract("Add Offer", (accounts) => {
                 sellerSignature,
                 nonce,
                 user,
-                blindingFactor,
-                "hashBytes",
+                encodedSecretString,
+                hash,
                 {
                     from: user,
                 }
@@ -153,6 +118,8 @@ contract("Add Offer", (accounts) => {
                 sellerSignature,
                 nonce,
                 user,
+                encodedSecretString,
+                hash,
                 {
                     from: user,
                 }
@@ -168,7 +135,7 @@ contract("Add Offer", (accounts) => {
         );
     });
 
-    it("Should allow to different nonces nonce", async () => {
+    it("Should allow to different nonces", async () => {
         const offerId = "id";
         const amount = 1; // Too much energy
         const price = 1;
@@ -184,6 +151,8 @@ contract("Add Offer", (accounts) => {
             sellerSignature,
             nonce,
             user,
+            encodedSecretString,
+            hash,
             {
                 from: user,
             }
@@ -198,6 +167,8 @@ contract("Add Offer", (accounts) => {
             sellerSignature,
             newNonce,
             user,
+            encodedSecretString,
+            hash,
             {
                 from: user,
             }
@@ -225,6 +196,8 @@ contract("Add Offer", (accounts) => {
                 sellerSignature,
                 nonce,
                 user,
+                encodedSecretString,
+                hash,
                 {
                     from: user,
                 }
@@ -238,6 +211,8 @@ contract("Add Offer", (accounts) => {
                 sellerSignature,
                 nonce,
                 user,
+                encodedSecretString,
+                hash,
                 {
                     from: user,
                 }
@@ -251,5 +226,110 @@ contract("Add Offer", (accounts) => {
             true,
             "Not the right error"
         );
+    });
+
+    it("Should fail to because hash is updated", async () => {
+        const offerId = "id";
+        const amount = 1; // Too much energy
+        const price = 1;
+        const date = Date.now();
+        let errorMessage = "";
+        const sellerSignature = "signature1";
+        const encodedSecretString = web3.eth.abi.encodeParameters(['string'],['test1'])
+        const encodedSecretString2 = web3.eth.abi.encodeParameters(['string'],['test2'])
+
+        const newHash = web3.utils.soliditySha3(encodedSecretString2);
+        try {
+            await market.addOffer(
+                offerId,
+                amount,
+                price,
+                date,
+                smartMeter.address,
+                sellerSignature,
+                Math.floor(Math.random() * 1000),
+                user,
+                encodedSecretString,
+                newHash,
+                {
+                    from: user,
+                }
+            );
+            
+            await market.addOffer(
+                offerId,
+                amount,
+                price,
+                date,
+                smartMeter.address,
+                sellerSignature,
+                Math.floor(Math.random() * 1000),
+                user,
+                encodedSecretString,
+                hash,
+                {
+                    from: user,
+                }
+            );
+        } catch (error) {
+            errorMessage = error.data.stack ?? "";
+        }
+
+        assert.equal(
+            errorMessage.includes("The blinding factor was not correct"),
+            true,
+            "Not the right error"
+        );
+    });
+
+    it("Should be successfull with the new hash", async () => {
+        const offerId = "id";
+        const amount = 1; // Too much energy
+        const price = 1;
+        const date = Date.now();
+        let errorMessage = "";
+        const sellerSignature = "signature1";
+        const nonce = Math.floor(Math.random() * 1000);
+        const encodedSecretString = web3.eth.abi.encodeParameters(['string'],['test1'])
+        const encodedSecretString2 = web3.eth.abi.encodeParameters(['string'],['test2'])
+
+        const newHash = web3.utils.soliditySha3(encodedSecretString2);
+        try {
+            await market.addOffer(
+                offerId,
+                amount,
+                price,
+                date,
+                smartMeter.address,
+                sellerSignature,
+                Math.floor(Math.random() * 1000),
+                user,
+                encodedSecretString,
+                newHash,
+                {
+                    from: user,
+                }
+            );
+            await market.addOffer(
+                offerId,
+                amount,
+                price,
+                date,
+                smartMeter.address,
+                sellerSignature,
+                Math.floor(Math.random() * 1000),
+                user,
+                encodedSecretString2,
+                hash,
+                {
+                    from: user,
+                }
+            );
+            // if no error is raised we get here
+            assert.equal(true, true, "");
+        } catch (error) {
+            errorMessage = error.data.stack ?? "";
+        }
+
     });
 });

@@ -6,6 +6,7 @@ import {
     getSupplyContractInstance,
     deploySupplyContract,
 } from "./supplyContractApi";
+import {getSmartMeterSecrets } from "../utils/localstorage";
 
 export const marketInstance = (address: string) => {
     const web3 = getWeb3();
@@ -37,6 +38,11 @@ const addOffer = async (
 ) => {
     const marketContract = marketInstance(market);
     try {
+        // generate next secret
+        const array = new Uint32Array(16);
+        crypto.getRandomValues(array);
+        const {currentSecret, nextSecretHash} = getSmartMeterSecrets(account);
+
         await marketContract.methods
             .addOffer(
                 // @ts-ignore
@@ -47,7 +53,9 @@ const addOffer = async (
                 smartMeterAddress,
                 offer.sellerSignature,
                 offer.nonce,
-                account
+                account,
+                currentSecret,
+                nextSecretHash
             )
             .send({
                 from: account,

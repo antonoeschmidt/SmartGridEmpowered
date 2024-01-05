@@ -31,7 +31,6 @@ const SmartMeterPage = () => {
 
     const getBatteryLevel = async () => {
         let batteryLevel = await getBatteryCharge();
-        console.log(batteryLevel);
         setToastProps(`battery level is ${batteryLevel}`, "info");
         onOpen();
     };

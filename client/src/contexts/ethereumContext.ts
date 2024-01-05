@@ -5,6 +5,7 @@ import { marketApi } from "../apis/marketApi";
 import { smartMeterApi } from "../apis/smartMeterApi";
 import { supplyContractApi } from "../apis/supplyContractApi";
 import { sign } from "../apis/groupSignature";
+import { loadFromLocalStorage } from "../utils/localstorage";
 
 export type EthereumContextType = {
     accounts: string[];
@@ -125,23 +126,6 @@ export const useEthereumContext = (): EthereumContextType => {
         setCableCompanyAddress(storedCableCompanyAddress);
     }, []);
 
-    const loadFromLocalStorage: any = (account: string) => {
-        const storedJsonString = localStorage.getItem(account);
-        // by setting the smart meter to empty we initialize making a new one, but the other use effect only triggers if currentMarket is set.
-        if (!storedJsonString) {
-            setSmartMeterAddress("");
-            return {};
-        }
-        const parsedJson = JSON.parse(storedJsonString);
-        const smartMeterAddress = parsedJson.smartMeterAddress
-            ? parsedJson.smartMeterAddress
-            : "";
-        const signature = parsedJson.signature ? parsedJson.signature : "";
-        return {
-            smartMeterAddress,
-            signature,
-        };
-    };
 
     // saves data to localstorage when the user changes a setting
     useEffect(() => {

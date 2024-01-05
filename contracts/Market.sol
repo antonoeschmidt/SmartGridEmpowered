@@ -19,7 +19,7 @@ interface ICableCompany {
 interface ISmartMeter {
     function returnReservedBatteryCharge(uint amount) external returns (bool);
 
-    function subtractBatteryCharge(uint amount, bytes32 blindingFactor, bytes32 _nextHash) external returns (bool);
+    function subtractBatteryCharge(uint amount, bytes memory blindingFactor, bytes32 _nextHash) external returns (bool);
 }
 
 contract Market {
@@ -71,7 +71,7 @@ contract Market {
         string memory sellerSignature,
         uint nonce,
         address sellerAddress,
-        bytes32 blindingFactor, 
+        bytes memory blindingFactor, 
         bytes32 _nextHash
     ) public nonceGuard(nonce) returns (bool) {
 
