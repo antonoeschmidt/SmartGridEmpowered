@@ -1,6 +1,38 @@
+
 const Market = artifacts.require("Market");
 const CableCompany = artifacts.require("CableCompany");
 const SmartMeter = artifacts.require("SmartMeter");
+const web3 = require("web3");
+const BN = require('bn.js');
+const {
+    createHash,
+  } = require('node:crypto');
+
+  const hash = createHash('sha256');
+
+function numStringToBytes32(num) { 
+    console.log("before")
+    var bn = new BN(num, 16).toTwos(256);
+    console.log("after bn")
+    return padToBytes32(bn.toString(16));
+ }
+ 
+ function bytes32ToNumString(bytes32str) {
+     bytes32str = bytes32str.replace(/^0x/, '');
+     var bn = new BN(bytes32str, 16).fromTwos(256);
+     return bn.toString();
+ }
+ 
+ function padToBytes32(n) {
+     while (n.length < 64) {
+         n = "0" + n;
+     }
+     return "0x" + n;
+ }
+
+ let blindingFactor = "12321312";
+ hash.update(blindingFactor);
+ const digest = hash.digest();
 
 contract("Add Offer", (accounts) => {
     let market;
@@ -9,11 +41,14 @@ contract("Add Offer", (accounts) => {
 
     const admin = accounts[0];
     const user = accounts[1];
+    let blindingFactor = "12321312";
+    // hash.update(blindingFactor);
 
     beforeEach(async () => {
         cableCompany = await CableCompany.new({ from: admin });
         market = await Market.new(cableCompany.address, { from: admin });
-        smartMeter = await SmartMeter.new({ from: user });
+        let bytes32 = web3.eth.abi.encodeParameter('bytes32', digest);
+        smartMeter = await SmartMeter.new((bytes32), { from: user });
         await smartMeter.setCurrentMarketAddress(market.address, {
             from: user,
         });
@@ -32,7 +67,10 @@ contract("Add Offer", (accounts) => {
         const date = Date.now();
         const sellerSignature = "signature1";
         const nonce = Math.floor(Math.random() * 1000);
-
+        const encoder = new TextEncoder();
+        const bytes = encoder.encode(blindingFactor);
+        let byteEncondedBlind = web3.eth.abi.encodeParameter('bytes32', bytes);
+        // hash.update("Should add an offer")
         await market.addOffer(
             offerId,
             amount,
@@ -42,10 +80,13 @@ contract("Add Offer", (accounts) => {
             sellerSignature,
             nonce,
             user,
+            byteEncondedBlind,
+            byteEncondedBlind,
             {
                 from: user,
-            }
+            },
         );
+        blindingFactor = "Should add an offer";
 
         const offer = await market.getOffer(offerId);
 
@@ -76,6 +117,8 @@ contract("Add Offer", (accounts) => {
                 sellerSignature,
                 nonce,
                 user,
+                blindingFactor,
+                "hashBytes",
                 {
                     from: user,
                 }

@@ -3,6 +3,7 @@
 pragma solidity ^0.8.9;
 
 contract SmartMeter {
+    bytes32 hashedValue;
     address owner;
     address currentMarketAddress;
     uint private totalConsumption;
@@ -11,8 +12,9 @@ contract SmartMeter {
     uint lastDataSent;
     uint transmissionInterval = 15 seconds;
 
-    constructor() {
+    constructor(bytes32 _hashedValue) {
         owner = msg.sender;
+        hashedValue = _hashedValue;
         totalConsumption = 0;
         totalProduction = 0;
     }
@@ -59,11 +61,20 @@ contract SmartMeter {
         return batteryCharge;
     }
 
-    function subtractBatteryCharge(uint amount) public returns (bool) {
+    function checkHashAndSetHash(bytes32 blindingFactor, bytes32 _nextHash) public returns (bool) {
+        if (sha256(abi.encode(blindingFactor)) == hashedValue) {
+           hashedValue = _nextHash;
+           return true;
+        }
+        return false;
+    }
+
+    function subtractBatteryCharge(uint amount, bytes32 blindingFactor, bytes32 _nextHash) public returns (bool) {
         require(
             msg.sender == currentMarketAddress,
             "Only registered market can substract energy"
         );
+        require(checkHashAndSetHash(blindingFactor, _nextHash), "The blinding factor was not correct");
         if (batteryCharge < amount) {
             return false;
         }

@@ -19,7 +19,7 @@ interface ICableCompany {
 interface ISmartMeter {
     function returnReservedBatteryCharge(uint amount) external returns (bool);
 
-    function subtractBatteryCharge(uint amount) external returns (bool);
+    function subtractBatteryCharge(uint amount, bytes32 blindingFactor, bytes32 _nextHash) external returns (bool);
 }
 
 contract Market {
@@ -70,21 +70,22 @@ contract Market {
         address smartMeterAddress,
         string memory sellerSignature,
         uint nonce,
-        address sellerAddress
+        address sellerAddress,
+        bytes32 blindingFactor, 
+        bytes32 _nextHash
     ) public nonceGuard(nonce) returns (bool) {
-        // Initialization
-        ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);
-        uint maxOfferExpiration = block.timestamp * 1000 + maxOfferLivespan;
 
         // Require conditions
         require(
             cableCompany.isRegisteredKey(msg.sender, smartMeterAddress),
             "Smart Meter not registered by Cable Company"
         );
-        require(maxOfferExpiration > expiration, "Offers lifespan is too long");
+        require(block.timestamp * 1000 + maxOfferLivespan > expiration, "Offers lifespan is too long");
         require(sellerAddress == msg.sender, "Only owner can add offer");
+
+        ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);
         require(
-            smartMeter.subtractBatteryCharge(amount),
+            smartMeter.subtractBatteryCharge(amount, blindingFactor, _nextHash),
             "Not enough stored energy"
         );
 
