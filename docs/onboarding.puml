@@ -1,0 +1,18 @@
+@startuml Onboarding
+actor Prosumer
+participant Client
+participant SmartMeter #LightYellow
+participant CableCompany #LightYellow
+
+skinparam dpi 300
+
+Prosumer -> Client ++: Onboarding request
+Client -> SmartMeter ++: Deploy new Smart Meter
+SmartMeter --> Client: Smart meter address
+Client -> SmartMeter: Register Market's address
+SmartMeter --> Client --: OK
+Client -> CableCompany ++: Register Smart Meter
+CableCompany --> Client --: OK
+Client --> Prosumer: Registration complete!
+
+@enduml

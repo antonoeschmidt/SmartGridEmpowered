@@ -1,10 +1,11 @@
 @startuml AddOffer
-actor User
-participant SmartMeter
-participant Market
-participant CableCompany
+actor Prosumer
+participant SmartMeter #LightYellow
+participant GroupSignature
+participant Market #LightYellow
+participant CableCompany #LightYellow
 
-skinparam responseMessageBelowArrow true
+skinparam dpi 400
 
 group Before
     note over SmartMeter: Logs usage
@@ -14,9 +15,13 @@ group Before
 end group
 
 autonumber
-User -> Market ++: addOffer(offer)
 
-Market -> CableCompany ++: isRegistered(user.smartMeter)
+Prosumer -> GroupSignature ++: sign(offer, nonce)
+GroupSignature --> Prosumer --: signature
+
+Prosumer -> Market ++: addOffer(offer, signature, nonce)
+
+Market -> CableCompany ++: isRegistered(smartMeter)
 CableCompany --> Market --: SmartMeter registered
 
 Market -> SmartMeter ++: check batteryLevel()
@@ -24,5 +29,5 @@ SmartMeter --> Market --: batteryLevel OK
 
 Market -> Market: createOffer
 
-Market --> User: Offer created!
+Market --> Prosumer: Offer created!
 @enduml

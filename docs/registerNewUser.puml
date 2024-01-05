@@ -1,0 +1,8 @@
+@startuml RegisterNewUser
+skinparam dpi 200
+
+(*) --> "Deploy Smart Meter"
+"Deploy Smart Meter" --> "Register Smart Meter address"
+"Register Smart Meter address" --> "Set Market address for Smart Meter"
+"Set Market address for Smart Meter" --> (*)
+@enduml

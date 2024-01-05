@@ -24,9 +24,7 @@ interface ISmartMeter {
 
 contract Market {
     address owner;
-    ICableCompany cableCompany;
-    // uint nonce;
-    // string groupPublicKey;
+    ICableCompany cableCompany; // Maybe change the name of CableCompany to something else
 
     struct Offer {
         string id;
@@ -42,16 +40,13 @@ contract Market {
 
     mapping(string => Offer) private offers;
     mapping(string => Offer) private pendingConfirmation;
+
     string[] public offerIds;
     address public lastestSupplyChainAddress;
 
-    constructor(
-        address _cableCompanyAddress // string memory _groupPublicKey
-    ) payable {
+    constructor(address _cableCompanyAddress) payable {
         owner = msg.sender;
         cableCompany = ICableCompany(_cableCompanyAddress);
-        // nonce = 1;
-        // groupPublicKey = _groupPublicKey;
     }
 
     function addOffer(
@@ -89,9 +84,6 @@ contract Market {
             nonce: nonce
         });
         offerIds.push(id);
-
-        // Increment nonce
-        nonce += 1;
 
         return true;
     }
@@ -174,22 +166,6 @@ contract Market {
     function getPendingOffers() public view returns (address) {
         return lastestSupplyChainAddress;
     }
-
-    // function getNonce() public view returns (uint) {
-    //     return nonce;
-    // }
-
-    // function getGroupPublicKey() public view returns (string memory) {
-    //     return groupPublicKey;
-    // }
-
-    // function setGroupPublicKey(string memory _groupPublicKey) public {
-    //     require(
-    //         msg.sender == address(cableCompany),
-    //         "Only cable compnay can change the group key"
-    //     );
-    //     groupPublicKey = _groupPublicKey;
-    // }
 }
 
 contract SupplyContract {

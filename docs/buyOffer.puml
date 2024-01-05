@@ -1,20 +1,25 @@
 @startuml BuyOffer
-actor User
-participant Market
-participant SupplyContract
+actor Prosumer
+participant GroupSignature
+participant Market #LightYellow
+participant SupplyContract #LightYellow
+
+skinparam dpi 300
 
 autonumber
 
-User -> Market ++: buyOffer(id)
+Prosumer -> GroupSignature ++: sign(offer)
+GroupSignature --> Prosumer --: signature
+
+Prosumer -> Market ++: buyOffer(id, signature)
 Market -> Market: Check validity
 note over Market #WhiteSmoke
 expiration > now
 owner != buyer
 end note
 
-Market -> SupplyContract: Deploy new SupplyContract
-
+Market -> SupplyContract ++: Deploy new SupplyContract
 SupplyContract --> Market --:
 
-Market --> User: SupplyContract created!
+Market --> Prosumer: SupplyContract created!
 @enduml
