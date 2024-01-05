@@ -168,7 +168,13 @@ const MarketplacePage: FC = () => {
         );
 
         console.log("sellerIdentity", sellerIdentity);
+        console.log(
+            JSON.stringify({ signature: supplyContract.sellerSignature })
+        );
         console.log("buyerIdentity", buyerIdentity);
+        console.log(
+            JSON.stringify({ signature: supplyContract.buyerSignature })
+        );
 
         alert(
             `Seller identity: ${sellerIdentity}\nBuyer identity: ${buyerIdentity}`

@@ -24,9 +24,8 @@ interface ISmartMeter {
 
 contract Market {
     address owner;
-    ICableCompany cableCompany;
-    // uint nonce;
-    // string groupPublicKey;
+    ICableCompany cableCompany; // Maybe change the name of CableCompany to something else, like DSO
+    uint maxOfferLivespan = 1000 * 60 * 60 * 24 * 7;
 
     struct Offer {
         string id;
@@ -42,16 +41,25 @@ contract Market {
 
     mapping(string => Offer) private offers;
     mapping(string => Offer) private pendingConfirmation;
+
     string[] public offerIds;
     address public lastestSupplyChainAddress;
 
-    constructor(
-        address _cableCompanyAddress // string memory _groupPublicKey
-    ) payable {
+    // mapping is nonce to the timestamp it was used at.
+    mapping(uint => uint) private usedNonces;
+
+    modifier nonceGuard(uint nonce) {
+        uint timestamp = usedNonces[nonce];
+        // nonce was used within the last two weeks.
+        if (timestamp + maxOfferLivespan * 2 > block.timestamp * 1000) {
+            revert("Nonce was used recently");
+        }
+        _;
+    }
+
+    constructor(address _cableCompanyAddress) payable {
         owner = msg.sender;
         cableCompany = ICableCompany(_cableCompanyAddress);
-        // nonce = 1;
-        // groupPublicKey = _groupPublicKey;
     }
 
     function addOffer(
@@ -63,35 +71,37 @@ contract Market {
         string memory sellerSignature,
         uint nonce,
         address sellerAddress
-    ) public returns (bool) {
+    ) public nonceGuard(nonce) returns (bool) {
+        // Initialization
+        ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);
+        uint maxOfferExpiration = block.timestamp * 1000 + maxOfferLivespan;
+
+        // Require conditions
         require(
             cableCompany.isRegisteredKey(msg.sender, smartMeterAddress),
             "Smart Meter not registered by Cable Company"
         );
-
-        ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);
+        require(maxOfferExpiration > expiration, "Offers lifespan is too long");
+        require(sellerAddress == msg.sender, "Only owner can add offer");
         require(
             smartMeter.subtractBatteryCharge(amount),
             "Not enough stored energy"
         );
 
-        require(sellerAddress == msg.sender, "Only owner can add offer");
-
+        // Adding offer
+        usedNonces[nonce] = block.timestamp * 1000;
         offers[id] = Offer({
             id: id,
             amount: amount,
             price: price,
             expiration: expiration,
             owner: msg.sender,
-            smartMeterAddress: smartMeterAddress, // are we using this?
+            smartMeterAddress: smartMeterAddress,
             active: true,
             sellerSignature: sellerSignature,
             nonce: nonce
         });
         offerIds.push(id);
-
-        // Increment nonce
-        nonce += 1;
 
         return true;
     }
@@ -100,11 +110,17 @@ contract Market {
         string memory id,
         address smartMeterAddress
     ) public returns (bool) {
+        // Initialization
         Offer memory offer = offers[id];
-        require(msg.sender == offer.owner, "Only owner can remove offer");
         ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);
+
+        // Require conditions
+        require(msg.sender == offer.owner, "Only owner can remove offer");
+
+        // Removing offer
         smartMeter.returnReservedBatteryCharge(offer.amount);
         delete offers[id];
+
         return true;
     }
 
@@ -112,7 +128,10 @@ contract Market {
         string memory id,
         string memory buyerSignature
     ) public returns (address) {
+        // Initialization
         Offer memory offer = offers[id];
+
+        // Require conditions
         require(
             keccak256(bytes(offer.id)) == keccak256(bytes(id)),
             "No offer found"
@@ -123,10 +142,10 @@ contract Market {
         uint price = offer.price;
         uint expiration = offer.expiration;
         uint offerNonce = offer.nonce;
-
         require(expiration > block.timestamp, "Cannot buy expired offer");
         require(msg.sender != seller, "Owner cannot buy own offer");
 
+        // Buying offer and creating SupplyContract
         SupplyContract sc = new SupplyContract({
             _buyerSignature: buyerSignature,
             _sellerSignature: sellerSignature,
@@ -138,7 +157,7 @@ contract Market {
         delete offers[id];
 
         for (uint i = 0; i < offerIds.length; i++) {
-            // String comparison
+            // String comparison to remove purchased offer
             if (keccak256(bytes(offerIds[i])) == keccak256(bytes(id))) {
                 offerIds[i] = offerIds[offerIds.length - 1];
                 offerIds.pop();
@@ -174,22 +193,6 @@ contract Market {
     function getPendingOffers() public view returns (address) {
         return lastestSupplyChainAddress;
     }
-
-    // function getNonce() public view returns (uint) {
-    //     return nonce;
-    // }
-
-    // function getGroupPublicKey() public view returns (string memory) {
-    //     return groupPublicKey;
-    // }
-
-    // function setGroupPublicKey(string memory _groupPublicKey) public {
-    //     require(
-    //         msg.sender == address(cableCompany),
-    //         "Only cable compnay can change the group key"
-    //     );
-    //     groupPublicKey = _groupPublicKey;
-    // }
 }
 
 contract SupplyContract {
@@ -200,7 +203,6 @@ contract SupplyContract {
     uint timestamp; // Unix
     bool confirmed;
     uint nonce;
-    // address dso;
 
     struct SupplyContractDTO {
         address scAddress;
@@ -259,9 +261,4 @@ contract SupplyContract {
 
         return scDTO;
     }
-
-    // function aproveContract() public {
-    //     require(msg.sender == dso, "only the DSO can approve a contract");
-    //     confirmed = true;
-    // }
 }

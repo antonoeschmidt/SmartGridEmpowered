@@ -62,6 +62,7 @@ contract("Buy Offer", (accounts) => {
         const expiredOfferId = "expiredId";
         const expiredDate = 1;
         const validErrorMessage = "Cannot buy expired offer";
+        const newNonce = Math.floor(Math.random() * 1000);
         let errorMessage;
 
         await market.addOffer(
@@ -71,7 +72,7 @@ contract("Buy Offer", (accounts) => {
             expiredDate,
             smartMeter.address,
             sellerSignature,
-            nonce,
+            newNonce,
             user,
             {
                 from: user,

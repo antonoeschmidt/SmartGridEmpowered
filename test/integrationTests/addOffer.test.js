@@ -54,7 +54,7 @@ contract("Add Offer", (accounts) => {
         assert.equal(offer.amount, 1);
         assert.equal(offer.owner, user);
         assert.equal(offer.active, true);
-        assert.equal(offer.nonce, nonce); // nonce is incremented after the offer is added
+        assert.equal(offer.nonce, nonce);
     });
 
     it("Should fail to make an offer", async () => {
@@ -62,7 +62,7 @@ contract("Add Offer", (accounts) => {
         const amount = 100; // Too much energy
         const price = 1;
         const date = Date.now();
-        let errorMessage;
+        let errorMessage = "";
         const sellerSignature = "signature1";
         const nonce = Math.floor(Math.random() * 1000);
 
@@ -81,12 +81,131 @@ contract("Add Offer", (accounts) => {
                 }
             );
         } catch (error) {
-            errorMessage = error.reason;
+            errorMessage = error.data.stack;
         }
 
         assert.equal(
-            errorMessage,
-            "Not enough stored energy",
+            errorMessage.includes("Not enough stored energy"),
+            true,
+            "Not the right error"
+        );
+    });
+
+    it("Should fail to make an offer because of lifespan", async () => {
+        const offerId = "id";
+        const amount = 100; // Too much energy
+        const price = 1;
+        const date = Date.now() + 1000 * 60 * 60 * 24 * 14;
+        let errorMessage = "";
+        const sellerSignature = "signature1";
+        const nonce = Math.floor(Math.random() * 1000);
+
+        try {
+            await market.addOffer(
+                offerId,
+                amount,
+                price,
+                date,
+                smartMeter.address,
+                sellerSignature,
+                nonce,
+                user,
+                {
+                    from: user,
+                }
+            );
+        } catch (error) {
+            errorMessage = error.data.stack;
+        }
+
+        assert.equal(
+            errorMessage.includes("Offers lifespan is too long"),
+            true,
+            "Not the right error"
+        );
+    });
+
+    it("Should allow to different nonces nonce", async () => {
+        const offerId = "id";
+        const amount = 1; // Too much energy
+        const price = 1;
+        const date = Date.now();
+        const sellerSignature = "signature1";
+        const nonce = Math.floor(Math.random() * 1000);
+        await market.addOffer(
+            offerId,
+            amount,
+            price,
+            date,
+            smartMeter.address,
+            sellerSignature,
+            nonce,
+            user,
+            {
+                from: user,
+            }
+        );
+        const newNonce = Math.floor(Math.random() * 1000);
+        await market.addOffer(
+            offerId,
+            amount,
+            price,
+            date,
+            smartMeter.address,
+            sellerSignature,
+            newNonce,
+            user,
+            {
+                from: user,
+            }
+        );
+
+        const offer = await market.getOffer(offerId);
+        assert.equal(offer.nonce, newNonce);
+    });
+
+    it("Should fail to reuse nonce", async () => {
+        const offerId = "id";
+        const amount = 1; // Too much energy
+        const price = 1;
+        const date = Date.now();
+        let errorMessage = "";
+        const sellerSignature = "signature1";
+        const nonce = Math.floor(Math.random() * 1000);
+        try {
+            await market.addOffer(
+                offerId,
+                amount,
+                price,
+                date,
+                smartMeter.address,
+                sellerSignature,
+                nonce,
+                user,
+                {
+                    from: user,
+                }
+            );
+            await market.addOffer(
+                offerId,
+                amount,
+                price,
+                date,
+                smartMeter.address,
+                sellerSignature,
+                nonce,
+                user,
+                {
+                    from: user,
+                }
+            );
+        } catch (error) {
+            errorMessage = error.data.stack ?? "";
+        }
+
+        assert.equal(
+            errorMessage.includes("Nonce was used recently"),
+            true,
             "Not the right error"
         );
     });
