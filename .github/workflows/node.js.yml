@@ -24,6 +24,7 @@ jobs:
             - run: npm install
             - run: npm run build --if-present
             - run: npm run lint
-            - run: npm install truffle@5.4.12 -g # cannot use truffle@latest due to https://github.com/sc-forks/solidity-coverage/issues/696
+            - run: npm install truffle@5.4.29 -g # cannot use truffle@latest due to https://github.com/sc-forks/solidity-coverage/issues/696
             - run: npm install
-            - run: CI=true truffle test
+            - run: truffle develop --log
+            - run: CI=true truffle test --network ci
