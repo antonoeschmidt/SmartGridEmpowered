@@ -70,9 +70,7 @@ contract SmartMeter {
     }
 
     function subtractBatteryCharge(uint amount, bytes memory blindingFactor, bytes32 _nextHash) public returns (bool) {
-        // bytes32 hashed = sha256(abi.encode("test1"));
-        // require(msg.sender == owner, string(abi.encodePacked(hashed)));
-        
+
         require(
             msg.sender == currentMarketAddress,
             "Only registered market can substract energy"

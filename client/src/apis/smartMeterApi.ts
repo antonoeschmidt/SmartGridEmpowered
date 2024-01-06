@@ -12,6 +12,7 @@ const deploySmartMeter = async (sender: string) => {
     const web3 = getWeb3();
     const newSmartMeterContract = new web3.eth.Contract(SmartMeter.abi);
     const { nextSecretHash } = getSmartMeterSecrets(sender);
+
     const deployedSmartMeterContract = newSmartMeterContract.deploy({
         data: SmartMeter.bytecode,
         // @ts-ignore

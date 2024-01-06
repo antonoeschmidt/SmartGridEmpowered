@@ -20,8 +20,8 @@ export const loadFromLocalStorage: any = (account: string) => {
 };
 
 export const addUserKey: any = (account, keyName: string, keyValue: any) => {
-    const storedJsonString = localStorage.getItem(account);
-    const parsedJson = JSON.parse(storedJsonString);
+    const storedJsonString = localStorage.getItem(account) ?? "{}";
+    const parsedJson = JSON.parse(storedJsonString) ?? {};
     localStorage.setItem(account, JSON.stringify({...parsedJson, [keyName]: keyValue}))
 }
 
@@ -34,13 +34,14 @@ export const getUserKey = (account: string, keyName: string) => {
 
 export const getSmartMeterSecrets = (account: string) => {
     const web3 = getWeb3();
-    const array = new Uint32Array(10);
-    crypto.getRandomValues(array);
-    const encodedSecretString = web3.eth.abi.encodeParameters(['string'],["array.toString()"])
-    const nextSecretHash = web3.utils.soliditySha3(encodedSecretString);
+    const nextSecretString = crypto.randomUUID();
+    const encodedNextSecretString = web3.eth.abi.encodeParameters(['string'],[nextSecretString]);
+    const nextSecretHash = web3.utils.soliditySha3(encodedNextSecretString);
         // fetch secret
-    const currentSecret = getUserKey(account, "secret");
+    const currentSecret = getUserKey(account, "secret") ?? "";
+    const encodedCurrentSecretString = web3.eth.abi.encodeParameters(['string'],[currentSecret]);
         // add the next key to local storage
-    addUserKey("account", "secret", encodedSecretString);
-    return {currentSecret, nextSecretHash};
+    addUserKey(account, "secret", nextSecretString);
+
+    return {currentSecret: encodedCurrentSecretString, nextSecretHash};
 }

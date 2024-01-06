@@ -5,7 +5,7 @@ import { marketApi } from "../apis/marketApi";
 import { smartMeterApi } from "../apis/smartMeterApi";
 import { supplyContractApi } from "../apis/supplyContractApi";
 import { sign } from "../apis/groupSignature";
-import { loadFromLocalStorage } from "../utils/localstorage";
+import { addUserKey, loadFromLocalStorage } from "../utils/localstorage";
 
 export type EthereumContextType = {
     accounts: string[];
@@ -130,8 +130,8 @@ export const useEthereumContext = (): EthereumContextType => {
     // saves data to localstorage when the user changes a setting
     useEffect(() => {
         if (!currentAccount) return;
-        const json = { smartMeterAddress, signature: currentAccountSignature };
-        localStorage.setItem(currentAccount, JSON.stringify(json));
+        addUserKey(currentAccount, "signature", currentAccountSignature);
+        addUserKey(currentAccount, "smartMeterAddress", smartMeterAddress);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [smartMeterAddress]);
 
