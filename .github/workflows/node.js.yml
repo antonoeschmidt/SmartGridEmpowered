@@ -29,14 +29,16 @@ jobs:
                   node-version: 14.x
 
             - name: Install dependencies, build, and lint
-              run: npm install && npm run build --if-present && npm run lint
+              run: npm install
+              run: npm run build --if-present
+              run: npm run lint
 
             - name: Install Truffle
               run: npm install truffle@5.4.29 -g
+              run: npm install
 
             - name: Run Truffle in the background
-              run: truffle develop --log
-              background: true
+              run: truffle develop --log &
 
             - name: Run Truffle tests
               run: CI=true truffle test --network ci
