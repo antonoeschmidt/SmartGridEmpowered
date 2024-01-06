@@ -1,10 +1,10 @@
-
 const Market = artifacts.require("Market");
 const CableCompany = artifacts.require("CableCompany");
 const SmartMeter = artifacts.require("SmartMeter");
-const web3 = require("web3");
-
-const encodedSecretString = web3.eth.abi.encodeParameters(['string'],['test1'])
+const encodedSecretString = web3.eth.abi.encodeParameters(
+    ["string"],
+    ["test1"]
+);
 const hash = web3.utils.soliditySha3(encodedSecretString);
 
 contract("Add Offer", (accounts) => {
@@ -50,7 +50,7 @@ contract("Add Offer", (accounts) => {
             hash,
             {
                 from: user,
-            },
+            }
         );
 
         const offer = await market.getOffer(offerId);
@@ -235,8 +235,14 @@ contract("Add Offer", (accounts) => {
         const date = Date.now();
         let errorMessage = "";
         const sellerSignature = "signature1";
-        const encodedSecretString = web3.eth.abi.encodeParameters(['string'],['test1'])
-        const encodedSecretString2 = web3.eth.abi.encodeParameters(['string'],['test2'])
+        const encodedSecretString = web3.eth.abi.encodeParameters(
+            ["string"],
+            ["test1"]
+        );
+        const encodedSecretString2 = web3.eth.abi.encodeParameters(
+            ["string"],
+            ["test2"]
+        );
 
         const newHash = web3.utils.soliditySha3(encodedSecretString2);
         try {
@@ -255,7 +261,7 @@ contract("Add Offer", (accounts) => {
                     from: user,
                 }
             );
-            
+
             await market.addOffer(
                 offerId,
                 amount,
@@ -290,8 +296,14 @@ contract("Add Offer", (accounts) => {
         let errorMessage = "";
         const sellerSignature = "signature1";
         const nonce = Math.floor(Math.random() * 1000);
-        const encodedSecretString = web3.eth.abi.encodeParameters(['string'],['test1'])
-        const encodedSecretString2 = web3.eth.abi.encodeParameters(['string'],['test2'])
+        const encodedSecretString = web3.eth.abi.encodeParameters(
+            ["string"],
+            ["test1"]
+        );
+        const encodedSecretString2 = web3.eth.abi.encodeParameters(
+            ["string"],
+            ["test2"]
+        );
 
         const newHash = web3.utils.soliditySha3(encodedSecretString2);
         try {
@@ -330,6 +342,5 @@ contract("Add Offer", (accounts) => {
         } catch (error) {
             errorMessage = error.data.stack ?? "";
         }
-
     });
 });
