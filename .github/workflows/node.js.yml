@@ -40,7 +40,7 @@ jobs:
               run: npm run lint
 
             - name: Install Truffle
-              run: npm install truffle -g && npm install
+              run: npm install truffle@5.11.5 -g && npm install
 
             - name: Run Truffle in the background
               run: truffle develop --log &
