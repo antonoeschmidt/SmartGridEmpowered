@@ -60,10 +60,16 @@ contract("Buy Offer", (accounts) => {
             await market.buyOffer(offerId, buyerSignature, { from: user });
         } catch (error) {
             errorMessage = error.data.stack;
+            if (!errorMessage) {
+                errorMessage = error.reason;
+            }
         }
 
-        assert.equal(true, errorMessage.includes(validErrorMessage), "Wrong error message");
-
+        assert.equal(
+            true,
+            errorMessage.includes(validErrorMessage),
+            "Wrong error message"
+        );
     });
 
     it("Should fail to buy expired offer", async () => {
@@ -95,9 +101,16 @@ contract("Buy Offer", (accounts) => {
             });
         } catch (error) {
             errorMessage = error.data.stack;
+            if (!errorMessage) {
+                errorMessage = error.reason;
+            }
         }
 
-        assert.equal(true, errorMessage.includes(validErrorMessage), "Wrong error message");
+        assert.equal(
+            true,
+            errorMessage.includes(validErrorMessage),
+            "Wrong error message"
+        );
     });
 
     it("Should buy an offer", async () => {

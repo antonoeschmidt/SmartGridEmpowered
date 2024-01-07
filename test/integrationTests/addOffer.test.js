@@ -91,6 +91,9 @@ contract("Add Offer", (accounts) => {
         } catch (error) {
             console.log(error);
             errorMessage = error.data.stack;
+            if (!errorMessage) {
+                errorMessage = error.reason;
+            }
         }
 
         assert.equal(
@@ -127,6 +130,9 @@ contract("Add Offer", (accounts) => {
             );
         } catch (error) {
             errorMessage = error.data.stack;
+            if (!errorMessage) {
+                errorMessage = error.reason;
+            }
         }
 
         assert.equal(
