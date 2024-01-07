@@ -89,6 +89,7 @@ contract("Add Offer", (accounts) => {
                 }
             );
         } catch (error) {
+            console.log(error);
             errorMessage = error.data.stack;
         }
 
