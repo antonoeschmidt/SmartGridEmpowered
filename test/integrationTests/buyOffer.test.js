@@ -52,7 +52,8 @@ contract("Buy Offer", (accounts) => {
         try {
             await market.buyOffer(offerId, buyerSignature, { from: user });
         } catch (error) {
-            errorMessage = error.reason;
+            console.log("error here");
+            errorMessage = error.data.stack.slice(64, 90);
         }
 
         assert.equal(errorMessage, validErrorMessage);
@@ -84,7 +85,7 @@ contract("Buy Offer", (accounts) => {
                 from: user,
             });
         } catch (error) {
-            errorMessage = error.reason;
+            errorMessage = error.data.stack;
         }
 
         assert.equal(errorMessage, validErrorMessage);
