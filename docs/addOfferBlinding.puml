@@ -5,8 +5,6 @@ participant GroupSignature
 participant Market #LightYellow
 participant CableCompany #LightYellow
 
-skinparam responseMessageBelowArrow true
-
 group Before
     note over SmartMeter: Logs usage
     SmartMeter -> SmartMeter: createLog()
@@ -20,9 +18,9 @@ User -> Market ++: addOffer(offer, blindingFactor, hashedValue)
 Market -> CableCompany ++: isRegistered(user.smartMeter)
 CableCompany --> Market --: SmartMeter registered
 
-Market -> SmartMeter ++: check batteryLevel(blindingFactor, hashedValue)
-SmartMeter -> SmartMeter ++: isBlindingFactorCorrect(blindingFactor)
-SmartMeter -> SmartMeter ++: setHashedValue(hashedValue)
+Market -> SmartMeter ++: check batteryLevel(blindingFactor, hashedValue, amount)
+SmartMeter -> SmartMeter: isBlindingFactorCorrect(blindingFactor)
+SmartMeter -> SmartMeter: setHashedValue(hashedValue)
 SmartMeter --> Market --: batteryLevel OK
 
 Market -> Market: createOffer
