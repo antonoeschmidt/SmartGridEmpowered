@@ -1,0 +1,31 @@
+@startuml AddOffer
+actor User
+participant SmartMeter #LightYellow
+participant GroupSignature
+participant Market #LightYellow
+participant CableCompany #LightYellow
+
+skinparam responseMessageBelowArrow true
+
+group Before
+    note over SmartMeter: Logs usage
+    SmartMeter -> SmartMeter: createLog()
+
+    SmartMeter -> SmartMeter: setBatteryCharge()
+end group
+
+autonumber
+User -> Market ++: addOffer(offer, blindingFactor, hashedValue)
+
+Market -> CableCompany ++: isRegistered(user.smartMeter)
+CableCompany --> Market --: SmartMeter registered
+
+Market -> SmartMeter ++: check batteryLevel(blindingFactor, hashedValue)
+SmartMeter -> SmartMeter ++: isBlindingFactorCorrect(blindingFactor)
+SmartMeter -> SmartMeter ++: setHashedValue(hashedValue)
+SmartMeter --> Market --: batteryLevel OK
+
+Market -> Market: createOffer
+
+Market --> User: Offer created!
+@enduml

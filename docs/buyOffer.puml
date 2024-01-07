@@ -1,30 +1,25 @@
-@startuml AddOffer
-actor User
-participant SmartMeter
-participant Market
-participant CableCompany
+@startuml BuyOffer
+actor Prosumer
+participant GroupSignature
+participant Market #LightYellow
+participant SupplyContract #LightYellow
 
-skinparam responseMessageBelowArrow true
-
-group Before
-    note over SmartMeter: Logs usage
-    SmartMeter -> SmartMeter: createLog()
-
-    SmartMeter -> SmartMeter: setBatteryCharge()
-end group
+skinparam dpi 300
 
 autonumber
-User -> Market ++: addOffer(offer, blindingFactor, hashedValue)
 
-Market -> CableCompany ++: isRegistered(user.smartMeter)
-CableCompany --> Market --: SmartMeter registered
+Prosumer -> GroupSignature ++: sign(offer)
+GroupSignature --> Prosumer --: signature
 
-Market -> SmartMeter ++: check batteryLevel(blindingFactor, hashedValue)
-SmartMeter -> SmartMeter ++: isBlindingFactorCorrect(blindingFactor)
-SmartMeter -> SmartMeter ++: setHashedValue(hashedValue)
-SmartMeter --> Market --: batteryLevel OK
+Prosumer -> Market ++: buyOffer(id, signature)
+Market -> Market: Check validity
+note over Market #WhiteSmoke
+expiration > now
+owner != buyer
+end note
 
-Market -> Market: createOffer
+Market -> SupplyContract ++: Deploy new SupplyContract
+SupplyContract --> Market --:
 
-Market --> User: Offer created!
+Market --> Prosumer: SupplyContract created!
 @enduml
