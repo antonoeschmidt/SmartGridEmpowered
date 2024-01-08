@@ -1,12 +1,16 @@
 const SmartMeter = artifacts.require("SmartMeter");
-
+const encodedSecretString = web3.eth.abi.encodeParameters(
+    ["string"],
+    ["test1"]
+);
+const hash = web3.utils.soliditySha3(encodedSecretString);
 contract("SmartMeter", (accounts) => {
     let marketAddress = accounts[0];
     let account = accounts[1];
     let smartMeter;
 
     beforeEach(async () => {
-        smartMeter = await SmartMeter.new({ from: account });
+        smartMeter = await SmartMeter.new(hash, { from: account });
         await smartMeter.setCurrentMarketAddress(marketAddress, {
             from: account,
         });
@@ -41,7 +45,7 @@ contract("SmartMeter", (accounts) => {
 
     it("should subtract battery charge", async () => {
         await smartMeter.createLog(100, 150, { from: account });
-        const success = await smartMeter.subtractBatteryCharge(50, {
+        const success = await smartMeter.subtractBatteryCharge(50, encodedSecretString, hash, {
             from: marketAddress,
         });
         assert.isTrue(success.receipt.status);

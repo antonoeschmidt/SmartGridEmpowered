@@ -1,6 +1,11 @@
 const Market = artifacts.require("Market");
 const CableCompany = artifacts.require("CableCompany");
 const SmartMeter = artifacts.require("SmartMeter");
+const encodedSecretString = web3.eth.abi.encodeParameters(
+    ["string"],
+    ["test1"]
+);
+const hash = web3.utils.soliditySha3(encodedSecretString);
 
 contract("Buy Offer", (accounts) => {
     let market;
@@ -21,7 +26,7 @@ contract("Buy Offer", (accounts) => {
     beforeEach(async () => {
         cableCompany = await CableCompany.new({ from: admin });
         market = await Market.new(cableCompany.address, { from: admin });
-        smartMeter = await SmartMeter.new({ from: user });
+        smartMeter = await SmartMeter.new(hash, { from: user });
         await smartMeter.setCurrentMarketAddress(market.address, {
             from: user,
         });
@@ -40,6 +45,8 @@ contract("Buy Offer", (accounts) => {
             sellerSignature,
             nonce,
             user,
+            encodedSecretString,
+            hash,
             {
                 from: user,
             }
@@ -52,10 +59,17 @@ contract("Buy Offer", (accounts) => {
         try {
             await market.buyOffer(offerId, buyerSignature, { from: user });
         } catch (error) {
-            errorMessage = error.reason;
+            errorMessage = error.data.stack;
+            if (!errorMessage) {
+                errorMessage = error.reason;
+            }
         }
 
-        assert.equal(errorMessage, validErrorMessage);
+        assert.equal(
+            true,
+            errorMessage.includes(validErrorMessage),
+            "Wrong error message"
+        );
     });
 
     it("Should fail to buy expired offer", async () => {
@@ -74,6 +88,8 @@ contract("Buy Offer", (accounts) => {
             sellerSignature,
             newNonce,
             user,
+            encodedSecretString,
+            hash,
             {
                 from: user,
             }
@@ -84,10 +100,17 @@ contract("Buy Offer", (accounts) => {
                 from: user,
             });
         } catch (error) {
-            errorMessage = error.reason;
+            errorMessage = error.data.stack;
+            if (!errorMessage) {
+                errorMessage = error.reason;
+            }
         }
 
-        assert.equal(errorMessage, validErrorMessage);
+        assert.equal(
+            true,
+            errorMessage.includes(validErrorMessage),
+            "Wrong error message"
+        );
     });
 
     it("Should buy an offer", async () => {

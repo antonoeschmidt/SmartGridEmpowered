@@ -86,7 +86,7 @@ def open():
 
 ## Should only be callable by the dso, or maybe we do something where we validate a token,
 ## and then the DSO generate a token and the user calls this endpoint, probably best.
-@app.route("/add-member/<name>", methods=["POST"])
+@app.route("/add-member/<name>", methods=["GET"])
 def add_member(name):
     api_key = request.headers.get('x-api-key')
     if not api_key or api_key != app.config['API_KEY']:

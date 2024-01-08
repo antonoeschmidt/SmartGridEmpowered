@@ -1,6 +1,7 @@
 import SmartMeter from "../contracts/SmartMeter.json";
 import { getWeb3 } from "./web3";
 import { cableCompanyInstance } from "./cableCompanyApi";
+import { getSmartMeterSecrets } from "../utils/localstorage";
 
 export const smartMeterInstance = (address: string) => {
     const web3 = getWeb3();
@@ -10,8 +11,12 @@ export const smartMeterInstance = (address: string) => {
 const deploySmartMeter = async (sender: string) => {
     const web3 = getWeb3();
     const newSmartMeterContract = new web3.eth.Contract(SmartMeter.abi);
+    const { nextSecretHash } = getSmartMeterSecrets(sender);
+
     const deployedSmartMeterContract = newSmartMeterContract.deploy({
         data: SmartMeter.bytecode,
+        // @ts-ignore
+        arguments: [nextSecretHash]
     });
     const res = await deployedSmartMeterContract.send({
         from: sender,
