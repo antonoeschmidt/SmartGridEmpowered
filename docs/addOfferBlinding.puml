@@ -13,14 +13,15 @@ group Before
 end group
 
 autonumber
-Prosumer -> Market ++: addOffer(offer, ots, nextOtsHash)
+Prosumer -> Market ++: addOffer(offer, ots, nextOtsHash, nonce)
+Market -> Market: verifyNonce(nonce)
 
 Market -> CableCompany ++: isRegistered(prosumer.smartMeter)
 CableCompany --> Market --: SmartMeter registered
 
 Market -> SmartMeter ++: check batteryLevel(ots, nextOtsHash, amount)
-SmartMeter -> SmartMeter: checkOTShash(ots)
-SmartMeter -> SmartMeter: setNextOTS(nextOtsHash)
+SmartMeter -> SmartMeter: verifyAndSetNextOTS(ots, nextOtsHash)
+SmartMeter -> SmartMeter: subtractBattery(amount)
 SmartMeter --> Market --: batteryLevel OK
 
 Market -> Market: createOffer
