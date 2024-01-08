@@ -1,5 +1,5 @@
 @startuml AddOffer
-actor User
+actor Prosumer
 participant SmartMeter #LightYellow
 participant GroupSignature
 participant Market #LightYellow
@@ -13,17 +13,17 @@ group Before
 end group
 
 autonumber
-User -> Market ++: addOffer(offer, blindingFactor, hashedValue)
+Prosumer -> Market ++: addOffer(offer, ots, nextOtsHash)
 
-Market -> CableCompany ++: isRegistered(user.smartMeter)
+Market -> CableCompany ++: isRegistered(prosumer.smartMeter)
 CableCompany --> Market --: SmartMeter registered
 
-Market -> SmartMeter ++: check batteryLevel(blindingFactor, hashedValue, amount)
-SmartMeter -> SmartMeter: isBlindingFactorCorrect(blindingFactor)
-SmartMeter -> SmartMeter: setHashedValue(hashedValue)
+Market -> SmartMeter ++: check batteryLevel(ots, nextOtsHash, amount)
+SmartMeter -> SmartMeter: checkOTShash(ots)
+SmartMeter -> SmartMeter: setNextOTS(nextOtsHash)
 SmartMeter --> Market --: batteryLevel OK
 
 Market -> Market: createOffer
 
-Market --> User: Offer created!
+Market --> Prosumer: Offer created!
 @enduml

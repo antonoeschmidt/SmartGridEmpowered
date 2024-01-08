@@ -3,7 +3,7 @@
 pragma solidity ^0.8.9;
 
 contract SmartMeter {
-    bytes32 hashedValue;
+    bytes32 otsHash;
     address owner;
     address currentMarketAddress;
     uint private totalConsumption;
@@ -12,9 +12,9 @@ contract SmartMeter {
     uint lastDataSent;
     uint transmissionInterval = 15 seconds;
 
-    constructor(bytes32 _hashedValue) {
+    constructor(bytes32 _otsHash) {
         owner = msg.sender;
-        hashedValue = _hashedValue;
+        otsHash = _otsHash;
         totalConsumption = 0;
         totalProduction = 0;
     }
@@ -61,21 +61,30 @@ contract SmartMeter {
         return batteryCharge;
     }
 
-    function checkHashAndSetHash(bytes memory blindingFactor, bytes32 _nextHash) public returns (bool) {
-        if (keccak256(blindingFactor) == hashedValue) {
-           hashedValue = _nextHash;
-           return true;
+    function checkHashAndSetHash(
+        bytes memory ots,
+        bytes32 nextOtsHash
+    ) public returns (bool) {
+        if (keccak256(ots) == otsHash) {
+            otsHash = nextOtsHash;
+            return true;
         }
         return false;
     }
 
-    function subtractBatteryCharge(uint amount, bytes memory blindingFactor, bytes32 _nextHash) public returns (bool) {
-
+    function subtractBatteryCharge(
+        uint amount,
+        bytes memory ots,
+        bytes32 nextOtsHash
+    ) public returns (bool) {
         require(
             msg.sender == currentMarketAddress,
             "Only registered market can substract energy"
         );
-        require(checkHashAndSetHash(blindingFactor, _nextHash), "The blinding factor was not correct");
+        require(
+            checkHashAndSetHash(ots, nextOtsHash),
+            "The blinding factor was not correct"
+        );
         if (batteryCharge < amount) {
             return false;
         }
