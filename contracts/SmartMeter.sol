@@ -40,8 +40,16 @@ contract SmartMeter {
         totalConsumption += intervalConsumption;
         totalProduction += intervalProduction;
 
-        if ((int(intervalProduction) - int(intervalConsumption)) > 0) {
-            batteryCharge += intervalProduction - intervalConsumption;
+        int netDifference = int(intervalProduction) - int(intervalConsumption);
+
+        if (netDifference > 0) {
+            batteryCharge += uint(netDifference);
+        } else if (netDifference < 0) {
+            if (uint(netDifference) > batteryCharge) {
+                batteryCharge = 0;
+            } else {
+                batteryCharge -= uint(netDifference);
+            }
         }
 
         emit Log(
