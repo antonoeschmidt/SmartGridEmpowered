@@ -23,6 +23,22 @@ export const getWeb3 = (): Web3 => {
     }
 };
 
+// example method to catch events. This can be used to fetch a users logs, or bought offers if we submit them as a contract.
+export const getPastEvents = async(address, abi, eventName) => {
+    const web3 = getWeb3();
+    const contract = new web3.eth.Contract(abi, address);
+    
+    contract.getPastEvents(eventName, {
+        // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'}, // Using an array means OR: e.g. 20 or 23
+        fromBlock: 0,
+        toBlock: 'latest'
+        //@ts-ignore
+    }, function(error, events){ console.log("events", events); })
+    .then(function(events){
+        console.log("events", events) // same results as the optional callback above
+    });
+};
+
 export const getAccounts = async (): Promise<string[]> => {
     const web3 = getWeb3();
     try {

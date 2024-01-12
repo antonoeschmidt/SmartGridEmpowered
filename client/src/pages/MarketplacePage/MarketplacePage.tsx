@@ -21,6 +21,7 @@ const MarketplacePage: FC = () => {
         loading,
         setLoading,
         removeOffer,
+        getUserLogs
     } = useContext(EthereumContext);
 
     const roundToDecimalPlaces = (number, decimalPlaces) => {
@@ -181,6 +182,8 @@ const MarketplacePage: FC = () => {
         );
     };
 
+    
+
     return (
         <div className={styles.container}>
             <MarketplacePageBody
@@ -195,6 +198,7 @@ const MarketplacePage: FC = () => {
                 suggestedPrice={suggestedPrice}
                 setOpenSupplyContractInfoModal={setOpenSupplyContractInfoModal}
                 setCurrentSupplyContract={setCurrentSupplyContract}
+                logsTable={}
             />
             <OfferModal open={open} handleClose={handleClose} />
             <SupplyContractInfoModal
