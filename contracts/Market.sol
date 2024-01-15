@@ -24,6 +24,8 @@ interface ISmartMeter {
         bytes memory ots,
         bytes32 nextOtsHash
     ) external returns (bool);
+
+    function getBatteryCharge() external view returns (uint);
 }
 
 contract Market {
@@ -119,13 +121,13 @@ contract Market {
     ) public returns (bool) {
         // Initialization
         Offer memory offer = offers[id];
-        ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);
+        // ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);
 
         // Require conditions
         require(msg.sender == offer.owner, "Only owner can remove offer");
 
         // Removing offer
-        smartMeter.returnReservedBatteryCharge(offer.amount);
+        // smartMeter.returnReservedBatteryCharge(offer.amount);
         delete offers[id];
 
         return true;
