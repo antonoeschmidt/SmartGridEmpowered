@@ -100,14 +100,12 @@ contract SmartMeter {
         return true;
     }
 
-    function returnReservedBatteryCharge(
-        uint returnedBatteryCharge
-    ) public returns (bool) {
+    function returnReservedBatteryCharge(uint amount) public returns (bool) {
         require(
             msg.sender == currentMarketAddress,
             "Only registered market can return energy"
         );
-        batteryCharge += returnedBatteryCharge;
+        batteryCharge += amount;
         return true;
     }
 }

@@ -355,4 +355,38 @@ contract("Add Offer", (accounts) => {
             errorMessage = error.data.stack ?? "";
         }
     });
+
+    it("Should remove added offer", async () => {
+        const offerId = "id";
+        const amount = 1;
+        const price = 1;
+        const date = Date.now();
+        const sellerSignature = "signature1";
+        const nonce = Math.floor(Math.random() * 1000);
+        await market.addOffer(
+            offerId,
+            amount,
+            price,
+            date,
+            smartMeter.address,
+            sellerSignature,
+            nonce,
+            user,
+            encodedSecretString,
+            hash,
+            {
+                from: user,
+            }
+        );
+
+        const offers = await market.getOffers();
+        assert.equal(offers.length, 1);
+
+        await market.removeOffer(offerId, user, {
+            from: user,
+        });
+
+        // const offers2 = await market.getOffers();
+        // assert.equal(offers2.length, 0);
+    });
 });

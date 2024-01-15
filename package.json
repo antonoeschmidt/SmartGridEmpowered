@@ -1,5 +1,6 @@
 {
   "devDependencies": {
-    "eth-gas-reporter": "^0.2.27"
+    "eth-gas-reporter": "^0.2.27",
+    "solidity-coverage": "^0.8.0-beta.1"
   }
 }
