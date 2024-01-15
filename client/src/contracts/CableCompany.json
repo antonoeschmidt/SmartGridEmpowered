@@ -46,7 +46,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -72,7 +73,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"getOwner\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"smartMeterPubKey\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"smartMeterAddress\",\"type\":\"address\"}],\"name\":\"isRegisteredKey\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"smartMeterPubKey\",\"type\":\"address\"},{\"internalType\":\"address\",\"name\":\"smartMeterAddress\",\"type\":\"address\"}],\"name\":\"registerKey\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"smartMeterPubKey\",\"type\":\"address\"}],\"name\":\"removeRegisteredKey\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/CableCompany.sol\":\"CableCompany\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/CableCompany.sol\":{\"keccak256\":\"0x827bd3d61edf865ff5e717a4dd3c3830bf7eaa2f384d782ea2e1f4ad8616c506\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://36149d6e20ea9b995d86f589be441eb92ac0606f4ec594bd418e3f685ea496b3\",\"dweb:/ipfs/Qmbh4qh9Bz927hBtKCsgrRKsV9u1iH1QxNHrRedBYeAxQX\"]}},\"version\":1}",
@@ -4118,9 +4120,17 @@
     "name": "solc",
     "version": "0.8.19+commit.7dd6d404.Emscripten.clang"
   },
-  "networks": {},
-  "schemaVersion": "3.4.3",
-  "updatedAt": "2024-01-06T15:07:12.647Z",
+  "networks": {
+    "5777": {
+      "events": {},
+      "links": {},
+      "address": "0xCb438f1FDE224eFb942B89e7D5ef3152Fe29595a",
+      "transactionHash": "0xee0a90fb76d6bf9ad5dfa02b5665f7f8ddd132be6e3d252f88710b2d02a0ca28"
+    }
+  },
+  "schemaVersion": "3.4.16",
+  "updatedAt": "2024-01-09T10:29:14.130Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},

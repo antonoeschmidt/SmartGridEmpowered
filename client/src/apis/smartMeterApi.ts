@@ -16,7 +16,7 @@ const deploySmartMeter = async (sender: string) => {
     const deployedSmartMeterContract = newSmartMeterContract.deploy({
         data: SmartMeter.bytecode,
         // @ts-ignore
-        arguments: [nextSecretHash]
+        arguments: [nextSecretHash],
     });
     const res = await deployedSmartMeterContract.send({
         from: sender,
