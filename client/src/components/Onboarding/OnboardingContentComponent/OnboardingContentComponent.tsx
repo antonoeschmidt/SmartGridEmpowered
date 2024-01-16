@@ -8,6 +8,9 @@ import OnboardingDialogComponent from "../OnboardingDialogComponent/OnboardingDi
 import Button from "../../Shared/Button/Button";
 import EthereumContext from "../../../contexts/ethereumContext";
 import { useNavigate } from "react-router-dom";
+import { createAccount } from "../../../apis/web3";
+import SelectSmartMeterAddressComponent from "../SelectSmartMeterAddress/SelectSmartMeterAddressComponent";
+import { addUserKey } from "../../../utils/localstorage";
 
 type OnboardingContentComponentProps = {
     handleChangeStep: (step: Steps) => void;
@@ -21,17 +24,18 @@ const OnboardingContentComponent = ({
         adminAccount,
         deployCableCompany,
         setCableCompanyAddress,
-        currentAccount,
-        deploySmartMeter,
-        setSmartMeterAddress,
+        createSmartMeter,
         registerSmartMeter,
-        currentMarket,
         deployMarket,
-        setCurrentMarket,
         setMarkets,
         markets,
         setSmartMeterMarketAddress,
         setLoading,
+        deploySmartMeter,
+        smartMeterContractAddress,
+        setUser,
+        user,
+        smartMeterAccounts
     } = useContext(EthereumContext);
     const navigate = useNavigate();
 
@@ -58,24 +62,33 @@ const OnboardingContentComponent = ({
             localStorage.setItem("cableCompany", cableCompanyAddress);
         }
         setCableCompanyAddress(cableCompanyAddress);
+
+        // sets the address of the smart meter contract.
+        let smartMeterAddress = localStorage.getItem("smartMeterContractAddress");
+        if (!smartMeterAddress) {
+            smartMeterAddress = await deploySmartMeter();
+            localStorage.setItem("smartMeterContractAddress", smartMeterAddress);
+        }
+        smartMeterContractAddress.current = smartMeterAddress;
+        
         handleChangeStep(Steps.Step2);
     };
 
     const handleStep2 = async () => {
         // Deploy Smart Meter
-        const address = await deploySmartMeter(currentAccount);
-        setSmartMeterAddress(address);
-
-        // Register Smart Meter
-        let res = await registerSmartMeter(currentAccount, address);
-        console.log("onboarding register smart meter", res);
-
+        
+        let marketAddress;
         // Create New Market
         if (markets?.length < 1) {
-            const marketAddress = await deployMarket();
-            setCurrentMarket(marketAddress);
+            marketAddress = await deployMarket();
             setMarkets((prev) => [...prev, marketAddress]);
+        } else {
+            marketAddress = markets[0];
         }
+        setUser(prev => ({...prev, market: marketAddress}));
+        await createSmartMeter(smartMeterAccounts[0], user.accountAddress, marketAddress);
+        // Register Smart Meter
+        let res = await registerSmartMeter(user.accountAddress, user.smartMeterAddress);
 
         handleChangeStep(Steps.Step3);
     };
@@ -97,7 +110,7 @@ const OnboardingContentComponent = ({
                 <>
                     <OnboardingItem
                         title="Choose admin account"
-                        content={<PickAccountsComponent type="admin" />}
+                        content={<PickAccountsComponent onboarding={true} type="admin" />}
                     />
                     <Button
                         text={"Next"}
@@ -110,12 +123,16 @@ const OnboardingContentComponent = ({
                 <>
                     <OnboardingItem
                         title="Choose user account"
-                        content={<PickAccountsComponent type="user" />}
+                        content={<PickAccountsComponent onboarding={true} type="user" />}
+                    />
+                    <OnboardingItem
+                        title="Choose smart meter account"
+                        content={<SelectSmartMeterAddressComponent />}
                     />
                     <Button
                         text={"Next"}
                         onClick={() => handleStep2()}
-                        disabled={!currentAccount}
+                        disabled={!user.accountAddress}
                     />
                 </>
             )}
@@ -132,7 +149,7 @@ const OnboardingContentComponent = ({
                     <Button
                         text={"Go to Marketplace"}
                         onClick={() => handleStep3()}
-                        disabled={!currentMarket}
+                        disabled={!user.market}
                     />
                 </>
             )}

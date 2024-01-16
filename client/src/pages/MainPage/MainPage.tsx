@@ -7,15 +7,13 @@ import { useNavigate } from "react-router-dom";
 const MainPage = () => {
     const {
         setMarkets,
-        setSupplyContractAddresses: setSupplyContracts,
-        setCurrentMarket,
-        currentMarket,
         markets,
         setCableCompanyAddress,
         accounts,
         setAccounts,
-        currentAccount,
-        setCurrentAccount,
+        setSmartMeterAccounts,
+        user,
+        setUser
     } = useContext(EthereumContext);
 
     const navigate = useNavigate();
@@ -30,21 +28,15 @@ const MainPage = () => {
                 .then(
                     ({
                         marketAddresses,
-                        supplyContractAddresses,
                         cableCompanyAddresses,
                     }) => {
                         console.log("Scan completed.");
                         console.log("marketAddresses", marketAddresses);
                         console.log(
-                            "supplyContractAddresses",
-                            supplyContractAddresses
-                        );
-                        console.log(
                             "cableCompanyAddresses",
                             cableCompanyAddresses
                         );
                         setMarkets(marketAddresses);
-                        setSupplyContracts(supplyContractAddresses);
                         if (cableCompanyAddresses.length > 0) {
                             setCableCompanyAddress(cableCompanyAddresses[0]);
                         }
@@ -55,19 +47,28 @@ const MainPage = () => {
                 });
         };
         return () => getData();
-    }, [currentMarket, setCableCompanyAddress, setMarkets, setSupplyContracts]);
+    }, [user.market, setCableCompanyAddress, setMarkets]);
 
     useEffect(() => {
-        if (!currentMarket && markets) setCurrentMarket(markets[0]);
-    }, [currentMarket, markets, setCurrentMarket]);
+        if (!user.market && markets) setUser(prev => ({...prev, market: markets[0]}));
+    }, [user.market, markets, setUser]);
 
     useEffect(() => {
         if (accounts.length > 0) return;
         getAccounts().then((_accounts) => {
             if (_accounts.length > 0) {
-                setAccounts(_accounts);
-                if (!currentAccount) {
-                    setCurrentAccount(_accounts[0]);
+                // Calculate the middle index
+                const middleIndex: number = Math.floor(_accounts.length / 2);
+
+                // Take the first half of the array
+                const firstHalf = _accounts.slice(0, middleIndex);
+
+                // Take the second half of the array
+                const secondHalf = _accounts.slice(middleIndex);
+                setAccounts(firstHalf);
+                setSmartMeterAccounts(secondHalf);
+                if (!user.accountAddress) {
+                    setUser(prev => ({...prev, accountAddress: _accounts[0]}));
                 }
             }
         });

@@ -4,7 +4,7 @@ import Button from "../../Shared/Button/Button";
 
 const CableCompanyComponent = () => {
     const {
-        currentAccount,
+        user,
         setCableCompanyAddress,
         cableCompanyAddress,
         deployCableCompany,
@@ -12,7 +12,7 @@ const CableCompanyComponent = () => {
     const [newCableCompanyCreated, setNewCableCompanyCreated] = useState(false);
 
     const newCableCompany = async () => {
-        if (!currentAccount) return;
+        if (!user.accountAddress) return;
         let cableCompanyAddress = await deployCableCompany();
         setNewCableCompanyCreated(true);
         setCableCompanyAddress(cableCompanyAddress);
@@ -23,7 +23,7 @@ const CableCompanyComponent = () => {
             <Button
                 text={"New Cable Company"}
                 onClick={newCableCompany}
-                disabled={!currentAccount}
+                disabled={!user.accountAddress}
             />
             {newCableCompanyCreated && (
                 <>

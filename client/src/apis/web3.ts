@@ -1,6 +1,5 @@
 import Web3 from "web3";
 import { marketInstance } from "./marketApi";
-import { getSupplyContractInstance } from "./supplyContractApi";
 import { cableCompanyInstance } from "./cableCompanyApi";
 
 export const getWeb3 = (): Web3 => {
@@ -24,19 +23,16 @@ export const getWeb3 = (): Web3 => {
 };
 
 // example method to catch events. This can be used to fetch a users logs, or bought offers if we submit them as a contract.
-export const getPastEvents = async(address, abi, eventName) => {
+const getPastEvents = async(address, abi, eventName) => {
     const web3 = getWeb3();
     const contract = new web3.eth.Contract(abi, address);
     
-    contract.getPastEvents(eventName, {
-        // filter: {myIndexedParam: [20,23], myOtherIndexedParam: '0x123456789...'}, // Using an array means OR: e.g. 20 or 23
+    return await contract.getPastEvents(eventName, {
         fromBlock: 0,
         toBlock: 'latest'
         //@ts-ignore
-    }, function(error, events){ console.log("events", events); })
-    .then(function(events){
-        console.log("events", events) // same results as the optional callback above
-    });
+    }, function(error, events){return events})
+    .then(events => events);
 };
 
 export const getAccounts = async (): Promise<string[]> => {
@@ -54,10 +50,15 @@ export const getAccounts = async (): Promise<string[]> => {
     }
 };
 
+export const createAccount = async() => {
+    const newAccount = getWeb3().eth.accounts.create();
+
+    return newAccount.address;
+}
+
 export const scanBlocksForContractCreations = async () => {
     const web3 = getWeb3();
     let marketAddresses: string[] = [];
-    let supplyContractAddresses: string[] = [];
     let cableCompanyAddresses: string[] = [];
     const latestBlockNumber = await web3.eth.getBlockNumber();
 
@@ -70,9 +71,6 @@ export const scanBlocksForContractCreations = async () => {
 
                 if (receipt.contractAddress) {
                     let mInstance = marketInstance(receipt.contractAddress);
-                    let scInstance = getSupplyContractInstance(
-                        receipt.contractAddress
-                    );
 
                     let ccInstance = cableCompanyInstance(
                         receipt.contractAddress
@@ -82,13 +80,6 @@ export const scanBlocksForContractCreations = async () => {
                         // Checks if this call fails. If it doesn't, its a Market SC
                         await mInstance.methods.getOfferIDs().call();
                         marketAddresses.push(receipt.contractAddress);
-                        continue;
-                    } catch {}
-
-                    try {
-                        // Checks if this call fails. If it doesn't, its a SupplyContract SC
-                        await scInstance.methods.getBuyer().call();
-                        supplyContractAddresses.push(receipt.contractAddress);
                         continue;
                     } catch {}
 
@@ -104,7 +95,7 @@ export const scanBlocksForContractCreations = async () => {
     }
     return {
         marketAddresses,
-        supplyContractAddresses,
         cableCompanyAddresses,
+        createAccount
     };
 };

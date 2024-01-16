@@ -43,7 +43,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -56,7 +57,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -69,7 +71,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -82,7 +85,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [],
@@ -137,7 +141,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.8.19+commit.7dd6d404\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"string\",\"name\":\"_buyerSignature\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"_sellerSignature\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"_amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_price\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"_nonce\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"getAmount\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getBuyer\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getInfo\",\"outputs\":[{\"components\":[{\"internalType\":\"address\",\"name\":\"scAddress\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"buyerSignature\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"sellerSignature\",\"type\":\"string\"},{\"internalType\":\"uint256\",\"name\":\"price\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"timestamp\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"confirmed\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"nonce\",\"type\":\"uint256\"}],\"internalType\":\"struct SupplyContract.SupplyContractDTO\",\"name\":\"\",\"type\":\"tuple\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getPrice\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getSeller\",\"outputs\":[{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/Market.sol\":\"SupplyContract\"},\"evmVersion\":\"paris\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/Market.sol\":{\"keccak256\":\"0xe6e7dd78ffa3d1d828e91dab6f40306b06668c56a896dca50a54fe13bba8e36b\",\"license\":\"GPL-3.0\",\"urls\":[\"bzz-raw://b290e88f6767dc280454538edc91451529e50bd9846695c1e66f287477fdaf73\",\"dweb:/ipfs/QmQp7GHUR6BtHkXv8a1pR9CPYWC9QhPJbWddfhYs8nehdS\"]}},\"version\":1}",
@@ -17178,10 +17183,23 @@
       "links": {},
       "address": "0x512dAD8c5297388Cc20d0FCA1eE0c46A59845449",
       "transactionHash": "0x6a7e6c3a20cc67eb23e5cbfb6ecc9b772beb98a8ae395cb7e273861c1b1682dc"
+    },
+    "1705318415518": {
+      "events": {},
+      "links": {},
+      "address": "0xEc33dc789Fe70a6fe7d51e052b2247f5dE5E6aC2",
+      "transactionHash": "0x13610e7ad7a17ae8dcb88fff686405e167eb695494abc75f3fda3141856e850f"
+    },
+    "1705398002043": {
+      "events": {},
+      "links": {},
+      "address": "0x672060E043fB840704034Dc11Aa0FeeEad178D95",
+      "transactionHash": "0x6e83802e9d2309e749cccb58c51c9ab28c8d65070fce8785bd62db971ad1dc35"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2024-01-08T08:05:54.296Z",
+  "updatedAt": "2024-01-16T13:43:26.261Z",
+  "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",
     "methods": {},

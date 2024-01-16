@@ -3,21 +3,18 @@
 pragma solidity ^0.8.9;
 
 contract SmartMeter {
-    bytes32 otsHash;
-    address owner;
-    address currentMarketAddress;
-    uint private totalConsumption;
-    uint private totalProduction;
-    uint batteryCharge;
-    uint lastDataSent;
-    uint transmissionInterval = 15 seconds;
-
-    constructor(bytes32 _otsHash) {
-        owner = msg.sender;
-        otsHash = _otsHash;
-        totalConsumption = 0;
-        totalProduction = 0;
+    struct SmartMeterInstance {
+        bytes32 otsHash;
+        uint batteryCharge;
+        uint lastDataSent;
+        uint totalConsumption;
+        uint totalProduction;
+        address marketAddress;
     }
+
+    mapping(address => SmartMeterInstance) public smartMeters;
+
+    uint transmissionInterval = 15 seconds;
 
     struct PowerData {
         uint256 intervalConsumption;
@@ -32,49 +29,54 @@ contract SmartMeter {
         uint256 intervalConsumption,
         uint256 intervalProduction
     ) public {
-        require(msg.sender == owner, "Only owner can create logs");
+        SmartMeterInstance memory smartMeterInstance = smartMeters[msg.sender];
         require(
-            block.timestamp - lastDataSent > transmissionInterval,
+            block.timestamp - smartMeterInstance.lastDataSent >
+                transmissionInterval,
             "Logs cannot appear more frequently than the transmission interval"
         );
-        totalConsumption += intervalConsumption;
-        totalProduction += intervalProduction;
+        smartMeterInstance.totalConsumption += intervalConsumption;
+        smartMeterInstance.totalProduction += intervalProduction;
 
         int netDifference = int(intervalProduction) - int(intervalConsumption);
 
         if (netDifference > 0) {
-            batteryCharge += uint(netDifference);
+            smartMeterInstance.batteryCharge += uint(netDifference);
         } else if (netDifference < 0) {
-            if (uint(netDifference) > batteryCharge) {
-                batteryCharge = 0;
+            if (uint(netDifference) > smartMeterInstance.batteryCharge) {
+                smartMeterInstance.batteryCharge = 0;
             } else {
-                batteryCharge -= uint(netDifference);
+                smartMeterInstance.batteryCharge -= uint(netDifference);
             }
         }
 
         emit Log(
             msg.sender,
             PowerData({
-                totalProduction: totalProduction,
-                totalConsumption: totalConsumption,
+                totalProduction: smartMeterInstance.totalProduction,
+                totalConsumption: smartMeterInstance.totalConsumption,
                 intervalConsumption: intervalConsumption,
                 intervalProduction: intervalProduction
             }),
             block.timestamp
         );
-        lastDataSent = block.timestamp;
+        smartMeterInstance.lastDataSent = block.timestamp;
+        smartMeters[msg.sender] = smartMeterInstance;
     }
 
-    function getBatteryCharge() public view returns (uint) {
-        return batteryCharge;
+    function getBatteryCharge(
+        address smartMeterAddress
+    ) public view returns (uint) {
+        return smartMeters[smartMeterAddress].batteryCharge;
     }
 
     function checkHashAndSetHash(
         bytes memory ots,
-        bytes32 nextOtsHash
+        bytes32 nextOtsHash,
+        address smartMeterAddress
     ) public returns (bool) {
-        if (keccak256(ots) == otsHash) {
-            otsHash = nextOtsHash;
+        if (keccak256(ots) == smartMeters[smartMeterAddress].otsHash) {
+            smartMeters[smartMeterAddress].otsHash = nextOtsHash;
             return true;
         }
         return false;
@@ -83,39 +85,48 @@ contract SmartMeter {
     function subtractBatteryCharge(
         uint amount,
         bytes memory ots,
-        bytes32 nextOtsHash
+        bytes32 nextOtsHash,
+        address smartMeterAddress
     ) public returns (bool) {
         require(
-            msg.sender == currentMarketAddress,
+            msg.sender == smartMeters[smartMeterAddress].marketAddress,
             "Only registered market can substract energy"
         );
         require(
-            checkHashAndSetHash(ots, nextOtsHash),
+            checkHashAndSetHash(ots, nextOtsHash, smartMeterAddress),
             "The blinding factor was not correct"
         );
-        if (batteryCharge < amount) {
+        if (smartMeters[smartMeterAddress].batteryCharge < amount) {
             return false;
         }
-        batteryCharge -= amount;
-        return true;
-    }
-
-    function setCurrentMarketAddress(
-        address marketAddress
-    ) public returns (bool) {
-        require(msg.sender == owner, "Only owner can change market address");
-        currentMarketAddress = marketAddress;
+        smartMeters[smartMeterAddress].batteryCharge -= amount;
         return true;
     }
 
     function returnReservedBatteryCharge(
-        uint returnedBatteryCharge
+        uint returnedBatteryCharge,
+        address smartMeterAddress
     ) public returns (bool) {
         require(
-            msg.sender == currentMarketAddress,
+            msg.sender == smartMeters[smartMeterAddress].marketAddress,
             "Only registered market can return energy"
         );
-        batteryCharge += returnedBatteryCharge;
+        smartMeters[smartMeterAddress].batteryCharge += returnedBatteryCharge;
         return true;
+    }
+
+    function setMarketAddress(address _marketAddress) public {
+        smartMeters[msg.sender].marketAddress = _marketAddress;
+    }
+
+    function createSmartMeter(address _marketAddress, bytes32 _otsHash) public {
+        smartMeters[msg.sender] = SmartMeterInstance({
+            otsHash: _otsHash,
+            marketAddress: _marketAddress,
+            lastDataSent: 0,
+            totalConsumption: 0,
+            totalProduction: 0,
+            batteryCharge: 0
+        });
     }
 }

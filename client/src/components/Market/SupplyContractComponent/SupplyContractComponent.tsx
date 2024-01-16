@@ -1,27 +1,27 @@
 import React from "react";
 import styles from "./SupplyContractComponent.module.css";
-import { SupplyContractDTO } from "../../../models/models";
+import { ApprovedContractDTO, PendingOfferDTO } from "../../../models/models";
 import Button from "../../Shared/Button/Button";
 
 type SupplyContractComponentProps = {
-    supplyContract: SupplyContractDTO;
+    item: PendingOfferDTO | ApprovedContractDTO;
     handleShowClick: () => void;
 };
 
 const SupplyContractComponent = ({
-    supplyContract,
+    item,
     handleShowClick,
 }: SupplyContractComponentProps) => {
     return (
         <div className={styles.card}>
             <div className={styles.cardTop}>
                 <div>
-                    <div className={styles.lightTextItalic}>
-                        Supply Contract#{supplyContract.id.slice(0, 7)}
-                    </div>
-                    Buyer: {supplyContract.buyerSignature.slice(0, 7)}
+                    {/* <div className={styles.lightTextItalic}>
+                        Supply Contract#{item.id.slice(0, 7)}
+                    </div> */}
+                    Buyer: {item.buyerSignature.slice(0, 7)}
                     <br />
-                    Seller: {supplyContract.sellerSignature.slice(0, 7)}
+                    Seller: {item.sellerSignature.slice(0, 7)}
                 </div>
                 <img
                     className={styles.greenEnergyLogo}
@@ -30,13 +30,13 @@ const SupplyContractComponent = ({
                 />
             </div>
             <div className={styles.header} style={{ marginTop: "0.7em" }}>
-                {supplyContract.amount} kWh
+                {item.amount} kWh
             </div>
             <div className={styles.header} style={{ marginTop: "-0.3em" }}>
-                {supplyContract.price} €
+                {item.price} €
             </div>
             <div>
-                {(supplyContract.price / supplyContract.amount).toFixed(2)}{" "}
+                {(item.price / item.amount).toFixed(2)}{" "}
                 €/kWh
                 <div className={styles.button}>
                     <Button

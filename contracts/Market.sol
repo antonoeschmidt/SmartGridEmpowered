@@ -17,12 +17,16 @@ interface ICableCompany {
 }
 
 interface ISmartMeter {
-    function returnReservedBatteryCharge(uint amount) external returns (bool);
+    function returnReservedBatteryCharge(
+        uint amount,
+        address smartMeterInstance
+    ) external returns (bool);
 
     function subtractBatteryCharge(
         uint amount,
         bytes memory ots,
-        bytes32 nextOtsHash
+        bytes32 nextOtsHash,
+        address smartMeterInstance
     ) external returns (bool);
 }
 
@@ -30,6 +34,8 @@ contract Market {
     address owner;
     ICableCompany cableCompany; // Maybe change the name of CableCompany to something else, like DSO
     uint maxOfferLivespan = 1000 * 60 * 60 * 24 * 7;
+    ISmartMeter smartMeter;
+    address cableCompanyAddress;
 
     struct Offer {
         string id;
@@ -43,8 +49,18 @@ contract Market {
         uint nonce;
     }
 
-    mapping(string => Offer) private offers;
-    mapping(string => Offer) private pendingConfirmation;
+    struct PendingConfirmationOffer {
+        string buyerSignature;
+        string sellerSignature;
+        address smartMeterAddress;
+        uint amount; // Wh
+        uint price; // Euro cents
+        uint timestamp; // Unix
+        uint nonce;
+    }
+
+    mapping(string => Offer) public offers;
+    PendingConfirmationOffer[] public pendingConfirmationOffers;
 
     string[] public offerIds;
     address public lastestSupplyChainAddress;
@@ -61,9 +77,14 @@ contract Market {
         _;
     }
 
-    constructor(address _cableCompanyAddress) payable {
+    constructor(
+        address _cableCompanyAddress,
+        address smartMeterContract
+    ) payable {
         owner = msg.sender;
         cableCompany = ICableCompany(_cableCompanyAddress);
+        cableCompanyAddress = _cableCompanyAddress;
+        smartMeter = ISmartMeter(smartMeterContract);
     }
 
     function addOffer(
@@ -89,9 +110,13 @@ contract Market {
         );
         require(sellerAddress == msg.sender, "Only owner can add offer");
 
-        ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);
         require(
-            smartMeter.subtractBatteryCharge(amount, ots, nextOtsHash),
+            smartMeter.subtractBatteryCharge(
+                amount,
+                ots,
+                nextOtsHash,
+                smartMeterAddress
+            ),
             "Not enough stored energy"
         );
 
@@ -119,22 +144,18 @@ contract Market {
     ) public returns (bool) {
         // Initialization
         Offer memory offer = offers[id];
-        ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);
 
         // Require conditions
         require(msg.sender == offer.owner, "Only owner can remove offer");
 
         // Removing offer
-        smartMeter.returnReservedBatteryCharge(offer.amount);
+        smartMeter.returnReservedBatteryCharge(offer.amount, smartMeterAddress);
         delete offers[id];
 
         return true;
     }
 
-    function buyOffer(
-        string memory id,
-        string memory buyerSignature
-    ) public returns (address) {
+    function buyOffer(string memory id, string memory buyerSignature) public {
         // Initialization
         Offer memory offer = offers[id];
 
@@ -143,25 +164,24 @@ contract Market {
             keccak256(bytes(offer.id)) == keccak256(bytes(id)),
             "No offer found"
         );
-        string memory sellerSignature = offer.sellerSignature;
-        address seller = offer.owner;
-        uint amount = offer.amount;
-        uint price = offer.price;
-        uint expiration = offer.expiration;
-        uint offerNonce = offer.nonce;
-        require(expiration > block.timestamp, "Cannot buy expired offer");
-        require(msg.sender != seller, "Owner cannot buy own offer");
+        require(offer.expiration > block.timestamp, "Cannot buy expired offer");
+        require(msg.sender != offer.owner, "Owner cannot buy own offer");
 
         // Buying offer and creating SupplyContract
-        SupplyContract sc = new SupplyContract({
-            _buyerSignature: buyerSignature,
-            _sellerSignature: sellerSignature,
-            _amount: amount,
-            _price: price,
-            _nonce: offerNonce
-        });
-        lastestSupplyChainAddress = address(sc);
+
         delete offers[id];
+
+        pendingConfirmationOffers.push(
+            PendingConfirmationOffer({
+                buyerSignature: buyerSignature,
+                sellerSignature: offer.sellerSignature,
+                amount: offer.amount,
+                price: offer.price,
+                timestamp: block.timestamp,
+                nonce: offer.nonce,
+                smartMeterAddress: offer.smartMeterAddress
+            })
+        );
 
         for (uint i = 0; i < offerIds.length; i++) {
             // String comparison to remove purchased offer
@@ -170,8 +190,6 @@ contract Market {
                 offerIds.pop();
             }
         }
-
-        return address(sc);
     }
 
     function getOffer(string memory id) public view returns (Offer memory) {
@@ -193,79 +211,58 @@ contract Market {
         return offerIds;
     }
 
-    function getLatestSupplyContract() public view returns (address) {
-        return lastestSupplyChainAddress;
+    function getPendingOffers()
+        public
+        view
+        returns (PendingConfirmationOffer[] memory)
+    {
+        return pendingConfirmationOffers;
     }
 
-    function getPendingOffers() public view returns (address) {
-        return lastestSupplyChainAddress;
-    }
-}
+    event ApproveOffer(
+        string buyerSignature,
+        string sellerSignature,
+        uint amount,
+        uint timestamp,
+        uint price
+    );
 
-contract SupplyContract {
-    string buyerSignature;
-    string sellerSignature;
-    uint amount; // Wh
-    uint price; // Euro cents
-    uint timestamp; // Unix
-    bool confirmed;
-    uint nonce;
 
-    struct SupplyContractDTO {
-        address scAddress;
-        string buyerSignature;
-        string sellerSignature;
-        uint price;
-        uint amount;
-        uint timestamp;
-        bool confirmed;
-        uint nonce;
-    }
-
-    constructor(
-        string memory _buyerSignature,
-        string memory _sellerSignature,
-        uint _amount,
-        uint _price,
-        uint _nonce
-    ) {
-        buyerSignature = _buyerSignature;
-        sellerSignature = _sellerSignature;
-        amount = _amount;
-        price = _price;
-        timestamp = block.timestamp;
-        confirmed = false;
-        nonce = _nonce;
-    }
-
-    function getBuyer() public view returns (string memory) {
-        return buyerSignature;
-    }
-
-    function getSeller() public view returns (string memory) {
-        return sellerSignature;
-    }
-
-    function getAmount() public view returns (uint) {
-        return amount;
-    }
-
-    function getPrice() public view returns (uint) {
-        return price;
-    }
-
-    function getInfo() public view returns (SupplyContractDTO memory) {
-        SupplyContractDTO memory scDTO = SupplyContractDTO({
-            scAddress: address(this),
-            buyerSignature: buyerSignature,
-            sellerSignature: sellerSignature,
-            price: price,
-            amount: amount,
-            timestamp: timestamp,
-            confirmed: confirmed,
-            nonce: nonce
-        });
-
-        return scDTO;
+    function validatePendingOffers(
+        bool[] memory offerIndicies
+    ) public {
+        require(msg.sender == owner, "sender is not owner");
+        for (uint i = 0; i < offerIndicies.length; i++) {
+            PendingConfirmationOffer memory offer = pendingConfirmationOffers[
+                i
+            ];
+            //if it's an accepted index we emit our event
+            if (offerIndicies[i] == true) {
+                emit ApproveOffer(
+                    offer.buyerSignature,
+                    offer.sellerSignature,
+                    offer.amount,
+                    offer.timestamp,
+                    offer.price
+                );
+            } else {
+                // if not the owner gets their battery back.
+                smartMeter.returnReservedBatteryCharge(
+                    offer.amount,
+                    offer.smartMeterAddress
+                );
+            }
+        }
+        // we loop agian to clean up the list
+        for (uint i = 0; i < offerIndicies.length; i++) {
+            // We move the indicies not yet approved down.
+            if (offerIndicies.length < pendingConfirmationOffers.length - i) {
+                pendingConfirmationOffers[i] = pendingConfirmationOffers[
+                    pendingConfirmationOffers.length - 1 - i
+                ];
+            }
+            // And lastly we pop everytime.
+            pendingConfirmationOffers.pop();
+        } 
     }
 }

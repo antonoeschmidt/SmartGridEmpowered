@@ -1,4 +1,4 @@
-import { OfferDTO, SupplyContractDTO } from "../models/models";
+import { ApprovedContractDTO, OfferDTO, PendingOfferDTO, SupplyContractDTO } from "../models/models";
 
 export const dateFormatter = (dateString: string) => {
     const date = new Date(dateString);
@@ -32,3 +32,26 @@ export const supplyContractParser = (d: any): SupplyContractDTO => {
         nonce: Number(d.nonce),
     };
 };
+
+export const pendingOfferParser = (d: any): PendingOfferDTO => {
+    return {
+        nonce: Number(d.nonce),
+        amount: Number(d.amount),
+        buyerSignature: d.buyerSignature,
+        sellerSignature: d.sellerSignature,
+        smartMeterAddress: d.smartMeterAddress,
+        timestamp: Number(d.timestamp),
+        price: Number(d.price),
+    }
+};
+
+export const approvedContractParser = (d: any | any[]): ApprovedContractDTO => {
+
+    return {
+        buyerSignature: d.buyerSignature,
+        sellerSignature: d.sellerSignature,
+        price: Number(d.price),
+        amount: Number(d.amount),
+        timestamp: Number(d.timestamp)
+    }
+}

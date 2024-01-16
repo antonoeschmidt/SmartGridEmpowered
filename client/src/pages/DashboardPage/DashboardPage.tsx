@@ -33,11 +33,11 @@ const DashboardPage = () => {
                     <h3>Accounts</h3>
                     <DashboardItem
                         title="Choose user"
-                        content={<PickAccountsComponent type="user" />}
+                        content={<PickAccountsComponent type="user" onboarding={false} />}
                     />
                     <DashboardItem
                         title="Choose admin"
-                        content={<PickAccountsComponent type="admin" />}
+                        content={<PickAccountsComponent type="admin" onboarding={false} />}
                     />
                 </div>
                 <div className={styles.col}>
