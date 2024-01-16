@@ -325,6 +325,7 @@ export const useEthereumContext = (): EthereumContextType => {
     }
 
     const approvePendingOffers = async(offerIndicies: boolean[]) => {
+        console.log('{adminAccount, offerIndicies, user.market}', {adminAccount, offerIndicies, market: user.market})
         return await marketApi.approvePendingOffers(adminAccount, offerIndicies, user.market)
     }
 
@@ -333,6 +334,7 @@ export const useEthereumContext = (): EthereumContextType => {
         console.log('approvedContractsResponse', approvedContractsResponse)
         if (!approvedContractsResponse) return;
         const parsedContracts = approvedContractsResponse.map(contract => approvedContractParser(contract));
+        console.log('parsedContracts', parsedContracts)
         setApprovedContracts(parsedContracts);
     }
 

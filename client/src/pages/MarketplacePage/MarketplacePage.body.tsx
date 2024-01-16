@@ -87,7 +87,7 @@ const MarketplacePageBody = ({
             return buyerSignatureVerified && sellerSignatureVerified;
         }));
         console.log('indicies', indicies)
-        await approvePendingOffersContext([]);
+        await approvePendingOffersContext(indicies);
     }
 
     const refresh = () => {

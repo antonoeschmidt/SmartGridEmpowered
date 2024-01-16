@@ -23,7 +23,7 @@ export const getWeb3 = (): Web3 => {
 };
 
 // example method to catch events. This can be used to fetch a users logs, or bought offers if we submit them as a contract.
-const getPastEvents = async(address, abi, eventName) => {
+export const getPastEvents = async(address, abi, eventName) => {
     const web3 = getWeb3();
     const contract = new web3.eth.Contract(abi, address);
     

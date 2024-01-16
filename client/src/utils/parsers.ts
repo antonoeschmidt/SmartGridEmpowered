@@ -48,10 +48,10 @@ export const pendingOfferParser = (d: any): PendingOfferDTO => {
 export const approvedContractParser = (d: any | any[]): ApprovedContractDTO => {
 
     return {
-        buyerSignature: d.buyerSignature,
-        sellerSignature: d.sellerSignature,
-        price: Number(d.price),
-        amount: Number(d.amount),
-        timestamp: Number(d.timestamp)
+        buyerSignature: d.returnValues.buyerSignature,
+        sellerSignature: d.returnValues.sellerSignature,
+        price: Number(d.returnValues.price),
+        amount: Number(d.returnValues.amount),
+        timestamp: Number(d.returnValues.timestamp)
     }
 }
