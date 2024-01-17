@@ -1,5 +1,7 @@
+const url = "http://127.0.0.1:5000";
+const apikey = "SuperSecretKey";
 
-export const addMember = async (name) => {
+const addMember = async (name) => {
     const response = fetch(`${url}/add-member/${name}`, {
         method: "GET",
         headers: {
@@ -15,7 +17,7 @@ export const addMember = async (name) => {
     return response;
 };
 
-export const sign = async (message, key) => {
+const sign = async (message, key) => {
     try {
         const response = await fetch(`${url}/sign`, {
             method: "POST",
@@ -36,7 +38,7 @@ export const sign = async (message, key) => {
     }
 };
 
-export const verify = async (signature, message) => {
+const verify = async (signature, message) => {
     try {
         const response = await fetch(`${url}/verify`, {
             method: "POST",
@@ -52,3 +54,7 @@ export const verify = async (signature, message) => {
         console.error("Error:", error);
     }
 };
+
+module.exports = {
+    addMember, verify, sign
+}

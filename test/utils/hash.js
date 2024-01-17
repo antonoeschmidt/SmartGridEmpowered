@@ -6,3 +6,7 @@ const getSecrets = (secret) => {
     const hash = web3.utils.soliditySha3(encodedSecret);
     return {hash, encodedSecret};
 }
+
+module.exports = {
+    getSecrets
+}

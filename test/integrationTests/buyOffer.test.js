@@ -1,11 +1,8 @@
+const { getSecrets } = require("../utils/hash");
 const Market = artifacts.require("Market");
 const CableCompany = artifacts.require("CableCompany");
 const SmartMeter = artifacts.require("SmartMeter");
-const encodedSecretString = web3.eth.abi.encodeParameters(
-    ["string"],
-    ["test1"]
-);
-const hash = web3.utils.soliditySha3(encodedSecretString);
+const {encodedSecret, hash} = getSecrets("test1");
 
 contract("Buy Offer", (accounts) => {
     let market;
@@ -15,6 +12,7 @@ contract("Buy Offer", (accounts) => {
     const admin = accounts[0];
     const user = accounts[1];
     const validBuyer = accounts[2];
+    const smartMeterAddress = accounts[3];
     const offerId = "id";
     const amount = 1;
     const price = 1;
@@ -25,27 +23,29 @@ contract("Buy Offer", (accounts) => {
 
     beforeEach(async () => {
         cableCompany = await CableCompany.new({ from: admin });
-        market = await Market.new(cableCompany.address, { from: admin });
-        smartMeter = await SmartMeter.new(hash, { from: user });
-        await smartMeter.setCurrentMarketAddress(market.address, {
-            from: user,
+        smartMeter = await SmartMeter.new({ from: user });
+        market = await Market.new(cableCompany.address, smartMeter.address, { from: admin });
+
+        await smartMeter.createSmartMeter(market.address, hash, {
+            from: smartMeterAddress,
         });
-        await cableCompany.registerKey(user, smartMeter.address, {
+        
+        await cableCompany.registerKey(user, smartMeterAddress, {
             from: admin,
         });
         await smartMeter.createLog(10, 50, {
-            from: user,
+            from: smartMeterAddress,
         });
         await market.addOffer(
             offerId,
             amount,
             price,
             date,
-            smartMeter.address,
+            smartMeterAddress,
             sellerSignature,
             nonce,
             user,
-            encodedSecretString,
+            encodedSecret,
             hash,
             {
                 from: user,
@@ -84,11 +84,11 @@ contract("Buy Offer", (accounts) => {
             amount,
             price,
             expiredDate,
-            smartMeter.address,
+            smartMeterAddress,
             sellerSignature,
             newNonce,
             user,
-            encodedSecretString,
+            encodedSecret,
             hash,
             {
                 from: user,

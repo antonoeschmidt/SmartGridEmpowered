@@ -1,25 +1,15 @@
+const { getSecrets } = require("../utils/hash");
+const { getPastEvents } = require("../utils/web3functions");
+const { addMember, verify, sign} = require("../utils/signatureservice");
+
 const Market = artifacts.require("Market");
 const CableCompany = artifacts.require("CableCompany");
 const SmartMeter = artifacts.require("SmartMeter");
-const encodedSecretString = web3.eth.abi.encodeParameters(
-    ["string"],
-    ["test1"]
-);
-const hash = web3.utils.soliditySha3(encodedSecretString);
 
-const url = "http://127.0.0.1:5000";
-const apikey = "SuperSecretKey";
+const {encodedSecret, hash} = getSecrets("secret");
 
-const getPastEvents = async(address, abi, eventName) => {
-    const contract = new web3.eth.Contract(abi, address);
-    
-    return await contract.getPastEvents(eventName, {
-        fromBlock: 0,
-        toBlock: 'latest'
-        //@ts-ignore
-    }, function(error, events){return events})
-    .then(events => events);
-};
+
+
 
 
 contract("Add Offer", (accounts) => {
@@ -53,7 +43,7 @@ contract("Add Offer", (accounts) => {
             sellerSignature,
             offer.nonce,
             offer.sellerAddress,
-            encodedSecretString,
+            encodedSecret,
             hash,
             {
                 from: offer.sellerAddress,
