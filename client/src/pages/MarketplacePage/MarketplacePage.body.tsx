@@ -3,7 +3,7 @@ import styles from "./MarketplacePage.module.css";
 import { AddButton } from "../../components/common/AddButton";
 import OfferComponent from "../../components/Market/OfferComponent/OfferComponent";
 import { OfferDTO, PendingOfferDTO, ApprovedContractDTO } from "../../models/models";
-import { Button, CircularProgress } from "@mui/material";
+import { Box, Button, CircularProgress } from "@mui/material";
 import SupplyContractComponent from "../../components/Market/SupplyContractComponent/SupplyContractComponent";
 import SuggestedPriceComponent from "../../components/Market/SuggestedPriceComponent/SuggestedPriceComponent";
 import { verify } from "../../apis/groupSignature";
@@ -100,17 +100,18 @@ const MarketplacePageBody = ({
         <>
             <div className={styles.pageTop}>
                 <h1>Marketplace</h1>
-                <div
-                    style={{
-                        width: "80px",
+                <Box
+                    sx={{
                         height: "80px",
-                        marginLeft: "auto",
+                        display: 'flex',
+                        flexDirection: "row-reverse",
+                        gap: "20px"
                     }}
                 >
                     <AddButton onClick={() => setOpen(true)} />
-                    <Button onClick={() => approvePendingOffers()}>Approve offers</Button>
-                    <Button onClick={() => refresh()}>Refresh</Button>
-                </div>
+                    <Button onClick={() => approvePendingOffers()} size="small" variant="contained">Approve offers</Button>
+                    <Button onClick={() => refresh() }  size="small" variant="contained">Refresh</Button>
+                </Box>
             </div>
 
             <div className={styles.row}>

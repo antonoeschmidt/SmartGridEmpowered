@@ -17,8 +17,8 @@ contract SmartMeter {
     event Log(uint256 c, uint256 p);
 
     function createLog(
-        uint256 c,
-        uint256 p
+        uint256 consumption,
+        uint256 production
     ) public {
         require(
             block.timestamp - smartMeters[msg.sender].lastDataSent >
@@ -26,19 +26,19 @@ contract SmartMeter {
             "Logs cannot appear more frequently than the transmission interval"
         );
 
-        int netDifference = int(p) - int(c);
+        int netDifference = int(production) - int(consumption);
 
         if (netDifference > 0) {
             smartMeters[msg.sender].batteryCharge += uint(netDifference);
         } else {
-            if (c - p > smartMeters[msg.sender].batteryCharge) {
+            if (consumption - production > smartMeters[msg.sender].batteryCharge) {
                 smartMeters[msg.sender].batteryCharge = 0;
             } else {
                 smartMeters[msg.sender].batteryCharge -= uint(netDifference);
             }
         }
 
-        emit Log(c, p);
+        emit Log(consumption, production);
 
         smartMeters[msg.sender].lastDataSent = block.timestamp;
     }
