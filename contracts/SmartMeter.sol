@@ -26,7 +26,7 @@ contract SmartMeter {
         uint256 totalProduction;
     }
 
-    event Log(address sender, PowerData pd, uint256 timeStamp);
+    event Log(uint256 intervalConsumption, uint256 intervalProduction);
 
     function createLog(
         uint256 intervalConsumption,
@@ -37,22 +37,25 @@ contract SmartMeter {
             block.timestamp - lastDataSent > transmissionInterval,
             "Logs cannot appear more frequently than the transmission interval"
         );
-        totalConsumption += intervalConsumption;
-        totalProduction += intervalProduction;
 
-        if ((int(intervalProduction) - int(intervalConsumption)) > 0) {
-            batteryCharge += intervalProduction - intervalConsumption;
+        // if ((int(intervalProduction) - int(intervalConsumption)) > 0) {
+        //     batteryCharge += intervalProduction - intervalConsumption;
+        // }
+        int netDifference = int(intervalProduction) - int(intervalConsumption);
+
+        if (netDifference > 0) {
+            batteryCharge += uint(netDifference);
+        } else {
+            if (intervalConsumption - intervalProduction > batteryCharge) {
+                batteryCharge = 0;
+            } else {
+                batteryCharge -= uint(netDifference);
+            }
         }
 
         emit Log(
-            msg.sender,
-            PowerData({
-                totalProduction: totalProduction,
-                totalConsumption: totalConsumption,
-                intervalConsumption: intervalConsumption,
-                intervalProduction: intervalProduction
-            }),
-            block.timestamp
+                totalProduction,
+                totalConsumption
         );
         lastDataSent = block.timestamp;
     }
