@@ -2,13 +2,15 @@
 // pragma experimental ABIEncoderV2;
 pragma solidity ^0.8.9;
 
-contract CableCompany {
+contract DSO {
     address owner;
-    // in case people don't trust our api and wan't to verify themselves.
-    mapping(address => address) pubKeys;
 
-    constructor() {
+    mapping(address => address) pubKeys;
+    string groupKey;
+
+    constructor(string memory _groupKey) {
         owner = msg.sender;
+        groupKey = _groupKey;
     }
 
     function registerKey(address smartMeterPubKey, address smartMeterAddress) public {
@@ -29,5 +31,12 @@ contract CableCompany {
         return owner;
     }
 
-    
+    function getGroupkey() public view returns(string memory) {
+        return groupKey;
+    }
+
+    function setGroupKey(string memory _groupKey) public {
+        require(msg.sender == owner, "Only owner can set the group key");
+        groupKey = _groupKey;
+    }
 }

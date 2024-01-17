@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { marketInstance } from "./marketApi";
-import { cableCompanyInstance } from "./cableCompanyApi";
+import { cableCompanyInstance } from "./DSOApi";
 
 export const getWeb3 = (): Web3 => {
     try {

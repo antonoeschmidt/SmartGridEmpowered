@@ -1,6 +1,6 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { ApprovedContractDTO, OfferDTO, PendingOfferDTO } from "../models/models";
-import { cableCompanyApi } from "../apis/cableCompanyApi";
+import { cableCompanyApi } from "../apis/DSOApi";
 import { marketApi } from "../apis/marketApi";
 import { smartMeterApi } from "../apis/smartMeterApi";
 import { sign } from "../apis/groupSignature";
@@ -334,7 +334,7 @@ export const useEthereumContext = (): EthereumContextType => {
         console.log('approvedContractsResponse', approvedContractsResponse)
         if (!approvedContractsResponse) return;
         const parsedContracts = approvedContractsResponse.map(contract => approvedContractParser(contract));
-        console.log('parsedContracts', parsedContracts)
+        console.log('parsedContracts', parsedContracts);
         setApprovedContracts(parsedContracts);
     }
 

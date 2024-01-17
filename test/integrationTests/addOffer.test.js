@@ -14,11 +14,15 @@ contract("Add Offer", (accounts) => {
 
     const admin = accounts[0];
     const user = accounts[1];
+    const smartMeterAddress = accounts[2];
 
     beforeEach(async () => {
         cableCompany = await CableCompany.new({ from: admin });
         market = await Market.new(cableCompany.address, { from: admin });
-        smartMeter = await SmartMeter.new(hash, { from: user });
+        smartMeter = await SmartMeter.new({ from: user });
+        await smartMeter.createSmartMeter(market.address, hash, {
+            from: smartMeterAddress,
+        });
         await smartMeter.setCurrentMarketAddress(market.address, {
             from: user,
         });

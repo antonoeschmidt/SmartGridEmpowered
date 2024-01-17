@@ -2,7 +2,7 @@
 // pragma experimental ABIEncoderV2;
 pragma solidity ^0.8.9;
 
-interface ICableCompany {
+interface IDSO {
     function registerKey(
         address smartMeterPubKey,
         address smartMeterAddress
@@ -32,7 +32,7 @@ interface ISmartMeter {
 
 contract Market {
     address owner;
-    ICableCompany cableCompany; // Maybe change the name of CableCompany to something else, like DSO
+    IDSO dso;
     uint maxOfferLivespan = 1000 * 60 * 60 * 24 * 7;
     ISmartMeter smartMeter;
     address cableCompanyAddress;
@@ -82,7 +82,7 @@ contract Market {
         address smartMeterContract
     ) payable {
         owner = msg.sender;
-        cableCompany = ICableCompany(_cableCompanyAddress);
+        dso = IDSO(_cableCompanyAddress);
         cableCompanyAddress = _cableCompanyAddress;
         smartMeter = ISmartMeter(smartMeterContract);
     }
@@ -101,7 +101,7 @@ contract Market {
     ) public nonceGuard(nonce) returns (bool) {
         // Require conditions
         require(
-            cableCompany.isRegisteredKey(msg.sender, smartMeterAddress),
+            dso.isRegisteredKey(msg.sender, smartMeterAddress),
             "Smart Meter not registered by Cable Company"
         );
         require(

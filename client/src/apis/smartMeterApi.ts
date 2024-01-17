@@ -1,6 +1,6 @@
 import SmartMeter from "../contracts/SmartMeter.json";
 import { getWeb3 } from "./web3";
-import { cableCompanyInstance } from "./cableCompanyApi";
+import { cableCompanyInstance } from "./DSOApi";
 
 export const smartMeterInstance = (address: string) => {
     const web3 = getWeb3();

@@ -7,8 +7,6 @@ contract SmartMeter {
         bytes32 otsHash;
         uint batteryCharge;
         uint lastDataSent;
-        uint totalConsumption;
-        uint totalProduction;
         address marketAddress;
     }
 
@@ -16,52 +14,33 @@ contract SmartMeter {
 
     uint transmissionInterval = 15 seconds;
 
-    struct PowerData {
-        uint256 intervalConsumption;
-        uint256 intervalProduction;
-        uint256 totalConsumption;
-        uint256 totalProduction;
-    }
-
-    event Log(address sender, PowerData pd, uint256 timeStamp);
+    event Log(uint256 intervalConsumption, uint256 intervalProduction);
 
     function createLog(
         uint256 intervalConsumption,
         uint256 intervalProduction
     ) public {
-        SmartMeterInstance memory smartMeterInstance = smartMeters[msg.sender];
         require(
-            block.timestamp - smartMeterInstance.lastDataSent >
+            block.timestamp - smartMeters[msg.sender].lastDataSent >
                 transmissionInterval,
             "Logs cannot appear more frequently than the transmission interval"
         );
-        smartMeterInstance.totalConsumption += intervalConsumption;
-        smartMeterInstance.totalProduction += intervalProduction;
 
         int netDifference = int(intervalProduction) - int(intervalConsumption);
 
         if (netDifference > 0) {
-            smartMeterInstance.batteryCharge += uint(netDifference);
-        } else if (netDifference < 0) {
-            if (uint(netDifference) > smartMeterInstance.batteryCharge) {
-                smartMeterInstance.batteryCharge = 0;
+            smartMeters[msg.sender].batteryCharge += uint(netDifference);
+        } else {
+            if (intervalConsumption - intervalProduction > smartMeters[msg.sender].batteryCharge) {
+                smartMeters[msg.sender].batteryCharge = 0;
             } else {
-                smartMeterInstance.batteryCharge -= uint(netDifference);
+                smartMeters[msg.sender].batteryCharge -= uint(netDifference);
             }
         }
 
-        emit Log(
-            msg.sender,
-            PowerData({
-                totalProduction: smartMeterInstance.totalProduction,
-                totalConsumption: smartMeterInstance.totalConsumption,
-                intervalConsumption: intervalConsumption,
-                intervalProduction: intervalProduction
-            }),
-            block.timestamp
-        );
-        smartMeterInstance.lastDataSent = block.timestamp;
-        smartMeters[msg.sender] = smartMeterInstance;
+        emit Log(intervalConsumption, intervalProduction);
+
+        smartMeters[msg.sender].lastDataSent = block.timestamp;
     }
 
     function getBatteryCharge(
@@ -124,8 +103,6 @@ contract SmartMeter {
             otsHash: _otsHash,
             marketAddress: _marketAddress,
             lastDataSent: 0,
-            totalConsumption: 0,
-            totalProduction: 0,
             batteryCharge: 0
         });
     }
