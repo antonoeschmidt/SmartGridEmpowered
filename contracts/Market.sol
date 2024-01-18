@@ -198,10 +198,6 @@ contract Market {
     function getLatestSupplyContract() public view returns (address) {
         return lastestSupplyChainAddress;
     }
-
-    function getPendingOffers() public view returns (address) {
-        return lastestSupplyChainAddress;
-    }
 }
 
 contract SupplyContract {

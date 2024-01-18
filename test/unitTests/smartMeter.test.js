@@ -41,13 +41,35 @@ contract("SmartMeter", (accounts) => {
     it("should get battery charge", async () => {
         const batteryCharge = await smartMeter.getBatteryCharge();
         assert.equal(batteryCharge, 0, "Initial batteryCharge should be 0");
+        await smartMeter.createLog(100, 150, { from: account });
+        const batteryCharge2 = await smartMeter.getBatteryCharge();
+        assert.equal(batteryCharge2, 50, "batteryCharge should be 50");
     });
 
     it("should subtract battery charge", async () => {
         await smartMeter.createLog(100, 150, { from: account });
-        const success = await smartMeter.subtractBatteryCharge(50, encodedSecretString, hash, {
+        const success = await smartMeter.subtractBatteryCharge(
+            50,
+            encodedSecretString,
+            hash,
+            {
+                from: marketAddress,
+            }
+        );
+        assert.isTrue(success.receipt.status);
+    });
+
+    it("should return reserved battery charge", async () => {
+        const batteryChargeBefore = await smartMeter.getBatteryCharge();
+        assert.equal(
+            batteryChargeBefore,
+            0,
+            "Initial batteryCharge should be 0"
+        );
+        await smartMeter.returnReservedBatteryCharge(50, {
             from: marketAddress,
         });
-        assert.isTrue(success.receipt.status);
+        const batteryChargeAfter = await smartMeter.getBatteryCharge();
+        assert.equal(batteryChargeAfter, 50, "Incorrect reserved battery");
     });
 });

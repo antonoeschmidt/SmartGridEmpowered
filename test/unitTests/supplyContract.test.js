@@ -40,4 +40,12 @@ contract("SupplyContract", (accounts) => {
         assert.equal(info.amount, 100, "Incorrect amount in info");
         assert.equal(info.price, 10, "Incorrect price in info");
     });
+
+    it("should get amount and price", async () => {
+        const amount = await supplyContract.getAmount();
+        assert.equal(amount, 100, "Incorrect amount");
+
+        const price = await supplyContract.getPrice();
+        assert.equal(price, 10, "Incorrect price");
+    });
 });
