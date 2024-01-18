@@ -14,7 +14,7 @@ const {encodedSecret, hash} = getSecrets("secret");
 
 contract("Add Offer", (accounts) => {
     let market;
-    let DSO;
+    let dso;
     let smartMeter;
 
     const admin = accounts[0];
@@ -67,11 +67,11 @@ contract("Add Offer", (accounts) => {
         }
 
     beforeEach(async () => {
-        DSO = await DSO.new({ from: admin });
+        dso = await DSO.new({ from: admin });
 
         smartMeter = await SmartMeter.new({ from: sellerAddress });
 
-        market = await Market.new(DSO.address, smartMeter.address, { from: admin });
+        market = await Market.new(dso.address, smartMeter.address, { from: admin });
         
         await smartMeter.createSmartMeter(market.address, hash, {
             from: smartMeterAddress,
@@ -80,11 +80,11 @@ contract("Add Offer", (accounts) => {
             from: smartMeterAddress2,
         });
 
-        await DSO.registerKey(sellerAddress, smartMeterAddress, {
+        await dso.registerKey(sellerAddress, smartMeterAddress, {
             from: admin,
         });
 
-        await DSO.registerKey(sellerAddress2, smartMeterAddress2, {
+        await dso.registerKey(sellerAddress2, smartMeterAddress2, {
             from: admin,
         });
 

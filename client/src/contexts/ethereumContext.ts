@@ -7,7 +7,7 @@ import { sign } from "../apis/groupSignature";
 import { getSmartMeterSecrets, loadFromLocalStorage } from "../utils/localstorage";
 import { getPastEvents } from "../apis/web3";
 import Market from "../contracts/Market.json";
-import { approvedContractParser, pendingOfferParser } from "../utils/parsers";
+import { approvedContractParser } from "../utils/parsers";
 
 export type User = {
     smartMeterAddress: string;
@@ -307,7 +307,6 @@ export const useEthereumContext = (): EthereumContextType => {
         const res = await marketApi.removeOffer(
             user.market,
             offerId,
-            user.smartMeterAddress,
             user.accountAddress
         );
         return res;

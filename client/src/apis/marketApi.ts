@@ -103,14 +103,13 @@ const buyOffer = async (
 const removeOffer = async (
     marketAddress: string,
     offerId: string,
-    smartMeterAddress: string,
     currentAccount: string
 ) => {
     const marketContract = marketInstance(marketAddress);
     try {
         return await marketContract.methods
             // @ts-ignore
-            .removeOffer(offerId, smartMeterAddress)
+            .removeOffer(offerId)
             .send({
                 from: currentAccount,
                 gas: "1500000",

@@ -141,8 +141,7 @@ contract Market {
     }
 
     function removeOffer(
-        string memory id,
-        address smartMeterAddress
+        string memory id
     ) public returns (bool) {
         // Initialization
         Offer memory offer = offers[id];
@@ -151,7 +150,7 @@ contract Market {
         require(msg.sender == offer.owner, "Only owner can remove offer");
 
         // Removing offer
-        smartMeter.returnReservedBatteryCharge(offer.amount, smartMeterAddress);
+        smartMeter.returnReservedBatteryCharge(offer.amount, offer.smartMeterAddress);
         delete offers[id];
 
         return true;

@@ -1,5 +1,4 @@
 const SmartMeter = artifacts.require("SmartMeter");
-const { assert } = require("console");
 const { getSecrets } = require("../utils/hash");
 const {encodedSecret, hash} = getSecrets("secret");
 
