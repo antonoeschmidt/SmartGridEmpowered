@@ -40,6 +40,9 @@ contract("SmartMeter", (accounts) => {
     it("should get battery charge", async () => {
         const batteryCharge = await smartMeter.getBatteryCharge(smartMeterAddress);
         assert.equal(batteryCharge, 0, "Initial batteryCharge should be 0");
+        await smartMeter.createLog(100, 150, { from: smartMeterAddress });
+        const batteryCharge2 = await smartMeter.getBatteryCharge(smartMeterAddress);
+        assert.equal(batteryCharge2, 50, "batteryCharge should be 50");
     });
 
     it("should subtract battery charge", async () => {

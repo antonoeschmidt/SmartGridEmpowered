@@ -142,7 +142,7 @@ contract("Add Offer", (accounts) => {
         );
     });
 
-    it("Should allow to different nonces", async () => {
+    it("Should allow two different nonces", async () => {
         const offerId = "id";
         const amount = 1; // Too much energy
         const price = 1;
@@ -372,8 +372,5 @@ contract("Add Offer", (accounts) => {
         await market.removeOffer(offerId, {
             from: user,
         });
-
-        // const offers2 = await market.getOffers();
-        // assert.equal(offers2.length, 0);
     });
 });
