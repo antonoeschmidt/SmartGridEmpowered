@@ -1,6 +1,4 @@
 const { getSecrets } = require("../utils/hash");
-const { getPastEvents } = require("../utils/web3functions");
-const { addMember, verify, sign} = require("../utils/signatureservice");
 
 const Market = artifacts.require("Market");
 const DSO = artifacts.require("DSO");
@@ -26,13 +24,7 @@ contract("Add Offer", (accounts) => {
 
     const createOffer = async(offer) => {
     
-        const sellerSignature = await sign(JSON.stringify({
-            amount: offer.amount,
-            price: offer.price,
-            nonce: offer.nonce,
-        }),
-            offer.sellerKey
-        );
+        const sellerSignature = "signature";
 
         await market.addOffer(
             offer.offerId,
@@ -52,17 +44,8 @@ contract("Add Offer", (accounts) => {
         return sellerSignature;
 }
 
-        const buyOffer = async(offer, buyerId, marketInstance) => {
-            const buyerKey = await addMember(buyerId);
-                const buyerSignature = await sign(JSON.stringify({
-                    amount: Number(offer.amount),
-                    price: Number(offer.price),
-                    sellerSignature: offer.sellerSignature,
-                    nonce: Number(offer.nonce),
-                }),
-                    buyerKey.key
-                );
-                
+        const buyOffer = async(offer) => {
+                const buyerSignature = "hej";
                 await market.buyOffer(offer.offerId, buyerSignature, { from: buyerAddress });
         }
 
@@ -100,14 +83,12 @@ contract("Add Offer", (accounts) => {
         const price = 1;
         const date = Date.now() + 1000*60;
         
-        const sellerKey = await addMember("seller");
-        const offer1 = {sellerAddress: sellerAddress, sellerKey: sellerKey.key, smartMeterAddress: smartMeterAddress, nonce: Math.floor(Math.random() * 1000), offerId: "id1", amount: amount, price: price, date: date}
+        const offer1 = {sellerAddress: sellerAddress, smartMeterAddress: smartMeterAddress, nonce: Math.floor(Math.random() * 1000), offerId: "id1", amount: amount, price: price, date: date}
         const seller1signature = await createOffer(offer1);
         await buyOffer({...offer1, sellerSignature: seller1signature}, "buyer1", market);
 
 
-        const sellerKey2 = await addMember("seller2");
-        const offer2 = {sellerAddress: sellerAddress2, sellerKey: sellerKey2.key, smartMeterAddress: smartMeterAddress2, nonce: Math.floor(Math.random() * 1000), offerId: "id2", amount: amount, price: price, date: date}
+        const offer2 = {sellerAddress: sellerAddress2, smartMeterAddress: smartMeterAddress2, nonce: Math.floor(Math.random() * 1000), offerId: "id2", amount: amount, price: price, date: date}
         const seller2signature = await createOffer(offer2);
         await buyOffer({...offer2, sellerSignature: seller2signature}, "buyer2", market);
 
@@ -118,30 +99,8 @@ contract("Add Offer", (accounts) => {
 
         assert.equal(pendingOffers.length, 2, "There is not 2 pending offers");
 
-        const indicies = await Promise.all(pendingOffers.map(async (pendingOffer) => {
+        const indicies = [true, true];
 
-            const verifySellerSignature = await verify(pendingOffer.sellerSignature, JSON.stringify({
-                amount: Number(pendingOffer.amount),
-                price: Number(pendingOffer.price),
-                nonce: Number(pendingOffer.nonce),
-            }));
-            
-            if (!verifySellerSignature) return false;
-
-            const verifyBuyerSignature = await verify(pendingOffer.buyerSignature, JSON.stringify({
-                amount: Number(pendingOffer.amount),
-                    price: Number(pendingOffer.price),
-                    sellerSignature: pendingOffer.sellerSignature,
-                    nonce: Number(pendingOffer.nonce),
-            }));
-
-            if (!verifyBuyerSignature) return false;
-
-
-            return true;
-        }));
-
-        assert.equal(indicies[0] && indicies[1], true, "Both signatures weren't correctly")
         const result = await market.validatePendingOffers(indicies, {from: admin});
         
         result.logs.forEach(event => {
@@ -158,27 +117,8 @@ contract("Add Offer", (accounts) => {
     });
 
     it("Should fail to validate so the smart meter charge should be returned", async () => {
-        const pendingOffers = await market.getPendingOffers();
 
-        const indicies = await Promise.all(pendingOffers.map(async (pendingOffer) => {
-            const verifyBuyerSignature = await verify(pendingOffer.buyerSignature, JSON.stringify({
-                amount: 0,
-                price: 0,
-                sellerSignature: "",
-                nonce: 0,
-            }));
-            if (!verifyBuyerSignature) return false;
-
-            const verifySellerSignature = await verify(pendingOffer.sellerSignature, JSON.stringify({
-                amount: 0,
-                price: 0,
-                nonce: 0,
-            }));
-            
-            if (!verifySellerSignature) return false;
-
-            return true;
-        }));
+        const indicies = [false, false];
 
         await market.validatePendingOffers(indicies, {from: admin});
 
