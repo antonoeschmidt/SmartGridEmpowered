@@ -8,9 +8,7 @@ import OnboardingDialogComponent from "../OnboardingDialogComponent/OnboardingDi
 import Button from "../../Shared/Button/Button";
 import EthereumContext from "../../../contexts/ethereumContext";
 import { useNavigate } from "react-router-dom";
-import { createAccount } from "../../../apis/web3";
 import SelectSmartMeterAddressComponent from "../SelectSmartMeterAddress/SelectSmartMeterAddressComponent";
-import { addUserKey } from "../../../utils/localstorage";
 
 type OnboardingContentComponentProps = {
     handleChangeStep: (step: Steps) => void;
@@ -88,7 +86,7 @@ const OnboardingContentComponent = ({
         setUser(prev => ({...prev, market: marketAddress}));
         await createSmartMeter(smartMeterAccounts[0], user.accountAddress, marketAddress);
         // Register Smart Meter
-        let res = await registerSmartMeter(user.accountAddress, user.smartMeterAddress);
+        await registerSmartMeter(user.accountAddress, user.smartMeterAddress);
 
         handleChangeStep(Steps.Step3);
     };
