@@ -65,7 +65,6 @@ contract Market {
     PendingConfirmationOffer[] public pendingConfirmationOffers;
 
     string[] public offerIds;
-    address public lastestSupplyChainAddress;
 
     // mapping is nonce to the timestamp it was used at.
     mapping(uint => uint) private usedNonces;
@@ -168,7 +167,7 @@ contract Market {
         require(offer.expiration > block.timestamp, "Cannot buy expired offer");
         require(msg.sender != offer.owner, "Owner cannot buy own offer");
 
-        // Buying offer and creating SupplyContract
+        // Buying offer
 
         delete offers[id];
 

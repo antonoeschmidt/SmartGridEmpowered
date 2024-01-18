@@ -114,7 +114,6 @@ contract("Add Offer", (accounts) => {
     });
 
     it("Validate both offers", async () => {
-        const watcher = market.ApproveOffer();
         const pendingOffers = await market.getPendingOffers();
 
         assert.equal(pendingOffers.length, 2, "There is not 2 pending offers");
@@ -143,16 +142,11 @@ contract("Add Offer", (accounts) => {
         }));
 
         assert.equal(indicies[0] && indicies[1], true, "Both signatures weren't correctly")
-        await market.validatePendingOffers(indicies, {from: admin});
+        const result = await market.validatePendingOffers(indicies, {from: admin});
         
-        
-        const emittedEvents = await getPastEvents(market.address, market.abi, "ApproveOffer");
-
-        emittedEvents.forEach(event => {
-            assert.equal(event.returnValues.buyerSignature == pendingOffers[0].buyerSignature || event.returnValues.buyerSignature == pendingOffers[1].buyerSignature, true, "Signatures didn't match");
+        result.logs.forEach(event => {
+            assert.equal(event.args.sellerSignature == pendingOffers[0].sellerSignature || event.args.buyerSignature == pendingOffers[1].buyerSignature, true, "Signatures didn't match");
         });
-        
-        
 
         const newPendingOffers = await market.getPendingOffers();
 
@@ -160,7 +154,6 @@ contract("Add Offer", (accounts) => {
 
         const charge = await smartMeter.getBatteryCharge(smartMeterAddress);
         assert.equal(Number(charge), 39, "The battery charge was returned");
-
 
     });
 
@@ -208,6 +201,17 @@ contract("Add Offer", (accounts) => {
 
         const charge = await smartMeter.getBatteryCharge(smartMeterAddress);
         assert.equal(Number(charge), 40, "The battery charge was was not returned");
+
+    });
+
+    it ("Should have offer in pending after the first has been checked", async () => {
+        const indicies = [false];
+
+        await market.validatePendingOffers(indicies, {from: admin});
+
+        const newPendingOffers = await market.getPendingOffers();
+
+        assert.equal(newPendingOffers.length, 1, "There is more or less than 1 pending offers");
 
     });
 

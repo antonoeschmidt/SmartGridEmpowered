@@ -11,7 +11,7 @@ contract SmartMeter {
     }
 
     mapping(address => SmartMeterInstance) public smartMeters;
-
+    
     uint transmissionInterval = 15 seconds;
 
     event Log(uint256 c, uint256 p);
@@ -34,7 +34,7 @@ contract SmartMeter {
             if (consumption - production > smartMeters[msg.sender].batteryCharge) {
                 smartMeters[msg.sender].batteryCharge = 0;
             } else {
-                smartMeters[msg.sender].batteryCharge -= uint(netDifference);
+                smartMeters[msg.sender].batteryCharge -= consumption - production;
             }
         }
 
