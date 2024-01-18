@@ -11,23 +11,30 @@ contract CableCompany {
         owner = msg.sender;
     }
 
-    function registerKey(address smartMeterPubKey, address smartMeterAddress) public {
+    modifier isOwner() {
         require(msg.sender == owner, "Only owner can register new keys");
+        _;
+    }
+
+    function registerKey(
+        address smartMeterPubKey,
+        address smartMeterAddress
+    ) public isOwner {
         pubKeys[smartMeterPubKey] = smartMeterAddress;
     }
 
-    function isRegisteredKey(address smartMeterPubKey, address smartMeterAddress) view public returns (bool) {
+    function isRegisteredKey(
+        address smartMeterPubKey,
+        address smartMeterAddress
+    ) public view returns (bool) {
         return pubKeys[smartMeterPubKey] == smartMeterAddress;
     }
 
-    function removeRegisteredKey(address smartMeterPubKey) public {
-        require(msg.sender == owner, "Only owner can remove keys");
+    function removeRegisteredKey(address smartMeterPubKey) public isOwner {
         delete pubKeys[smartMeterPubKey];
     }
 
-     function getOwner() public view returns(address) {
+    function getOwner() public view returns (address) {
         return owner;
     }
-
-    
 }

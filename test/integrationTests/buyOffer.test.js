@@ -121,5 +121,8 @@ contract("Buy Offer", (accounts) => {
 
         offers = await market.getOfferIDs();
         assert.equal(offers.length, 0, "Too many offers");
+
+        const latestSupplyContractId = await market.getLatestSupplyContract();
+        assert(latestSupplyContractId, "No supply contract found");
     });
 });
