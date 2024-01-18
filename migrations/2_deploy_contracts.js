@@ -1,43 +1,19 @@
-const CableCompany = artifacts.require("./CableCompany.sol");
+// Use for automation scripts
+
+const DSO = artifacts.require("./DSO.sol");
 const Market = artifacts.require("./Market.sol");
-const SupplyContract = artifacts.require("./SupplyContract.sol");
 const SmartMeter = artifacts.require("./SmartMeter.sol");
 
 module.exports = async function (deployer, network, accounts) {
-    //USE THIS TO AUTOMATE THINGS!! haha
-    // const adminAccount = accounts[0];
+    const adminAccount = accounts[0];
+    // Deploy DSO
+    await deployer.deploy(DSO, { from: adminAccount });
 
-    // // Deploy CableCompany
-    // await deployer.deploy(CableCompany, { from: adminAccount });
+    // deploy smartmeter
+    await deployer.deploy(SmartMeter, { from : adminAccount});
 
-    // /**  Deploy Market
-    //  * @param cableCompanyAddress: address
-    //  **/
-    // await deployer.deploy(Market, CableCompany.address, { from: adminAccount });
-
-    // // Deploy SmartMeter
-    // await deployer.deploy(SmartMeter);
-
-    // /** Deploy SupplyContract
-    //  * @param buyer: address
-    //  * @param seller: address
-    //  * @param amount: uint (Wh)
-    //  * @param price: uint (Euro Cents)
-    //  *
-    //  **/
-    // await deployer.deploy(SupplyContract, accounts[0], accounts[1], 1, 1);
-
-    const sellerSignature = "signature1";
-    const buyerSignature = "signature2";
-    const nonce = 1;
-    const amount = 1;
-    const price = 1;
-    await deployer.deploy(
-        SupplyContract,
-        sellerSignature,
-        buyerSignature,
-        amount,
-        price,
-        nonce
-    );
+    /**  Deploy Market
+     * @param DSO.address: address
+     **/
+    await deployer.deploy(Market, DSO.address, SmartMeter.address, { from: adminAccount });
 };

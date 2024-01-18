@@ -1,12 +1,12 @@
 const { getSecrets } = require("../utils/hash");
 const Market = artifacts.require("Market");
-const CableCompany = artifacts.require("CableCompany");
+const DSO = artifacts.require("DSO");
 const SmartMeter = artifacts.require("SmartMeter");
 const {encodedSecret, hash} = getSecrets("test1");
 
 contract("Buy Offer", (accounts) => {
     let market;
-    let cableCompany;
+    let DSO;
     let smartMeter;
 
     const admin = accounts[0];
@@ -22,15 +22,15 @@ contract("Buy Offer", (accounts) => {
     const nonce = Math.floor(Math.random() * 1000);
 
     beforeEach(async () => {
-        cableCompany = await CableCompany.new({ from: admin });
+        DSO = await DSO.new({ from: admin });
         smartMeter = await SmartMeter.new({ from: user });
-        market = await Market.new(cableCompany.address, smartMeter.address, { from: admin });
+        market = await Market.new(DSO.address, smartMeter.address, { from: admin });
 
         await smartMeter.createSmartMeter(market.address, hash, {
             from: smartMeterAddress,
         });
         
-        await cableCompany.registerKey(user, smartMeterAddress, {
+        await DSO.registerKey(user, smartMeterAddress, {
             from: admin,
         });
         await smartMeter.createLog(10, 50, {

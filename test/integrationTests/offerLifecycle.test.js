@@ -3,7 +3,7 @@ const { getPastEvents } = require("../utils/web3functions");
 const { addMember, verify, sign} = require("../utils/signatureservice");
 
 const Market = artifacts.require("Market");
-const CableCompany = artifacts.require("CableCompany");
+const DSO = artifacts.require("DSO");
 const SmartMeter = artifacts.require("SmartMeter");
 
 const {encodedSecret, hash} = getSecrets("secret");
@@ -14,7 +14,7 @@ const {encodedSecret, hash} = getSecrets("secret");
 
 contract("Add Offer", (accounts) => {
     let market;
-    let cableCompany;
+    let DSO;
     let smartMeter;
 
     const admin = accounts[0];
@@ -67,11 +67,11 @@ contract("Add Offer", (accounts) => {
         }
 
     beforeEach(async () => {
-        cableCompany = await CableCompany.new({ from: admin });
+        DSO = await DSO.new({ from: admin });
 
         smartMeter = await SmartMeter.new({ from: sellerAddress });
 
-        market = await Market.new(cableCompany.address, smartMeter.address, { from: admin });
+        market = await Market.new(DSO.address, smartMeter.address, { from: admin });
         
         await smartMeter.createSmartMeter(market.address, hash, {
             from: smartMeterAddress,
@@ -80,11 +80,11 @@ contract("Add Offer", (accounts) => {
             from: smartMeterAddress2,
         });
 
-        await cableCompany.registerKey(sellerAddress, smartMeterAddress, {
+        await DSO.registerKey(sellerAddress, smartMeterAddress, {
             from: admin,
         });
 
-        await cableCompany.registerKey(sellerAddress2, smartMeterAddress2, {
+        await DSO.registerKey(sellerAddress2, smartMeterAddress2, {
             from: admin,
         });
 

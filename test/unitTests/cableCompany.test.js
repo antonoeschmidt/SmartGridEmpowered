@@ -1,19 +1,19 @@
-const CableCompany = artifacts.require("CableCompany");
+const DSO = artifacts.require("DSO");
 
-contract("CableCompany", (accounts) => {
-    let cableCompany;
+contract("DSO", (accounts) => {
+    let DSO;
 
     beforeEach(async () => {
-        cableCompany = await CableCompany.new();
+        DSO = await DSO.new();
     });
 
     it("should register and check a key", async () => {
         const isRegistered = async () =>
-            await cableCompany.isRegisteredKey(accounts[1], accounts[2]);
+            await DSO.isRegisteredKey(accounts[1], accounts[2]);
 
         assert.isFalse(await isRegistered(), "Key should not be registered");
 
-        await cableCompany.registerKey(accounts[1], accounts[2], {
+        await DSO.registerKey(accounts[1], accounts[2], {
             from: accounts[0],
         });
 
@@ -21,11 +21,11 @@ contract("CableCompany", (accounts) => {
     });
 
     it("should not register an invalid key", async () => {
-        await cableCompany.registerKey(accounts[1], accounts[2], {
+        await DSO.registerKey(accounts[1], accounts[2], {
             from: accounts[0],
         });
 
-        const isRegistered = await cableCompany.isRegisteredKey(
+        const isRegistered = await DSO.isRegisteredKey(
             accounts[3],
             accounts[2]
         );
@@ -34,14 +34,14 @@ contract("CableCompany", (accounts) => {
 
     it("should remove a registered key", async () => {
         const isRegistered = async () =>
-            await cableCompany.isRegisteredKey(accounts[1], accounts[2]);
+            await DSO.isRegisteredKey(accounts[1], accounts[2]);
 
-        await cableCompany.registerKey(accounts[1], accounts[2], {
+        await DSO.registerKey(accounts[1], accounts[2], {
             from: accounts[0],
         });
         assert.isTrue(await isRegistered(), "Key not registered");
 
-        await cableCompany.removeRegisteredKey(accounts[1], {
+        await DSO.removeRegisteredKey(accounts[1], {
             from: accounts[0],
         });
 
@@ -49,7 +49,7 @@ contract("CableCompany", (accounts) => {
     });
 
     it("should get owner", async () => {
-        const owner = await cableCompany.getOwner();
+        const owner = await DSO.getOwner();
         assert.equal(owner, accounts[0], "Incorrect owner");
     });
 });

@@ -13,7 +13,7 @@ const ManageMarketsComponent = () => {
 
     const newMarket = async () => {
         if (!user.accountAddress) {
-            alert("No account or cable company selected");
+            alert("No account or DSO selected");
             return;
         }
         const marketAddress = await deployMarket();

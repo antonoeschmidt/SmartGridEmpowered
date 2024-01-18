@@ -14,7 +14,7 @@ const StepsComponent = ({ handleChangeStep }: StepsComponentProps) => {
         <div className={styles.container}>
             <StepComponent
                 step={Steps.Step1}
-                title={"1. setup Account and Cable Company"}
+                title={"1. setup Account and DSO"}
                 isActiveStep={currentStep === Steps.Step1}
                 complete={completedSteps?.includes(Steps.Step1)}
                 handleChange={handleChangeStep}

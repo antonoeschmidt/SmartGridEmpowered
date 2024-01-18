@@ -8,7 +8,7 @@ const MainPage = () => {
     const {
         setMarkets,
         markets,
-        setCableCompanyAddress,
+        setDSOAddress,
         accounts,
         setAccounts,
         setSmartMeterAccounts,
@@ -28,17 +28,17 @@ const MainPage = () => {
                 .then(
                     ({
                         marketAddresses,
-                        cableCompanyAddresses,
+                        DSOAddresses,
                     }) => {
                         console.log("Scan completed.");
                         console.log("marketAddresses", marketAddresses);
                         console.log(
-                            "cableCompanyAddresses",
-                            cableCompanyAddresses
+                            "DSOAddresses",
+                            DSOAddresses
                         );
                         setMarkets(marketAddresses);
-                        if (cableCompanyAddresses.length > 0) {
-                            setCableCompanyAddress(cableCompanyAddresses[0]);
+                        if (DSOAddresses.length > 0) {
+                            setDSOAddress(DSOAddresses[0]);
                         }
                     }
                 )
@@ -47,7 +47,7 @@ const MainPage = () => {
                 });
         };
         return () => getData();
-    }, [user.market, setCableCompanyAddress, setMarkets]);
+    }, [user.market, setDSOAddress, setMarkets]);
 
     useEffect(() => {
         if (!user.market && markets) setUser(prev => ({...prev, market: markets[0]}));

@@ -28,6 +28,8 @@ interface ISmartMeter {
         bytes32 nextOtsHash,
         address smartMeterInstance
     ) external returns (bool);
+
+    function getBatteryCharge() external view returns (uint);
 }
 
 contract Market {
@@ -35,7 +37,7 @@ contract Market {
     IDSO dso;
     uint maxOfferLivespan = 1000 * 60 * 60 * 24 * 7;
     ISmartMeter smartMeter;
-    address cableCompanyAddress;
+    address dsoAddress;
 
     struct Offer {
         string id;
@@ -78,13 +80,13 @@ contract Market {
     }
 
     constructor(
-        address _cableCompanyAddress,
-        address smartMeterContract
+        address _dsoAddress,
+        address _smartMeterContractAddress
     ) payable {
         owner = msg.sender;
-        dso = IDSO(_cableCompanyAddress);
-        cableCompanyAddress = _cableCompanyAddress;
-        smartMeter = ISmartMeter(smartMeterContract);
+        dso = IDSO(_dsoAddress);
+        dsoAddress = _dsoAddress;
+        smartMeter = ISmartMeter(_smartMeterContractAddress);
     }
 
     function addOffer(
@@ -102,7 +104,7 @@ contract Market {
         // Require conditions
         require(
             dso.isRegisteredKey(msg.sender, smartMeterAddress),
-            "Smart Meter not registered by Cable Company"
+            "Smart Meter not registered by DSO"
         );
         require(
             block.timestamp * 1000 + maxOfferLivespan > expiration,

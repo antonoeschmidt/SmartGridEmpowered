@@ -1,6 +1,6 @@
 import SmartMeter from "../contracts/SmartMeter.json";
 import { getWeb3 } from "./web3";
-import { cableCompanyInstance } from "./DSOApi";
+import { DSOInstance } from "./DSOApi";
 
 export const smartMeterInstance = (address: string) => {
     const web3 = getWeb3();
@@ -95,22 +95,22 @@ const createLog = async (
 
 const registerSmartMeter = async (
     adminAccount: string,
-    cableCompanyAddress: string,
+    DSOAddress: string,
     smartMeterPubKey: string,
     smartMeterAddress: string
 ) => {
     if (
         !adminAccount ||
-        !cableCompanyAddress ||
+        !DSOAddress ||
         !smartMeterPubKey ||
         !smartMeterAddress
     ) {
         return;
     }
 
-    let cableCompanyContract = cableCompanyInstance(cableCompanyAddress);
+    let DSOContract = DSOInstance(DSOAddress);
     try {
-        const res = await cableCompanyContract.methods
+        const res = await DSOContract.methods
             .registerKey(
                 // @ts-ignore
                 smartMeterPubKey,

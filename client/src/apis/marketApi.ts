@@ -1,24 +1,20 @@
 import { getWeb3 } from "./web3";
 import Market from "../contracts/Market.json";
 import { OfferDTO, PendingOfferDTO } from "../models/models";
-import { offerParser, pendingOfferParser, supplyContractParser } from "../utils/parsers";
-import {
-    getSupplyContractInstance,
-    deploySupplyContract,
-} from "./supplyContractApi";
+import { offerParser, pendingOfferParser } from "../utils/parsers";
 
 export const marketInstance = (address: string) => {
     const web3 = getWeb3();
     return new web3.eth.Contract(Market.abi, address);
 };
 
-const deployMarket = async (sender: string, cableCompanyAddress: string, smartMeterContractAddress) => {
+const deployMarket = async (sender: string, DSOAddress: string, smartMeterContractAddress) => {
     const web3 = getWeb3();
     const newMarketContract = new web3.eth.Contract(Market.abi);
     const contract = newMarketContract.deploy({
         data: Market.bytecode,
         // @ts-ignore
-        arguments: [cableCompanyAddress, smartMeterContractAddress],
+        arguments: [DSOAddress, smartMeterContractAddress],
     });
     const res = await contract.send({
         from: sender,

@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import { marketInstance } from "./marketApi";
-import { cableCompanyInstance } from "./DSOApi";
+import { DSOInstance } from "./DSOApi";
 
 export const getWeb3 = (): Web3 => {
     try {
@@ -59,7 +59,7 @@ export const createAccount = async() => {
 export const scanBlocksForContractCreations = async () => {
     const web3 = getWeb3();
     let marketAddresses: string[] = [];
-    let cableCompanyAddresses: string[] = [];
+    let DSOAddresses: string[] = [];
     const latestBlockNumber = await web3.eth.getBlockNumber();
 
     for (let i = 0; i <= latestBlockNumber; i++) {
@@ -72,7 +72,7 @@ export const scanBlocksForContractCreations = async () => {
                 if (receipt.contractAddress) {
                     let mInstance = marketInstance(receipt.contractAddress);
 
-                    let ccInstance = cableCompanyInstance(
+                    let ccInstance = DSOInstance(
                         receipt.contractAddress
                     );
 
@@ -84,9 +84,9 @@ export const scanBlocksForContractCreations = async () => {
                     } catch {}
 
                     try {
-                        // Checks if this call fails. If it doesn't, its a CableCompany SC
+                        // Checks if this call fails. If it doesn't, its a DSO SC
                         await ccInstance.methods.getOwner().call();
-                        cableCompanyAddresses.push(receipt.contractAddress);
+                        DSOAddresses.push(receipt.contractAddress);
                         continue;
                     } catch {}
                 }
@@ -95,7 +95,7 @@ export const scanBlocksForContractCreations = async () => {
     }
     return {
         marketAddresses,
-        cableCompanyAddresses,
+        DSOAddresses,
         createAccount
     };
 };

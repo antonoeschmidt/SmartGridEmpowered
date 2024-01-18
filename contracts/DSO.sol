@@ -8,9 +8,8 @@ contract DSO {
     mapping(address => address) pubKeys;
     string groupKey;
 
-    constructor(string memory _groupKey) {
+    constructor() {
         owner = msg.sender;
-        groupKey = _groupKey;
     }
 
     function registerKey(address smartMeterPubKey, address smartMeterAddress) public {

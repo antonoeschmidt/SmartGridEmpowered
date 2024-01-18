@@ -22,8 +22,8 @@ const OnboardingContentComponent = ({
     const { currentStep } = useContext(StepContext);
     const {
         adminAccount,
-        deployCableCompany,
-        setCableCompanyAddress,
+        deployDSO,
+        setDSOAddress,
         createSmartMeter,
         registerSmartMeter,
         deployMarket,
@@ -55,13 +55,13 @@ const OnboardingContentComponent = ({
     };
 
     const handleStep1 = async () => {
-        // Deploy CableCompany
-        let cableCompanyAddress = localStorage.getItem("cableCompany");
-        if (!cableCompanyAddress) {
-            cableCompanyAddress = await deployCableCompany();
-            localStorage.setItem("cableCompany", cableCompanyAddress);
+        // Deploy DSO
+        let DSOAddress = localStorage.getItem("DSO");
+        if (!DSOAddress) {
+            DSOAddress = await deployDSO();
+            localStorage.setItem("DSO", DSOAddress);
         }
-        setCableCompanyAddress(cableCompanyAddress);
+        setDSOAddress(DSOAddress);
 
         // sets the address of the smart meter contract.
         let smartMeterAddress = localStorage.getItem("smartMeterContractAddress");

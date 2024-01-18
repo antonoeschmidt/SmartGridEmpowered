@@ -1,6 +1,6 @@
 
 const Market = artifacts.require("Market");
-const CableCompany = artifacts.require("CableCompany");
+const DSO = artifacts.require("DSO");
 const SmartMeter = artifacts.require("SmartMeter");
 const { getSecrets } = require("../utils/hash");
 const {encodedSecret, hash} = getSecrets("secret");
@@ -8,7 +8,7 @@ const {encodedSecret, hash} = getSecrets("secret");
 
 contract("Add Offer", (accounts) => {
     let market;
-    let cableCompany;
+    let DSO;
     let smartMeter;
 
     const admin = accounts[0];
@@ -16,15 +16,15 @@ contract("Add Offer", (accounts) => {
     const smartMeterAddress = accounts[2];
 
     beforeEach(async () => {
-        cableCompany = await CableCompany.new({ from: admin });
+        DSO = await DSO.new({ from: admin });
         smartMeter = await SmartMeter.new({ from: user });
-        market = await Market.new(cableCompany.address, smartMeter.address, { from: admin });
+        market = await Market.new(DSO.address, smartMeter.address, { from: admin });
 
         await smartMeter.createSmartMeter(market.address, hash, {
             from: smartMeterAddress,
         });
         
-        await cableCompany.registerKey(user, smartMeterAddress, {
+        await DSO.registerKey(user, smartMeterAddress, {
             from: admin,
         });
         await smartMeter.createLog(10, 50, {
@@ -342,5 +342,39 @@ contract("Add Offer", (accounts) => {
         } catch (error) {
             errorMessage = error?.data?.stack ?? "";
         }
+    });
+
+    it("Should remove added offer", async () => {
+        const offerId = "id";
+        const amount = 1;
+        const price = 1;
+        const date = Date.now();
+        const sellerSignature = "signature1";
+        const nonce = Math.floor(Math.random() * 1000);
+        await market.addOffer(
+            offerId,
+            amount,
+            price,
+            date,
+            smartMeter.address,
+            sellerSignature,
+            nonce,
+            user,
+            encodedSecretString,
+            hash,
+            {
+                from: user,
+            }
+        );
+
+        const offers = await market.getOffers();
+        assert.equal(offers.length, 1);
+
+        await market.removeOffer(offerId, user, {
+            from: user,
+        });
+
+        // const offers2 = await market.getOffers();
+        // assert.equal(offers2.length, 0);
     });
 });

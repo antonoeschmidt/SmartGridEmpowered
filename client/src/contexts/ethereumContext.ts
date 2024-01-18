@@ -1,11 +1,11 @@
 import { createContext, useEffect, useRef, useState } from "react";
 import { ApprovedContractDTO, OfferDTO, PendingOfferDTO } from "../models/models";
-import { cableCompanyApi } from "../apis/DSOApi";
+import { DSOApi } from "../apis/DSOApi";
 import { marketApi } from "../apis/marketApi";
 import { smartMeterApi } from "../apis/smartMeterApi";
 import { sign } from "../apis/groupSignature";
 import { getSmartMeterSecrets, loadFromLocalStorage } from "../utils/localstorage";
-import { getPastEvents, getWeb3 } from "../apis/web3";
+import { getPastEvents } from "../apis/web3";
 import Market from "../contracts/Market.json";
 import { approvedContractParser, pendingOfferParser } from "../utils/parsers";
 
@@ -28,15 +28,15 @@ export type EthereumContextType = {
     setMarkets: React.Dispatch<React.SetStateAction<string[]>>;
     offers: OfferDTO[];
     setOffers: React.Dispatch<React.SetStateAction<OfferDTO[]>>;
-    cableCompanyAddress: string;
-    setCableCompanyAddress: (account: string) => void;
+    DSOAddress: string;
+    setDSOAddress: React.Dispatch<React.SetStateAction<String>>;
 
-    deployCableCompany: () => Promise<string>;
+    deployDSO: () => Promise<string>;
     isRegisteredKey: (
         smartMeterPubKey: string,
         smartMeterAddress: string
     ) => Promise<void | [] | (unknown[] & [])>;
-    deployMarket: (cableCompany?: string, admin?: string, smartMeterContract?: string) => Promise<string>;
+    deployMarket: (DSO?: string, admin?: string, smartMeterContract?: string) => Promise<string>;
     addOffer: (offer: OfferDTO) => Promise<OfferDTO>;
     getOffers: () => Promise<OfferDTO[]>;
     buyOffer: (id: string, offer: OfferDTO) => Promise<any>;
@@ -81,7 +81,7 @@ export const useEthereumContext = (): EthereumContextType => {
     const [adminAccount, setAdminAccount] = useState<string>();
     const [markets, setMarkets] = useState<string[]>([]);
     const [offers, setOffers] = useState<OfferDTO[]>();
-    const [cableCompanyAddress, setCableCompanyAddress] = useState<string>();
+    const [DSOAddress, setDSOAddress] = useState<string>();
     const [loading, setLoading] = useState(false);
     const [pendingOffers, setPendingOffers] = useState<PendingOfferDTO[]>([]);
     const [approvedContracts, setApprovedContracts] = useState<ApprovedContractDTO[]>([]);
@@ -110,8 +110,8 @@ export const useEthereumContext = (): EthereumContextType => {
     useEffect(() => {
         const storedAdminAccount = localStorage.getItem("adminAccount");
         if (storedAdminAccount) setAdminAccount(storedAdminAccount);
-        const storedCableCompanyAddress = localStorage.getItem("cableCompany");
-        if (storedCableCompanyAddress) setCableCompanyAddress(storedCableCompanyAddress);
+        const storedDSOAddress = localStorage.getItem("DSO");
+        if (storedDSOAddress) setDSOAddress(storedDSOAddress);
         const storedSmartMeterContractAddress = localStorage.getItem("smartMeterContractAddress");
         if (storedSmartMeterContractAddress) smartMeterContractAddress.current = storedSmartMeterContractAddress;
     }, []);
@@ -148,27 +148,28 @@ export const useEthereumContext = (): EthereumContextType => {
     }
 
 
-    // CableCompanyApi
-    const deployCableCompany = async () => {
-        return await cableCompanyApi.deployCableCompany(adminAccount);
+    // DSOApi
+    const deployDSO = async () => {
+        console.log('adminAccount deploy', adminAccount);
+        return await DSOApi.deployDSO(adminAccount);
     };
 
     const isRegisteredKey = async (
         smartMeterPubKey: string,
         smartMeterAddress: string
     ) => {
-        return await cableCompanyApi.isRegisteredKey(
-            cableCompanyAddress,
+        return await DSOApi.isRegisteredKey(
+            DSOAddress,
             smartMeterPubKey,
             smartMeterAddress
         );
     };
 
     // MarketApi
-    const deployMarket = async (cableCompany?: string, admin?: string, smartMeterContract?: string) => {
+    const deployMarket = async (_DSOAddress?: string, admin?: string, smartMeterContract?: string) => {
         return await marketApi.deployMarket(
             admin ?? adminAccount,
-            cableCompany ?? cableCompanyAddress,
+            _DSOAddress ?? DSOAddress,
             smartMeterContract ?? smartMeterContractAddress.current
         );
     };
@@ -295,7 +296,7 @@ export const useEthereumContext = (): EthereumContextType => {
     ) => {
         return await smartMeterApi.registerSmartMeter(
             adminAccount,
-            cableCompanyAddress,
+            DSOAddress,
             smartMeterPubKey,
             smartMeterAddress
         );
@@ -347,9 +348,9 @@ export const useEthereumContext = (): EthereumContextType => {
         setMarkets,
         offers,
         setOffers,
-        cableCompanyAddress,
-        setCableCompanyAddress,
-        deployCableCompany,
+        DSOAddress,
+        setDSOAddress,
+        deployDSO,
         isRegisteredKey,
 
         deployMarket,
