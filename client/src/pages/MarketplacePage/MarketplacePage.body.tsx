@@ -7,7 +7,7 @@ import {
     PendingOfferDTO,
     ApprovedContractDTO,
 } from "../../models/models";
-import { Box, CircularProgress } from "@mui/material";
+import { CircularProgress } from "@mui/material";
 import SupplyContractComponent from "../../components/Market/SupplyContractComponent/SupplyContractComponent";
 import SuggestedPriceComponent from "../../components/Market/SuggestedPriceComponent/SuggestedPriceComponent";
 import { verify } from "../../apis/groupSignature";
@@ -118,8 +118,6 @@ const MarketplacePageBody = ({
                         text="Approve offers"
                     />
                     <Button onClick={() => refresh()} text="Refresh" />
-                    {/* <Button onClick={() => approvePendingOffers()} size="small" variant="contained">Approve offers</Button>
-                    <Button onClick={() => refresh() }  size="small" variant="contained">Refresh</Button> */}
                 </div>
             </div>
 
