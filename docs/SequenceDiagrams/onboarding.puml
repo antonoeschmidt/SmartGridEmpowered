@@ -1,0 +1,17 @@
+@startuml
+actor Prosumer
+participant Client
+participant SmartMeter #LightYellow
+participant CableCompany #LightYellow
+
+skinparam dpi 300
+
+Prosumer -> Client ++: Onboarding request
+Prosumer -> Client: GenerateSecrets
+Client --> Prosumer: otsHash, ots
+Client -> SmartMeter ++: Create smart meter(smartMeterAddress, marketAddress, otsHash)
+SmartMeter --> Client --: OK
+Client -> CableCompany ++: Register Smart Meter(smartMeterAddress, prosumerAddress)
+CableCompany --> Client --: OK
+Client --> Prosumer --: Registration complete!
+@enduml

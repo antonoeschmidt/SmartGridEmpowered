@@ -1,0 +1,27 @@
+@startuml BuyOffer
+actor Prosumer
+actor DSO
+participant GroupSignature
+participant Market #LightYellow
+participant events #LightYellow 
+
+skinparam dpi 300
+
+autonumber
+
+Prosumer -> GroupSignature ++: sign(offer)
+GroupSignature --> Prosumer --: signature
+
+Prosumer -> Market ++: buyOffer(id, signature)
+alt offer.expirationTime > now() && owner != buyer
+Market -> Market: pendingOffers.add(offer)
+...Sometime later...
+DSO -> Market: getPendingOffers
+Market --> DSO: pendingOffers
+DSO -> Market: validateOffers(indicies)
+loop length(indicies)
+Market -> events: emit new contract()
+end
+end
+
+@enduml

@@ -1,0 +1,16 @@
+@startuml withdraw
+participant Market #LightYellow
+participant SmartMeterContract #LightYellow
+
+Market -> SmartMeterContract ++: WithdrawBattery(amount, address, ots, nextOtsHash)
+SmartMeterContract -> SmartMeterContract: checkOts(ots)
+alt hash(meters[address].ots) == meters[address].otsHash
+SmartMeterContract -> SmartMeterContract: meters[address].otshash = nextOtsHash
+alt meters[address].battery > amount
+SmartMeterContract -> SmartMeterContract: meters[address].charge -= amount
+SmartMeterContract --> Market: true
+end
+else
+SmartMeterContract --> Market --: false
+end
+@enduml

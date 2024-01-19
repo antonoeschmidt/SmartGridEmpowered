@@ -1,0 +1,12 @@
+@startuml log
+actor SmartMeter
+participant SmartMeterContract #LightYellow
+participant Events #LightYellow
+
+loop Every 15 minutes
+    SmartMeter -> SmartMeterContract ++: createLog(c, p)
+    SmartMeterContract -> Events: emit log(c, p)
+SmartMeterContract-> SmartMeterContract: setBatteryCharge(c, p)
+    SmartMeterContract --> SmartMeter --: OK
+end
+@enduml
