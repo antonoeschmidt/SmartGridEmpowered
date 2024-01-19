@@ -2,12 +2,17 @@ import React, { useContext, useEffect } from "react";
 import styles from "./MarketplacePage.module.css";
 import { AddButton } from "../../components/common/AddButton";
 import OfferComponent from "../../components/Market/OfferComponent/OfferComponent";
-import { OfferDTO, PendingOfferDTO, ApprovedContractDTO } from "../../models/models";
-import { Box, Button, CircularProgress } from "@mui/material";
+import {
+    OfferDTO,
+    PendingOfferDTO,
+    ApprovedContractDTO,
+} from "../../models/models";
+import { Box, CircularProgress } from "@mui/material";
 import SupplyContractComponent from "../../components/Market/SupplyContractComponent/SupplyContractComponent";
 import SuggestedPriceComponent from "../../components/Market/SuggestedPriceComponent/SuggestedPriceComponent";
 import { verify } from "../../apis/groupSignature";
 import EthereumContext from "../../contexts/ethereumContext";
+import Button from "../../components/Shared/Button/Button";
 
 type MarketplacePageBodyProps = {
     offers: OfferDTO[];
@@ -23,7 +28,9 @@ type MarketplacePageBodyProps = {
     setOpenSupplyContractInfoModal: React.Dispatch<
         React.SetStateAction<boolean>
     >;
-    setCurrentItem: React.Dispatch<React.SetStateAction<PendingOfferDTO | ApprovedContractDTO>>;
+    setCurrentItem: React.Dispatch<
+        React.SetStateAction<PendingOfferDTO | ApprovedContractDTO>
+    >;
 };
 
 const MarketplacePageBody = ({
@@ -46,8 +53,12 @@ const MarketplacePageBody = ({
         }, 1000);
     }, [setLoading]);
 
-    
-    const { approvePendingOffers: approvePendingOffersContext, getApprovedContracts, getPendingOffers, getOffers } = useContext(EthereumContext);
+    const {
+        approvePendingOffers: approvePendingOffersContext,
+        getApprovedContracts,
+        getPendingOffers,
+        getOffers,
+    } = useContext(EthereumContext);
 
     if (loading) {
         return (
@@ -58,60 +69,58 @@ const MarketplacePageBody = ({
         );
     }
 
+    const approvePendingOffers = async () => {
+        const indicies = await Promise.all(
+            pendingOffers.map(async (pendingOffer) => {
+                const buyerMessage = JSON.stringify({
+                    amount: pendingOffer.amount,
+                    price: pendingOffer.price,
+                    sellerSignature: pendingOffer.sellerSignature,
+                    nonce: Number(pendingOffer.nonce),
+                });
+                const sellerMessage = JSON.stringify({
+                    amount: pendingOffer.amount,
+                    price: pendingOffer.price,
+                    nonce: Number(pendingOffer.nonce),
+                });
+                const buyerSignatureVerified = await verify(
+                    pendingOffer.buyerSignature,
+                    buyerMessage
+                );
+                const sellerSignatureVerified = await verify(
+                    pendingOffer.sellerSignature,
+                    sellerMessage
+                );
+                console.log("buyerSignatureVerified", buyerSignatureVerified);
+                console.log("sellerSignatureVerified", sellerSignatureVerified);
 
-
-    const approvePendingOffers = async() => {
-        const indicies = await Promise.all(pendingOffers.map(async pendingOffer => {
-            const buyerMessage = JSON.stringify({
-                amount: pendingOffer.amount,
-                price: pendingOffer.price,
-                sellerSignature: pendingOffer.sellerSignature,
-                nonce: Number(pendingOffer.nonce),
-            });
-            const sellerMessage = JSON.stringify({
-                amount: pendingOffer.amount,
-                price: pendingOffer.price,
-                nonce: Number(pendingOffer.nonce),
-            });
-            const buyerSignatureVerified = await verify(
-                pendingOffer.buyerSignature,
-                buyerMessage
-            );
-            const sellerSignatureVerified = await verify(
-                pendingOffer.sellerSignature,
-                sellerMessage
-            );
-            console.log("buyerSignatureVerified", buyerSignatureVerified);
-            console.log("sellerSignatureVerified", sellerSignatureVerified);
-    
-            return buyerSignatureVerified && sellerSignatureVerified;
-        }));
-        console.log('indicies', indicies)
+                return buyerSignatureVerified && sellerSignatureVerified;
+            })
+        );
+        console.log("indicies", indicies);
         await approvePendingOffersContext(indicies);
-    }
+    };
 
     const refresh = () => {
         getApprovedContracts();
         getPendingOffers();
         getOffers();
-    }
+    };
 
     return (
         <>
             <div className={styles.pageTop}>
                 <h1>Marketplace</h1>
-                <Box
-                    sx={{
-                        height: "80px",
-                        display: 'flex',
-                        flexDirection: "row-reverse",
-                        gap: "20px"
-                    }}
-                >
+                <div className={styles.topButtons}>
                     <AddButton onClick={() => setOpen(true)} />
-                    <Button onClick={() => approvePendingOffers()} size="small" variant="contained">Approve offers</Button>
-                    <Button onClick={() => refresh() }  size="small" variant="contained">Refresh</Button>
-                </Box>
+                    <Button
+                        onClick={() => approvePendingOffers()}
+                        text="Approve offers"
+                    />
+                    <Button onClick={() => refresh()} text="Refresh" />
+                    {/* <Button onClick={() => approvePendingOffers()} size="small" variant="contained">Approve offers</Button>
+                    <Button onClick={() => refresh() }  size="small" variant="contained">Refresh</Button> */}
+                </div>
             </div>
 
             <div className={styles.row}>
