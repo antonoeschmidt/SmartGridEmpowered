@@ -1,17 +1,19 @@
-@startuml
+@startuml Onboarding
 actor Prosumer
 participant Client
 participant SmartMeter #LightYellow
-participant CableCompany #LightYellow
+participant DSO #LightYellow
 
-skinparam dpi 300
+skinparam dpi 400
 
-Prosumer -> Client ++: Onboarding request
-Prosumer -> Client: GenerateSecrets
-Client --> Prosumer: otsHash, ots
-Client -> SmartMeter ++: Create smart meter(smartMeterAddress, marketAddress, otsHash)
-SmartMeter --> Client --: OK
-Client -> CableCompany ++: Register Smart Meter(smartMeterAddress, prosumerAddress)
-CableCompany --> Client --: OK
-Client --> Prosumer --: Registration complete!
+autonumber
+
+Prosumer -> Client ++: onboarding request
+Client -> Client: generate secrets
+Client --> Prosumer: one time secret (ots)
+Client -> SmartMeter ++: create smart meter(smartMeterAddress, \n\t\t marketAddress, otsHash)
+SmartMeter --> Client --: creation ok
+Client -> DSO ++: register smart meter(smartMeterAddress, prosumerAddress)
+DSO --> Client --: registration ok
+Client --> Prosumer --: registration complete!
 @enduml

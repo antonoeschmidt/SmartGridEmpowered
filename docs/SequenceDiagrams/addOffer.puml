@@ -1,6 +1,5 @@
 @startuml AddOffer
 actor Prosumer
-actor SmartMeter
 participant SmartMeterContract #LightYellow
 participant GroupSignature
 participant Market #LightYellow
@@ -14,19 +13,18 @@ Prosumer -> GroupSignature ++: sign(offer, nonce)
 GroupSignature --> Prosumer --: signature
 
 Prosumer -> Market ++: addOffer(offer, signature, nonce, ots, nextOtsHash)
-Market -> Market: isNonceUsed(nonce)
-alt !nonces.has(nonce)
-Market -> CableCompany ++: isRegistered(smartMeter)
-CableCompany --> Market --: SmartMeter registered
+Market -> Market: check validity
+note over Market #WhiteSmoke
+isNonceUsed(nonce) == false
+offer.expiration < 1 week
+end note
 
-Market -> SmartMeterContract ++: subtractBatteryCharge(amount, ots, nextOtsHash, smAddress)
-alt subtractbattery ok
-SmartMeterContract --> Market --: OK
+Market -> CableCompany ++: isRegistered(smartMeter)
+CableCompany --> Market --: smart meter registered
+
+Market -> SmartMeterContract ++: subtractBatteryCharge(amount, ots, \n\t\tnextOtsHash, smAddress)
+SmartMeterContract --> Market --: ok
 Market -> Market: addOffer
-Market --> Prosumer: Offer created!
-end 
-else
-Market --> Prosumer --: Offer not created
-end
+Market --> Prosumer: offer created!
 
 @enduml
