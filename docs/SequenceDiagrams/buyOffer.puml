@@ -3,7 +3,8 @@ actor Prosumer
 actor DSO
 participant GroupSignature
 participant Market #LightYellow
-participant events #LightYellow 
+participant SmartMeter #LightYellow
+participant Events #LightYellow 
 
 skinparam dpi 300
 
@@ -19,8 +20,12 @@ Market -> Market: pendingOffers.add(offer)
 DSO -> Market: getPendingOffers
 Market --> DSO: pendingOffers
 DSO -> Market: validateOffers(indicies)
-loop length(indicies)
-Market -> events: emit new contract()
+loop indicies
+alt indicies[i] = false
+Market -> SmartMeter ++: returnReservedBatteryCharge(address, amount)
+SmartMeter --> Market --: OK
+else
+Market -> Events: emit new contract(pendingOffer[i])
 end
 end
 
