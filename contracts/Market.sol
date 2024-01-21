@@ -38,6 +38,7 @@ contract Market {
     uint maxOfferLivespan = 1000 * 60 * 60 * 24 * 7;
     ISmartMeter smartMeter;
     address dsoAddress;
+    string groupKey;
 
     struct Offer {
         string id;
@@ -264,6 +265,15 @@ contract Market {
             // And lastly we pop everytime.
             pendingConfirmationOffers.pop();
         } 
+    }
+
+    function getGroupKey() public view returns (string memory) {
+        return groupKey;
+    }
+
+    function setGroupKey(string memory _groupKey) public {
+        require(msg.sender == owner, "Only owner can update group key");
+        groupKey = _groupKey;
     }
 
     //Approves one offer

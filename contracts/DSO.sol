@@ -6,7 +6,6 @@ contract DSO {
     address owner;
 
     mapping(address => address) pubKeys;
-    string groupKey;
 
     constructor() {
         owner = msg.sender;
@@ -37,14 +36,5 @@ contract DSO {
 
     function getOwner() public view returns (address) {
         return owner;
-    }
-
-    function getGroupkey() public view returns(string memory) {
-        return groupKey;
-    }
-
-    function setGroupKey(string memory _groupKey) public {
-        require(msg.sender == owner, "Only owner can set the group key");
-        groupKey = _groupKey;
     }
 }

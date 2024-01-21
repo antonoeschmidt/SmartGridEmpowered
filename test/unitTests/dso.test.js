@@ -102,11 +102,5 @@ contract("DSO", (accounts) => {
         assert.equal(owner, adminAddress, "Incorrect owner");
     });
 
-    it("Should set and get groupkey", async () => {
-        const groupKey = "groupkey";
-        await dso.setGroupKey(groupKey, {from: adminAddress});
-        const _groupKey = await dso.getGroupkey();
-
-        assert.equal(groupKey, _groupKey, "They are not equal");
-    });
+    
 });
