@@ -265,4 +265,24 @@ contract Market {
             pendingConfirmationOffers.pop();
         } 
     }
+
+    //Approves one offer
+    // function validateOneOffer(uint nonce) public returns (bool) {
+    //     require(msg.sender == owner, "sender is not owner");
+    //     for (uint i = 0; i < pendingConfirmationOffers.length; i++) {
+    //         if (pendingConfirmationOffers[i].nonce == nonce) {
+    //             emit ApproveOffer(
+    //                 pendingConfirmationOffers[i].buyerSignature,
+    //                 pendingConfirmationOffers[i].sellerSignature,
+    //                 pendingConfirmationOffers[i].amount,
+    //                 pendingConfirmationOffers[i].timestamp,
+    //                 pendingConfirmationOffers[i].price
+    //             );
+    //             pendingConfirmationOffers[i] = pendingConfirmationOffers[pendingConfirmationOffers.length - 1];
+    //             pendingConfirmationOffers.pop();
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 }

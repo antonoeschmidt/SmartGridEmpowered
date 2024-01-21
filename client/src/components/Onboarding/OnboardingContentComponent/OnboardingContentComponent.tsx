@@ -33,7 +33,8 @@ const OnboardingContentComponent = ({
         smartMeterContractAddress,
         setUser,
         user,
-        smartMeterAccounts
+        smartMeterAccounts,
+        accounts
     } = useContext(EthereumContext);
     const navigate = useNavigate();
 
@@ -84,9 +85,11 @@ const OnboardingContentComponent = ({
             marketAddress = markets[0];
         }
         setUser(prev => ({...prev, market: marketAddress}));
-        await createSmartMeter(smartMeterAccounts[0], user.accountAddress, marketAddress);
+        const addressIndex = accounts.indexOf(user.accountAddress);
+        await createSmartMeter(smartMeterAccounts[addressIndex], user.accountAddress, marketAddress);
         // Register Smart Meter
         await registerSmartMeter(user.accountAddress, user.smartMeterAddress);
+        localStorage.setItem("currentUser", user.accountAddress);
 
         handleChangeStep(Steps.Step3);
     };

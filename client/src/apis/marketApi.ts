@@ -154,6 +154,22 @@ const approvePendingOffers = async(sender: string,  indicies: boolean[], marketA
     }
 }
 
+// const validateOneOffer = async(sender: string, marketAddress: string, nonce: number) => {
+//     const marketContract = marketInstance(marketAddress);
+//     try {
+//         return await marketContract.methods
+//         // @ts-ignore
+//         .validateOneOffer(nonce)
+//         .send({
+//             from: sender,
+//             gas: "1500000",
+//             gasPrice: "30000000000",
+//         })
+//     } catch (err) {
+//         console.log("Approve pending offers error", err)
+//     }
+// }
+
 export const marketApi = {
     deployMarket,
     addOffer,
@@ -161,5 +177,6 @@ export const marketApi = {
     buyOffer,
     removeOffer,
     getPendingOffers,
-    approvePendingOffers
+    approvePendingOffers,
+    // validateOneOffer
 };

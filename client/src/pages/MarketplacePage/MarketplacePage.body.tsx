@@ -69,6 +69,12 @@ const MarketplacePageBody = ({
         );
     }
 
+    const refresh = () => {
+        getApprovedContracts();
+        getPendingOffers();
+        getOffers();
+    };
+
     const approvePendingOffers = async () => {
         const indicies = await Promise.all(
             pendingOffers.map(async (pendingOffer) => {
@@ -97,15 +103,11 @@ const MarketplacePageBody = ({
                 return buyerSignatureVerified && sellerSignatureVerified;
             })
         );
-        console.log("indicies", indicies);
         await approvePendingOffersContext(indicies);
+        refresh();
     };
 
-    const refresh = () => {
-        getApprovedContracts();
-        getPendingOffers();
-        getOffers();
-    };
+   
 
     return (
         <>

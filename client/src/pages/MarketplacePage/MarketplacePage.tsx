@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, FC } from "react";
+import { useContext, useEffect, useState, FC } from "react";
 import styles from "./MarketplacePage.module.css";
 import EthereumContext from "../../contexts/ethereumContext";
 import { ApprovedContractDTO, OfferDTO, PendingOfferDTO } from "../../models/models";
@@ -18,7 +18,9 @@ const MarketplacePage: FC = () => {
         removeOffer,
         user,
         pendingOffers,
-        approvedContracts
+        approvedContracts,
+        getApprovedContracts,
+        getPendingOffers,
     } = useContext(EthereumContext);
 
     const roundToDecimalPlaces = (number, decimalPlaces) => {
@@ -40,6 +42,12 @@ const MarketplacePage: FC = () => {
     }, [user.market, getOffers, offers, setOffers]);
 
     useEffect(() => {
+        if (!user.market) return;
+        if (!approvedContracts) getApprovedContracts();
+        if (!pendingOffers) getPendingOffers();
+    }, [approvedContracts, getApprovedContracts, getPendingOffers, pendingOffers, user.market])
+
+    useEffect(() => {
         const changeSuggestedPrice = () => {
             const change = (Math.random() - 0.5) * 0.05;
             setSuggestedPrice((prevPrice) =>
@@ -58,6 +66,7 @@ const MarketplacePage: FC = () => {
                 setOffers(data);
             })
             .catch((err) => console.log(err));
+        getPendingOffers();
     };
 
     const handleRemoveOffer = async (id: string) => {

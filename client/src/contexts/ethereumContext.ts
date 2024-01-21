@@ -1,4 +1,4 @@
-import { createContext, useEffect, useRef, useState } from "react";
+import { createContext, useCallback, useEffect, useRef, useState } from "react";
 import { ApprovedContractDTO, OfferDTO, PendingOfferDTO } from "../models/models";
 import { DSOApi } from "../apis/DSOApi";
 import { marketApi } from "../apis/marketApi";
@@ -106,15 +106,6 @@ export const useEthereumContext = (): EthereumContextType => {
         localStorage.setItem("adminAccount", adminAccount);
     }, [adminAccount]);
 
-    // retrieves the admin account on first load.
-    useEffect(() => {
-        const storedAdminAccount = localStorage.getItem("adminAccount");
-        if (storedAdminAccount) setAdminAccount(storedAdminAccount);
-        const storedDSOAddress = localStorage.getItem("DSO");
-        if (storedDSOAddress) setDSOAddress(storedDSOAddress);
-        const storedSmartMeterContractAddress = localStorage.getItem("smartMeterContractAddress");
-        if (storedSmartMeterContractAddress) smartMeterContractAddress.current = storedSmartMeterContractAddress;
-    }, []);
 
     // saves data to localstorage when the user changes a setting
     useEffect(() => {
@@ -122,7 +113,19 @@ export const useEthereumContext = (): EthereumContextType => {
         localStorage.setItem(user.accountAddress, JSON.stringify(user));
     }, [user]);
 
-    const changeUser = async (address: string) => {
+    const registerSmartMeter = useCallback(async (
+        smartMeterPubKey: string,
+        smartMeterAddress: string
+    ) => {
+        return await smartMeterApi.registerSmartMeter(
+            adminAccount,
+            DSOAddress,
+            smartMeterPubKey,
+            smartMeterAddress
+        );
+    }, [DSOAddress, adminAccount]);
+
+    const changeUser = useCallback(async (address: string) => {
         if (!address) return;
         const loadedData = loadFromLocalStorage(address);
             let smartMeterAddress: string = loadedData?.smartMeterAddress;
@@ -136,6 +139,7 @@ export const useEthereumContext = (): EthereumContextType => {
                 await smartMeterApi.createSmartMeter(user.market, smartMeterAddress, address, smartMeterContractAddress.current, nextSecretHash);
                 await registerSmartMeter(address, smartMeterAddress);
             }
+            localStorage.setItem("currentUser", address);
             setUser({
                 accountAddress: address,
                 smartMeterAddress: smartMeterAddress,
@@ -145,7 +149,19 @@ export const useEthereumContext = (): EthereumContextType => {
                 buyerSignatures: loadedData?.buyerSignatures ?? [],
                 market: user.market
             });
-    }
+    }, [accounts, registerSmartMeter, smartMeterAccounts, user.accountAddress, user.market]);
+
+    // retrieves the admin account on first load.
+    useEffect(() => {
+        const storedAdminAccount = localStorage.getItem("adminAccount");
+        if (storedAdminAccount) setAdminAccount(storedAdminAccount);
+        const storedDSOAddress = localStorage.getItem("DSO");
+        if (storedDSOAddress) setDSOAddress(storedDSOAddress);
+        const storedSmartMeterContractAddress = localStorage.getItem("smartMeterContractAddress");
+        if (storedSmartMeterContractAddress) smartMeterContractAddress.current = storedSmartMeterContractAddress;
+        const currentUser = localStorage.getItem("currentUser");
+        if (currentUser) changeUser(currentUser);
+    }, [changeUser]);
 
 
     // DSOApi
@@ -290,17 +306,7 @@ export const useEthereumContext = (): EthereumContextType => {
         );
     };
 
-    const registerSmartMeter = async (
-        smartMeterPubKey: string,
-        smartMeterAddress: string
-    ) => {
-        return await smartMeterApi.registerSmartMeter(
-            adminAccount,
-            DSOAddress,
-            smartMeterPubKey,
-            smartMeterAddress
-        );
-    };
+    
 
 
     const removeOffer = async (offerId: string) => {
