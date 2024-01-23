@@ -1,10 +1,7 @@
 @startuml BuyOffer
 actor Prosumer
-actor DSO
 participant GroupSignature
 participant Market #LightYellow
-participant SmartMeter #LightYellow
-participant Events #LightYellow 
 
 skinparam dpi 300
 
@@ -14,19 +11,11 @@ Prosumer -> GroupSignature ++: sign(offer)
 GroupSignature --> Prosumer --: signature
 
 Prosumer -> Market ++: buyOffer(id, signature)
-alt offer.expirationTime > now() && owner != buyer
+note over Market #WhiteSmoke
+offer.expirationTime > now()
+owner != buyer
+end note
 Market -> Market: pendingOffers.add(offer)
-...Sometime later...
-DSO -> Market: getPendingOffers
-Market --> DSO: pendingOffers
-DSO -> Market: validateOffers(indicies)
-loop indicies
-alt indicies[i] = false
-Market -> SmartMeter ++: returnReservedBatteryCharge(address, amount)
-SmartMeter --> Market --: OK
-else
-Market -> Events: emit new contract(pendingOffer[i])
-end
-end
+Market --> Prosumer: Offer bought
 
 @enduml
