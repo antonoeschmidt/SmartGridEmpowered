@@ -86,8 +86,9 @@ contract Market {
             "Smart Meter not registered by Cable Company"
         );
         require(
-            block.timestamp * 1000 + maxOfferLivespan > expiration,
-            "Offers lifespan is too long"
+            block.timestamp * 1000 + maxOfferLivespan > expiration &&
+                expiration > block.timestamp * 1000,
+            "Offer lifespan not correct"
         );
         require(sellerAddress == msg.sender, "Only owner can add offer");
 

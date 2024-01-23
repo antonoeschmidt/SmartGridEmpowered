@@ -17,24 +17,20 @@ contract CableCompany {
     }
 
     function registerKey(
-        address smartMeterPubKey,
+        address prosumerAddress,
         address smartMeterAddress
     ) public isOwner {
-        pubKeys[smartMeterPubKey] = smartMeterAddress;
+        pubKeys[prosumerAddress] = smartMeterAddress;
     }
 
     function isRegisteredKey(
-        address smartMeterPubKey,
+        address prosumerAddress,
         address smartMeterAddress
     ) public view returns (bool) {
-        return pubKeys[smartMeterPubKey] == smartMeterAddress;
+        return pubKeys[prosumerAddress] == smartMeterAddress;
     }
 
     function removeRegisteredKey(address smartMeterPubKey) public isOwner {
         delete pubKeys[smartMeterPubKey];
-    }
-
-    function getOwner() public view returns (address) {
-        return owner;
     }
 }
