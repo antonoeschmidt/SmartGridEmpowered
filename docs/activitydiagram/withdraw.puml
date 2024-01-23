@@ -1,0 +1,11 @@
+@startuml withdraw battery
+start
+:withdrawBattery(amount, ots, nextOtsHash);
+if (hash(ots) == otsHash) then (true)
+:otsHash = nextHash;
+    if (batteryCharge > amount) then (true)
+        :charge -= amount;
+    endif
+endif
+stop
+@enduml
