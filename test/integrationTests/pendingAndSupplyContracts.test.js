@@ -10,7 +10,7 @@ const {encodedSecret, hash} = getSecrets("secret");
 
 
 
-contract("Add Offer", (accounts) => {
+contract("Validate pending offers", (accounts) => {
     let market;
     let dso;
     let smartMeter;
@@ -144,7 +144,7 @@ contract("Add Offer", (accounts) => {
 
     });
 
-    it ("Should have offer in pending after the first has been checked", async () => {
+    it ("Should still have 1 offer in pending after the other has been removed", async () => {
         const indicies = [false];
 
         await market.validatePendingOffers(indicies, {from: admin});

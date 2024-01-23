@@ -336,7 +336,7 @@ export const useEthereumContext = (): EthereumContextType => {
     }
 
     const getApprovedContracts = async() => {
-        const approvedContractsResponse =  await getPastEvents(user.market, Market.abi, "ApproveOffer");
+        const approvedContractsResponse =  await getPastEvents(user.market, Market.abi, "SupplyContract");
         console.log('approvedContractsResponse', approvedContractsResponse)
         if (!approvedContractsResponse) return;
         const parsedContracts = approvedContractsResponse.map(contract => approvedContractParser(contract));

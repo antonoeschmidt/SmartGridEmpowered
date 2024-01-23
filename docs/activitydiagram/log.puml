@@ -1,0 +1,6 @@
+start
+repeat
+:emit Log(consumption, production)
+:generate diagrams;
+repeat while (every15min)
+@enduml

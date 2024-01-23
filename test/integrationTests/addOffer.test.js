@@ -284,7 +284,6 @@ contract("Add Offer", (accounts) => {
             errorMessage = error?.data?.stack;
             console.log('errorMessage', errorMessage)
             if (!errorMessage) {
-                console.log("!errormessage", error);
                 errorMessage = error.reason;
             }
         }

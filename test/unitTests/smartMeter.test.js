@@ -77,7 +77,6 @@ contract("SmartMeter", (accounts) => {
         
         await smartMeter.createLog(50, 25, { from: smartMeterAddress });
         const charge = await smartMeter.getBatteryCharge(smartMeterAddress);
-        console.log('charge', charge)
         assert.equal(Number(charge), 25, "The charge was not set to 25");
     });
 

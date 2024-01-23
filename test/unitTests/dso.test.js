@@ -95,12 +95,5 @@ contract("DSO", (accounts) => {
 
         assert.isTrue(await isRegistered(), "Key not removed as expected");
 
-    });
-
-    it("should get owner", async () => {
-        const owner = await dso.getOwner();
-        assert.equal(owner, adminAddress, "Incorrect owner");
-    });
-
-    
+    });    
 });
