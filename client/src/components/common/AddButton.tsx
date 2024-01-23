@@ -10,7 +10,7 @@ export const AddButton: FC<AddButtonProps> = ({ onClick }) => {
     return (
         <Tooltip title="Add new offer">
             <IconButton
-                sx={{ width: "100%", height: "100%" }}
+                sx={{ height: "100%" }}
                 aria-label="Add a new offer"
                 color="primary"
                 onClick={onClick}

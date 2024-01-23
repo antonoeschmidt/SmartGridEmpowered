@@ -1,47 +1,50 @@
-import { createContext, useEffect, useState } from "react";
-import { OfferDTO, SupplyContractDTO } from "../models/models";
-import { cableCompanyApi } from "../apis/cableCompanyApi";
+import { createContext, useEffect, useRef, useState } from "react";
+import { ApprovedContractDTO, OfferDTO, PendingOfferDTO } from "../models/models";
+import { DSOApi } from "../apis/DSOApi";
 import { marketApi } from "../apis/marketApi";
 import { smartMeterApi } from "../apis/smartMeterApi";
-import { supplyContractApi } from "../apis/supplyContractApi";
 import { sign } from "../apis/groupSignature";
-import { addUserKey, loadFromLocalStorage } from "../utils/localstorage";
+import { getSmartMeterSecrets, loadFromLocalStorage } from "../utils/localstorage";
+import { getPastEvents } from "../apis/web3";
+import Market from "../contracts/Market.json";
+import { approvedContractParser } from "../utils/parsers";
+
+export type User = {
+    smartMeterAddress: string;
+    accountAddress: string;
+    groupSecretKey: string;
+    market: string;
+    sellerSignatures: string[];
+    buyerSignatures: string[];
+    secret: string;
+}
 
 export type EthereumContextType = {
     accounts: string[];
     setAccounts: React.Dispatch<React.SetStateAction<string[]>>;
-    currentAccount: string;
-    setCurrentAccount: React.Dispatch<React.SetStateAction<string>>;
     adminAccount: string;
     setAdminAccount: (account: string) => void;
-    currentMarket: string;
-    setCurrentMarket: (address: string) => void;
     markets: string[];
     setMarkets: React.Dispatch<React.SetStateAction<string[]>>;
-    supplyContractAddresses: string[];
-    setSupplyContractAddresses: React.Dispatch<React.SetStateAction<string[]>>;
     offers: OfferDTO[];
     setOffers: React.Dispatch<React.SetStateAction<OfferDTO[]>>;
-    cableCompanyAddress: string;
-    setCableCompanyAddress: (account: string) => void;
-    smartMeterAddress: string;
-    setSmartMeterAddress: (account: string) => void;
+    DSOAddress: string;
+    setDSOAddress: React.Dispatch<React.SetStateAction<String>>;
 
-    deployCableCompany: () => Promise<string>;
+    deployDSO: () => Promise<string>;
     isRegisteredKey: (
         smartMeterPubKey: string,
         smartMeterAddress: string
     ) => Promise<void | [] | (unknown[] & [])>;
-    deployMarket: () => Promise<string>;
+    deployMarket: (DSO?: string, admin?: string, smartMeterContract?: string) => Promise<string>;
     addOffer: (offer: OfferDTO) => Promise<OfferDTO>;
     getOffers: () => Promise<OfferDTO[]>;
     buyOffer: (id: string, offer: OfferDTO) => Promise<any>;
-    deploySmartMeter: (id: string) => Promise<string>;
+    createSmartMeter: (smartMeterAddress: string, acc?: string, market?: string) => Promise<any>;
     getBatteryCharge: () => Promise<void | [] | (unknown[] & [])>;
     setSmartMeterMarketAddress: (
-        account?: string,
-        parsedSmartMeterAddress?: string,
-        market?: string
+        smartMeterAddress?: string,
+        newMarketAddress?: string
     ) => Promise<any>;
     createSmartMeterLog: (
         intervalConsumption: number,
@@ -51,61 +54,51 @@ export type EthereumContextType = {
         smartMeterPubKey: string,
         smartMeterAddress: string
     ) => Promise<any>;
-    getSupplyContracts: () => Promise<SupplyContractDTO[]>;
-    getSupplyContractInfo: (
-        supplyContractAddress: string
-    ) => Promise<SupplyContractDTO>;
     loading: boolean;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
     removeOffer: (offerId: string) => any;
-    currentAccountSignature: string;
-    setCurrentAccountSignature: React.Dispatch<React.SetStateAction<string>>;
+    newKeyDialog: () => string;
+    deploySmartMeter: () => Promise<string>;
+    smartMeterContractAddress: React.MutableRefObject<string>
+    smartMeterAccounts: string[];
+    setSmartMeterAccounts: React.Dispatch<React.SetStateAction<string[]>>;
+    setUser: React.Dispatch<React.SetStateAction<User>>;
+    user: User;
+    changeUser: (address: string) => void;
+    approvePendingOffers: (offerIndicies: boolean[]) => Promise<any>;
+    getPendingOffers: () => void;
+    getApprovedContracts: () => void;
 
-    newSignatureDialog: () => string;
+    pendingOffers: PendingOfferDTO[];
+    setPendingOffers: React.Dispatch<React.SetStateAction<PendingOfferDTO[]>>;
+
+    approvedContracts: ApprovedContractDTO[];
+    setApprovedContracts: React.Dispatch<React.SetStateAction<ApprovedContractDTO[]>>;
 };
 
 export const useEthereumContext = (): EthereumContextType => {
     const [accounts, setAccounts] = useState<string[]>([]);
-    const [currentAccount, setCurrentAccount] = useState<string>();
     const [adminAccount, setAdminAccount] = useState<string>();
-    const [currentMarket, setCurrentMarket] = useState<string>();
     const [markets, setMarkets] = useState<string[]>([]);
-    const [supplyContractAddresses, setSupplyContractAddresses] = useState<
-        string[]
-    >([]);
     const [offers, setOffers] = useState<OfferDTO[]>();
-    const [cableCompanyAddress, setCableCompanyAddress] = useState<string>();
-    const [smartMeterAddress, setSmartMeterAddress] = useState<string>();
+    const [DSOAddress, setDSOAddress] = useState<string>();
     const [loading, setLoading] = useState(false);
-    const [currentAccountSignature, setCurrentAccountSignature] =
-        useState<string>();
+    const [pendingOffers, setPendingOffers] = useState<PendingOfferDTO[]>([]);
+    const [approvedContracts, setApprovedContracts] = useState<ApprovedContractDTO[]>([]);
 
-    const deployAndRegisterSmartMeter = async (account: string) => {
-        if (!account) {
-            console.error(
-                "Could not deploy and register smart meter. No current account"
-            );
-            return;
-        }
-        const deployedSmartMeterAddress = await deploySmartMeter(account);
-        setSmartMeterAddress(deployedSmartMeterAddress);
-        if (!cableCompanyAddress) {
-            console.error(
-                "No cable company address found. Cannot set smartMeterAddress and register the market on it"
-            );
-            return;
-        }
+    const [user, setUser] = useState<User>({
+        smartMeterAddress: "",
+        accountAddress: "",
+        groupSecretKey: "",
+        market: "",
+        sellerSignatures: [],
+        buyerSignatures: [],
+        secret: ""
+    });
 
-        let res = await setSmartMeterMarketAddress(
-            account,
-            deployedSmartMeterAddress,
-            currentMarket
-        );
-        console.log("setSmartMeterMarketAddress", res);
-
-        res = await registerSmartMeter(account, deployedSmartMeterAddress);
-        console.log("registerSmartMeter", res);
-    };
+    const [smartMeterAccounts, setSmartMeterAccounts] = useState<string[]>([]);
+    // const [smartMeterContractAddress, setSmartMeterContractAddress] = useState<string>("");
+    const smartMeterContractAddress = useRef<string>("");
 
     // saves the new admin account to local storage
     useEffect(() => {
@@ -116,97 +109,100 @@ export const useEthereumContext = (): EthereumContextType => {
     // retrieves the admin account on first load.
     useEffect(() => {
         const storedAdminAccount = localStorage.getItem("adminAccount");
-        if (!storedAdminAccount) return;
-        setAdminAccount(storedAdminAccount);
+        if (storedAdminAccount) setAdminAccount(storedAdminAccount);
+        const storedDSOAddress = localStorage.getItem("DSO");
+        if (storedDSOAddress) setDSOAddress(storedDSOAddress);
+        const storedSmartMeterContractAddress = localStorage.getItem("smartMeterContractAddress");
+        if (storedSmartMeterContractAddress) smartMeterContractAddress.current = storedSmartMeterContractAddress;
     }, []);
-
-    useEffect(() => {
-        const storedCableCompanyAddress = localStorage.getItem("cableCompany");
-        if (!storedCableCompanyAddress) return;
-        setCableCompanyAddress(storedCableCompanyAddress);
-    }, []);
-
 
     // saves data to localstorage when the user changes a setting
     useEffect(() => {
-        if (!currentAccount) return;
-        addUserKey(currentAccount, "signature", currentAccountSignature);
-        addUserKey(currentAccount, "smartMeterAddress", smartMeterAddress);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [smartMeterAddress]);
+        if (!user.accountAddress) return;
+        localStorage.setItem(user.accountAddress, JSON.stringify(user));
+    }, [user]);
 
-    useEffect(() => {
-        console.log("Current account changed");
-        const changeUser = async () => {
-            if (!currentAccount) return;
-            let _cableCompanyAddress =
-                cableCompanyAddress && localStorage.getItem("cableCompany");
-            if (!_cableCompanyAddress) {
-                console.error("Cannot change user. No cable company address");
-                return;
+    const changeUser = async (address: string) => {
+        if (!address) return;
+        const loadedData = loadFromLocalStorage(address);
+            let smartMeterAddress: string = loadedData?.smartMeterAddress;
+            let secret: string = loadedData?.secret;
+            if (!smartMeterAddress) {
+                const addressIndex = accounts.indexOf(address);
+                smartMeterAddress = smartMeterAccounts[addressIndex];
+                const { nextSecret, nextSecretHash } = getSmartMeterSecrets(user.accountAddress);
+                secret = nextSecret;
+                console.log('user.market', user.market);
+                await smartMeterApi.createSmartMeter(user.market, smartMeterAddress, address, smartMeterContractAddress.current, nextSecretHash);
+                await registerSmartMeter(address, smartMeterAddress);
             }
+            setUser({
+                accountAddress: address,
+                smartMeterAddress: smartMeterAddress,
+                groupSecretKey: loadedData?.groupSecretKey ?? "",
+                secret: secret,
+                sellerSignatures: loadedData?.sellerSignatures ?? [],
+                buyerSignatures: loadedData?.buyerSignatures ?? [],
+                market: user.market
+            });
+    }
 
-            const loadedData = loadFromLocalStorage(currentAccount);
-            setCurrentAccountSignature(loadedData.signature);
-            if (!loadedData.smartMeterAddress) {
-                console.log(
-                    "No SmartMeter found for current user. Deploying new one."
-                );
-                deployAndRegisterSmartMeter(currentAccount);
-            } else {
-                setSmartMeterAddress(loadedData.smartMeterAddress);
-            }
-        };
 
-        changeUser();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [currentAccount]);
-
-    // CableCompanyApi
-    const deployCableCompany = async () => {
-        return await cableCompanyApi.deployCableCompany(adminAccount);
+    // DSOApi
+    const deployDSO = async () => {
+        console.log('adminAccount deploy', adminAccount);
+        return await DSOApi.deployDSO(adminAccount);
     };
 
     const isRegisteredKey = async (
         smartMeterPubKey: string,
         smartMeterAddress: string
     ) => {
-        return await cableCompanyApi.isRegisteredKey(
-            cableCompanyAddress,
+        return await DSOApi.isRegisteredKey(
+            DSOAddress,
             smartMeterPubKey,
             smartMeterAddress
         );
     };
 
     // MarketApi
-    const deployMarket = async (cableCompany?: string, admin?: string) => {
+    const deployMarket = async (_DSOAddress?: string, admin?: string, smartMeterContract?: string) => {
         return await marketApi.deployMarket(
             admin ?? adminAccount,
-            cableCompany ?? cableCompanyAddress
+            _DSOAddress ?? DSOAddress,
+            smartMeterContract ?? smartMeterContractAddress.current
         );
     };
 
     const addOffer = async (offer: OfferDTO) => {
+        const {currentSecretEncoded, nextSecret, nextSecretHash} = getSmartMeterSecrets(user.accountAddress);
+        setUser(prev => {
+            const signatures = prev.sellerSignatures;
+            signatures.push(offer.sellerSignature);
+            return {...prev, secret: nextSecret, sellerSignatures: signatures};
+        });
         return await marketApi.addOffer(
             offer,
-            currentMarket,
-            currentAccount,
-            smartMeterAddress
+            user.market,
+            user.accountAddress,
+            user.smartMeterAddress,
+            currentSecretEncoded,
+            nextSecretHash,
         );
     };
 
     const getOffers = async () => {
-        return await marketApi.getOffers(currentMarket);
+        return await marketApi.getOffers(user.market);
     };
 
     const buyOffer = async (id: string, offer: OfferDTO) => {
-        if (!currentAccount) {
+        if (!user.accountAddress) {
             alert("No account selected");
             return;
         }
-        let signature = currentAccountSignature;
+        let signature = user.groupSecretKey;
         if (!signature) {
-            signature = newSignatureDialog();
+            signature = newKeyDialog();
             if (!signature) {
                 return;
             }
@@ -222,55 +218,63 @@ export const useEthereumContext = (): EthereumContextType => {
             signature
         );
 
+        setUser(prev => {
+            const buyerSignatures = prev.buyerSignatures;
+            buyerSignatures.push(buyerSignature);
+            return {...prev, buyerSignatures};
+        });
+
         return await marketApi.buyOffer(
-            currentMarket,
+            user.market,
             id,
-            currentAccount,
+            user.accountAddress,
             buyerSignature
         );
     };
 
-    const newSignatureDialog = () => {
+    const newKeyDialog = () => {
         // eslint-disable-next-line no-restricted-globals
         const con = confirm(
-            "No group signature provided for current user. You want to add it?"
+            "No group key provided for current user. You want to add it?"
         );
         if (!con) {
             return;
         }
-        const signature = prompt("Please enter your group signature");
+        const key = prompt("Please enter your group secret key");
 
         // check formatting is base64
 
-        if (!signature) {
+        if (!key) {
             return;
         }
-        setCurrentAccountSignature(signature);
-        return signature;
+        setUser(prev => ({...prev, groupSecretKey: key}));
+        return key;
     };
 
     // SmartMeterApi
-    const deploySmartMeter = async (acc?: string) => {
-        return await smartMeterApi.deploySmartMeter(acc ?? currentAccount);
+    const createSmartMeter = async (smartMeterAddress: string, sender?: string, market?: string) => {
+        const { nextSecret, nextSecretHash } = getSmartMeterSecrets(user.accountAddress);
+        console.log('nextSecret', nextSecret);
+        setUser(prev => ({...prev, secret: nextSecret}));
+        return await smartMeterApi.createSmartMeter(market ?? user.market, smartMeterAddress, sender ?? user.accountAddress, smartMeterContractAddress.current, nextSecretHash);
     };
 
     const getBatteryCharge = async () => {
-        if (!smartMeterAddress) {
+        if (!user.smartMeterAddress) {
             console.log("Get battery charge, No Smartmeter address");
             return;
         }
-        return await smartMeterApi.getBatteryCharge(smartMeterAddress);
+        return await smartMeterApi.getBatteryCharge(smartMeterContractAddress.current, user.smartMeterAddress);
     };
 
     const setSmartMeterMarketAddress = async (
-        _account?: string,
         _smartMeterAddress?: string,
         _market?: string
     ) => {
-        return await smartMeterApi.setCurrentMarketAddress(
-            _account ?? currentAccount,
-            _smartMeterAddress ?? smartMeterAddress,
-            _market ?? currentMarket
+        return await smartMeterApi.setMarketAddress(
+            _smartMeterAddress ?? user.smartMeterAddress,
+            smartMeterContractAddress.current,
+            _market ?? user.market
         );
     };
 
@@ -279,8 +283,8 @@ export const useEthereumContext = (): EthereumContextType => {
         intervalProduction: number
     ) => {
         return await smartMeterApi.createLog(
-            currentAccount,
-            smartMeterAddress,
+            user.smartMeterAddress,
+            smartMeterContractAddress.current,
             intervalConsumption,
             intervalProduction
         );
@@ -292,58 +296,60 @@ export const useEthereumContext = (): EthereumContextType => {
     ) => {
         return await smartMeterApi.registerSmartMeter(
             adminAccount,
-            cableCompanyAddress,
+            DSOAddress,
             smartMeterPubKey,
             smartMeterAddress
         );
     };
 
-    // SupplyContractApi
-    const getSupplyContracts = async () => {
-        return await supplyContractApi.getSupplyContracts(
-            supplyContractAddresses,
-            currentAccount
-        );
-    };
-
-    const getSupplyContractInfo = async (supplyContractAddress: string) => {
-        return await supplyContractApi.getSupplyContractInfo(
-            supplyContractAddress,
-            currentAccount
-        );
-    };
 
     const removeOffer = async (offerId: string) => {
         const res = await marketApi.removeOffer(
-            currentMarket,
+            user.market,
             offerId,
-            smartMeterAddress,
-            currentAccount
+            user.accountAddress
         );
         return res;
     };
 
+    const deploySmartMeter = async() => {
+        const address = await smartMeterApi.deploySmartMeter(adminAccount);
+        // setSmartMeterContractAddress(address);
+        return address;
+    }
+
+    const getPendingOffers = async() => {
+        const pendingOffersResponse = await marketApi.getPendingOffers(user.market, user.accountAddress);
+        console.log('pendingOffersResponse', pendingOffersResponse)
+        setPendingOffers(pendingOffersResponse);
+    }
+
+    const approvePendingOffers = async(offerIndicies: boolean[]) => {
+        console.log('{adminAccount, offerIndicies, user.market}', {adminAccount, offerIndicies, market: user.market})
+        return await marketApi.approvePendingOffers(adminAccount, offerIndicies, user.market)
+    }
+
+    const getApprovedContracts = async() => {
+        const approvedContractsResponse =  await getPastEvents(user.market, Market.abi, "ApproveOffer");
+        console.log('approvedContractsResponse', approvedContractsResponse)
+        if (!approvedContractsResponse) return;
+        const parsedContracts = approvedContractsResponse.map(contract => approvedContractParser(contract));
+        console.log('parsedContracts', parsedContracts);
+        setApprovedContracts(parsedContracts);
+    }
+
     return {
         accounts,
         setAccounts,
-        currentAccount,
-        setCurrentAccount,
         adminAccount,
         setAdminAccount,
-        currentMarket,
-        setCurrentMarket,
         markets,
         setMarkets,
-        supplyContractAddresses,
-        setSupplyContractAddresses,
         offers,
         setOffers,
-        cableCompanyAddress,
-        setCableCompanyAddress,
-        smartMeterAddress,
-
-        setSmartMeterAddress,
-        deployCableCompany,
+        DSOAddress,
+        setDSOAddress,
+        deployDSO,
         isRegisteredKey,
 
         deployMarket,
@@ -352,21 +358,33 @@ export const useEthereumContext = (): EthereumContextType => {
         buyOffer,
         removeOffer,
 
-        deploySmartMeter,
+        createSmartMeter,
         getBatteryCharge,
         setSmartMeterMarketAddress,
         createSmartMeterLog,
         registerSmartMeter,
 
-        getSupplyContracts,
-        getSupplyContractInfo,
-
         loading,
         setLoading,
-        currentAccountSignature,
-        setCurrentAccountSignature,
 
-        newSignatureDialog,
+        newKeyDialog,
+        deploySmartMeter,
+        smartMeterContractAddress,
+        smartMeterAccounts,
+        setSmartMeterAccounts,
+
+        user,
+        setUser,
+        changeUser,
+        approvePendingOffers,
+
+        getPendingOffers,
+        setPendingOffers,
+        pendingOffers,
+
+        getApprovedContracts,
+        approvedContracts,
+        setApprovedContracts,        
     };
 };
 

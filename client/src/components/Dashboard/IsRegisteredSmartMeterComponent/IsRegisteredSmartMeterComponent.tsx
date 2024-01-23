@@ -6,26 +6,25 @@ import ToastContext from "../../../contexts/toastContext";
 
 const IsRegisteredSmartMeterComponent = () => {
     const {
-        currentAccount,
-        isRegisteredKey,
-        smartMeterAddress: contextSmartMeterAddress,
+        user,
+        isRegisteredKey
     } = useContext(EthereumContext);
 
     const [smartMeterPubKey, setSmartMeterPubKey] = useState<string>("");
     const [smartMeterAddress, setSmartMeterAddress] = useState<string>("");
 
     useEffect(() => {
-        setSmartMeterPubKey(currentAccount);
-    }, [currentAccount]);
+        setSmartMeterPubKey(user.accountAddress);
+    }, [user.accountAddress]);
 
     useEffect(() => {
-        setSmartMeterAddress(contextSmartMeterAddress);
-    }, [contextSmartMeterAddress]);
+        setSmartMeterAddress(user.smartMeterAddress);
+    }, [user.smartMeterAddress]);
 
     const { setToastProps, onOpen } = useContext(ToastContext);
 
     const isKeyRegistered = async () => {
-        if (!currentAccount) return;
+        if (!user.accountAddress) return;
         let res = await isRegisteredKey(smartMeterPubKey, smartMeterAddress);
         setToastProps(`Response was: ${res}`, "info");
         onOpen();
@@ -49,7 +48,7 @@ const IsRegisteredSmartMeterComponent = () => {
             />
 
             <Button
-                disabled={!currentAccount}
+                disabled={!user.accountAddress}
                 onClick={() => isKeyRegistered()}
                 text="Check registration"
             />

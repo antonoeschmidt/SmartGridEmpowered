@@ -4,7 +4,7 @@ import EthereumContext from "../../../contexts/ethereumContext";
 import styles from "./PickMarketComponent.module.css";
 
 const PickMarketComponent = () => {
-    const { currentMarket, setCurrentMarket, markets } =
+    const { user, setUser, markets } =
         useContext(EthereumContext);
 
     return (
@@ -14,14 +14,14 @@ const PickMarketComponent = () => {
                 defaultValue=""
                 value={
                     markets
-                        ? currentMarket
-                            ? currentMarket.toLowerCase()
+                        ? user.market
+                            ? user.market.toLowerCase()
                             : ""
                         : ""
                 }
                 label="Market"
                 onChange={(e) => {
-                    setCurrentMarket(e.target.value);
+                    setUser(prev => ({...prev, market: e.target.value}));
                 }}
             >
                 {markets &&
@@ -33,11 +33,11 @@ const PickMarketComponent = () => {
                         );
                     })}
             </Select>
-            {currentMarket && (
+            {user.market && (
                 <p className="light-text">
                     Current market:
                     <br />
-                    {currentMarket}
+                    {user.market}
                 </p>
             )}
         </>

@@ -2,17 +2,18 @@
 // pragma experimental ABIEncoderV2;
 pragma solidity ^0.8.9;
 
-contract CableCompany {
+contract DSO {
     address owner;
-    // in case people don't trust our api and wan't to verify themselves.
+
     mapping(address => address) pubKeys;
+    string groupKey;
 
     constructor() {
         owner = msg.sender;
     }
 
     modifier isOwner() {
-        require(msg.sender == owner, "Only owner can register new keys");
+        require(msg.sender == owner, "Only owner can change key map");
         _;
     }
 
@@ -30,7 +31,16 @@ contract CableCompany {
         return pubKeys[prosumerAddress] == smartMeterAddress;
     }
 
-    function removeRegisteredKey(address smartMeterPubKey) public isOwner {
-        delete pubKeys[smartMeterPubKey];
+    function removeRegisteredKey(address prosumerAddress) public isOwner {
+        delete pubKeys[prosumerAddress];
+    }
+
+    function getGroupkey() public view returns (string memory) {
+        return groupKey;
+    }
+
+    function setGroupKey(string memory _groupKey) public {
+        require(msg.sender == owner, "Only owner can set the group key");
+        groupKey = _groupKey;
     }
 }

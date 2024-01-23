@@ -1,16 +1,24 @@
-import React, { useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import styles from "./MarketplacePage.module.css";
 import { AddButton } from "../../components/common/AddButton";
 import OfferComponent from "../../components/Market/OfferComponent/OfferComponent";
-import { OfferDTO, SupplyContractDTO } from "../../models/models";
+import {
+    OfferDTO,
+    PendingOfferDTO,
+    ApprovedContractDTO,
+} from "../../models/models";
 import { CircularProgress } from "@mui/material";
 import SupplyContractComponent from "../../components/Market/SupplyContractComponent/SupplyContractComponent";
 import SuggestedPriceComponent from "../../components/Market/SuggestedPriceComponent/SuggestedPriceComponent";
+import { verify } from "../../apis/groupSignature";
+import EthereumContext from "../../contexts/ethereumContext";
+import Button from "../../components/Shared/Button/Button";
 
 type MarketplacePageBodyProps = {
     offers: OfferDTO[];
     currentAccount: string;
-    supplyContractsDTO: SupplyContractDTO[];
+    pendingOffers: PendingOfferDTO[];
+    approvedContracts: ApprovedContractDTO[];
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     handleBuyOffer: () => (id: string, offer: OfferDTO) => Promise<void>;
     removeOffer: (id: string) => Promise<void>;
@@ -20,15 +28,15 @@ type MarketplacePageBodyProps = {
     setOpenSupplyContractInfoModal: React.Dispatch<
         React.SetStateAction<boolean>
     >;
-    setCurrentSupplyContract: React.Dispatch<
-        React.SetStateAction<SupplyContractDTO>
+    setCurrentItem: React.Dispatch<
+        React.SetStateAction<PendingOfferDTO | ApprovedContractDTO>
     >;
 };
 
 const MarketplacePageBody = ({
     offers,
     currentAccount,
-    supplyContractsDTO,
+    pendingOffers,
     setOpen,
     handleBuyOffer,
     removeOffer,
@@ -36,13 +44,21 @@ const MarketplacePageBody = ({
     setLoading,
     suggestedPrice,
     setOpenSupplyContractInfoModal,
-    setCurrentSupplyContract,
+    setCurrentItem,
+    approvedContracts,
 }: MarketplacePageBodyProps) => {
     useEffect(() => {
         setTimeout(() => {
             setLoading(false);
         }, 1000);
     }, [setLoading]);
+
+    const {
+        approvePendingOffers: approvePendingOffersContext,
+        getApprovedContracts,
+        getPendingOffers,
+        getOffers,
+    } = useContext(EthereumContext);
 
     if (loading) {
         return (
@@ -53,18 +69,55 @@ const MarketplacePageBody = ({
         );
     }
 
+    const approvePendingOffers = async () => {
+        const indicies = await Promise.all(
+            pendingOffers.map(async (pendingOffer) => {
+                const buyerMessage = JSON.stringify({
+                    amount: pendingOffer.amount,
+                    price: pendingOffer.price,
+                    sellerSignature: pendingOffer.sellerSignature,
+                    nonce: Number(pendingOffer.nonce),
+                });
+                const sellerMessage = JSON.stringify({
+                    amount: pendingOffer.amount,
+                    price: pendingOffer.price,
+                    nonce: Number(pendingOffer.nonce),
+                });
+                const buyerSignatureVerified = await verify(
+                    pendingOffer.buyerSignature,
+                    buyerMessage
+                );
+                const sellerSignatureVerified = await verify(
+                    pendingOffer.sellerSignature,
+                    sellerMessage
+                );
+                console.log("buyerSignatureVerified", buyerSignatureVerified);
+                console.log("sellerSignatureVerified", sellerSignatureVerified);
+
+                return buyerSignatureVerified && sellerSignatureVerified;
+            })
+        );
+        console.log("indicies", indicies);
+        await approvePendingOffersContext(indicies);
+    };
+
+    const refresh = () => {
+        getApprovedContracts();
+        getPendingOffers();
+        getOffers();
+    };
+
     return (
         <>
             <div className={styles.pageTop}>
                 <h1>Marketplace</h1>
-                <div
-                    style={{
-                        width: "80px",
-                        height: "80px",
-                        marginLeft: "auto",
-                    }}
-                >
+                <div className={styles.topButtons}>
                     <AddButton onClick={() => setOpen(true)} />
+                    <Button
+                        onClick={() => approvePendingOffers()}
+                        text="Approve offers"
+                    />
+                    <Button onClick={() => refresh()} text="Refresh" />
                 </div>
             </div>
 
@@ -104,16 +157,33 @@ const MarketplacePageBody = ({
                     </div>
                 </>
             )}
-            {supplyContractsDTO && (
+            {pendingOffers && (
                 <>
-                    <h3>Supply Contracts</h3>
+                    <h3>Pending confirmation</h3>
                     <div className={styles.row}>
-                        {supplyContractsDTO.map((supplyContract, index) => (
+                        {pendingOffers.map((pendingOffer, index) => (
                             <SupplyContractComponent
                                 key={index}
-                                supplyContract={supplyContract}
+                                item={pendingOffer}
                                 handleShowClick={() => {
-                                    setCurrentSupplyContract(supplyContract);
+                                    setCurrentItem(pendingOffer);
+                                    setOpenSupplyContractInfoModal(true);
+                                }}
+                            />
+                        ))}
+                    </div>
+                </>
+            )}
+            {approvedContracts && (
+                <>
+                    <h3>Confirmed contracts</h3>
+                    <div className={styles.row}>
+                        {approvedContracts.map((approvedContract, index) => (
+                            <SupplyContractComponent
+                                key={index}
+                                item={approvedContract}
+                                handleShowClick={() => {
+                                    setCurrentItem(approvedContract);
                                     setOpenSupplyContractInfoModal(true);
                                 }}
                             />
