@@ -1,6 +1,5 @@
 @startuml BuyOffer
 actor DSO
-participant GroupSignature
 participant Market #LightYellow
 participant SmartMeter #LightYellow
 participant Events #LightYellow 
@@ -9,16 +8,17 @@ skinparam dpi 300
 
 autonumber
 
-DSO -> Market: getPendingOffers
-Market --> DSO: pendingOffers
-DSO -> Market: validateOffers(indicies)
-loop indicies
-alt indicies[i] = false
-Market -> SmartMeter ++: returnReservedBatteryCharge(address, amount)
+DSO -> Market ++: getPendingOffers
+Market --> DSO --: pendingOffers
+DSO -> Market ++: validateOffers(offers)
+loop offers
+alt offers[i] = ok
+Market -> SmartMeter ++: returnReservedBatteryCharge\n\t\t (address, amount)
 SmartMeter --> Market --: OK
 else
 Market -> Events: emit new contract(pendingOffer[i])
 end
 end
+Market -> DSO --: OK
 
 @enduml
