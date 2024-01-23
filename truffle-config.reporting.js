@@ -95,7 +95,7 @@ module.exports = {
             coinmarketcap: "15e0e646-a10c-4c9c-89e8-593fcd8a9a3c",
             outputFile: "test/gas-report.txt",
             forceConsoleOutput: true,
-            noColors: true,
+            // noColors: true,
             token: "MATIC", // uncomment to get prices for Polygon
             gasPriceApi:
                 "https://api.polygonscan.com/api?module=proxy&action=eth_gasPrice",
