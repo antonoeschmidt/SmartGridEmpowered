@@ -6,11 +6,7 @@ const SmartMeter = artifacts.require("SmartMeter");
 
 const {encodedSecret, hash} = getSecrets("secret");
 
-
-
-
-
-contract("Validate pending offers", (accounts) => {
+contract("State changes", (accounts) => {
     let market;
     let dso;
     let smartMeter;
