@@ -220,15 +220,13 @@ contract Market {
         return pendingConfirmationOffers;
     }
 
-    event ApproveOffer(
+    event SupplyContract(
         string buyerSignature,
         string sellerSignature,
         uint amount,
         uint timestamp,
         uint price
     );
-
-
     function validatePendingOffers(
         bool[] memory offerIndicies
     ) public {
@@ -239,7 +237,7 @@ contract Market {
             ];
             //if it's an accepted index we emit our event
             if (offerIndicies[i] == true) {
-                emit ApproveOffer(
+                emit SupplyContract(
                     offer.buyerSignature,
                     offer.sellerSignature,
                     offer.amount,

@@ -122,4 +122,12 @@ contract("Buy Offer", (accounts) => {
         offers = await market.getOfferIDs();
         assert.equal(offers.length, 0, "Too many offers");
     });
+
+    it("Should set and get groupkey", async () => {
+        const groupKey = "groupkey";
+        await market.setGroupKey(groupKey, {from: admin});
+        const _groupKey = await market.getGroupKey();
+
+        assert.equal(groupKey, _groupKey, "They are not equal");
+    });
 });

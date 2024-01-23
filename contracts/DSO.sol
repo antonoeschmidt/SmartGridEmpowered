@@ -5,7 +5,7 @@ pragma solidity ^0.8.9;
 contract DSO {
     address owner;
 
-    mapping(address => address) pubKeys;
+    mapping(address => address) registeredAddresses;
 
     constructor() {
         owner = msg.sender;
@@ -17,24 +17,20 @@ contract DSO {
     }
 
     function registerKey(
-        address smartMeterPubKey,
+        address prosumerAddress,
         address smartMeterAddress
     ) public isOwner {
-        pubKeys[smartMeterPubKey] = smartMeterAddress;
+        registeredAddresses[prosumerAddress] = smartMeterAddress;
     }
 
     function isRegisteredKey(
-        address smartMeterPubKey,
+        address prosumerAddress,
         address smartMeterAddress
     ) public view returns (bool) {
-        return pubKeys[smartMeterPubKey] == smartMeterAddress;
+        return registeredAddresses[prosumerAddress] == smartMeterAddress;
     }
 
-    function removeRegisteredKey(address smartMeterPubKey) public isOwner {
-        delete pubKeys[smartMeterPubKey];
-    }
-
-    function getOwner() public view returns (address) {
-        return owner;
+    function removeRegisteredKey(address prosumerAddress) public isOwner {
+        delete registeredAddresses[prosumerAddress];
     }
 }
