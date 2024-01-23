@@ -4,13 +4,13 @@ import Button from "../../Shared/Button/Button";
 import ToastContext from "../../../contexts/toastContext";
 
 const SetMarketSmartMeterComponent = () => {
-    const { currentAccount, currentMarket, setSmartMeterMarketAddress } =
+    const { user, setSmartMeterMarketAddress } =
         useContext(EthereumContext);
 
     const { setToastProps, onOpen } = useContext(ToastContext);
 
     const setMarketAddressSmartMeter = async () => {
-        if (!currentAccount || !currentMarket) return;
+        if (!user.accountAddress || !user.market) return;
         await setSmartMeterMarketAddress();
         setToastProps(`Success!`, "success");
         onOpen();
@@ -19,7 +19,7 @@ const SetMarketSmartMeterComponent = () => {
     return (
         <>
             <Button
-                disabled={!currentAccount}
+                disabled={!user.accountAddress}
                 onClick={() => setMarketAddressSmartMeter()}
                 text="Set Market Address"
             />

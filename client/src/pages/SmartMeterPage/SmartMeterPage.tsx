@@ -9,13 +9,13 @@ const SmartMeterPage = () => {
     const [consumption, setConsumption] = useState<number>();
     const [production, setProduction] = useState<number>();
 
-    const { smartMeterAddress, getBatteryCharge, createSmartMeterLog } =
+    const { user, getBatteryCharge, createSmartMeterLog } =
         useContext(EthereumContext);
 
     const { setToastProps, onOpen } = useContext(ToastContext);
 
     const createLogClick = async () => {
-        if (!consumption || !production || !smartMeterAddress) {
+        if (!user.smartMeterAddress) {
             alert("No energy data or smart meter selected");
             return;
         }
@@ -58,6 +58,7 @@ const SmartMeterPage = () => {
                     <Button
                         onClick={() => createLogClick()}
                         text="Simulate Log"
+                        disabled={!consumption || !production}
                     />
 
                     <Button

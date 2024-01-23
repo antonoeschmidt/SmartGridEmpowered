@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState, FC } from "react";
 import styles from "./MarketplacePage.module.css";
 import EthereumContext from "../../contexts/ethereumContext";
-import { OfferDTO, SupplyContractDTO } from "../../models/models";
+import { ApprovedContractDTO, OfferDTO, PendingOfferDTO } from "../../models/models";
 import { OfferModal } from "../../components/Market/OfferModal/OfferModal";
 import MarketplacePageBody from "./MarketplacePage.body";
 import SupplyContractInfoModal from "../../components/Market/SupplyContractInfoModal/SupplyContractInfoModal";
@@ -9,18 +9,16 @@ import { verify, openSignature } from "../../apis/groupSignature";
 
 const MarketplacePage: FC = () => {
     const {
-        currentMarket,
-        setSupplyContractAddresses,
-        currentAccount,
         offers,
         buyOffer,
         setOffers,
         getOffers,
-        getSupplyContracts,
-        getSupplyContractInfo,
         loading,
         setLoading,
         removeOffer,
+        user,
+        pendingOffers,
+        approvedContracts
     } = useContext(EthereumContext);
 
     const roundToDecimalPlaces = (number, decimalPlaces) => {
@@ -28,30 +26,18 @@ const MarketplacePage: FC = () => {
         return Math.round(number * factor) / factor;
     };
 
-    const [supplyContractsDTO, setSupplyContractsDTO] =
-        useState<SupplyContractDTO[]>();
-
     const [suggestedPrice, setSuggestedPrice] = useState<number>(
         roundToDecimalPlaces(Math.random(), 3)
     );
 
     useEffect(() => {
-        if (offers || !currentMarket) return;
+        if (offers || !user.market) return;
         getOffers()
             .then((data) => {
                 setOffers(data);
             })
             .catch((err) => console.log(err));
-    }, [currentMarket, getOffers, offers, setOffers]);
-
-    useEffect(() => {
-        if (!currentAccount) return;
-        getSupplyContracts()
-            .then((data) => {
-                setSupplyContractsDTO(data);
-            })
-            .catch((err) => console.error(err));
-    }, [currentAccount, getSupplyContracts]);
+    }, [user.market, getOffers, offers, setOffers]);
 
     useEffect(() => {
         const changeSuggestedPrice = () => {
@@ -65,19 +51,7 @@ const MarketplacePage: FC = () => {
     }, []);
 
     const handleBuyOffer = () => async (id: string, offer: OfferDTO) => {
-        const supplyContractAddress = await buyOffer(id, offer);
-        if (!supplyContractAddress) {
-            alert("Buy offer didn't return an address");
-            return;
-        }
-        const newSupplyContract = await getSupplyContractInfo(
-            supplyContractAddress
-        );
-        setSupplyContractAddresses((prevState) => [
-            ...prevState,
-            supplyContractAddress,
-        ]);
-        setSupplyContractsDTO((prevState) => [...prevState, newSupplyContract]);
+        await buyOffer(id, offer);
 
         getOffers()
             .then((data) => {
@@ -104,10 +78,10 @@ const MarketplacePage: FC = () => {
         setOpenSupplyContractInfoModal(false);
     };
 
-    const [currentSupplyContract, setCurrentSupplyContract] =
-        useState<SupplyContractDTO>();
+    const [currentItem, setCurrentItem] =
+        useState<PendingOfferDTO | ApprovedContractDTO>();
 
-    if (!currentMarket) {
+    if (!user.market) {
         return (
             <div className={styles.container}>
                 Please choose a Market to view the Marketplace
@@ -115,38 +89,38 @@ const MarketplacePage: FC = () => {
         );
     }
 
-    const verifySupplyContract = async (supplyContract: SupplyContractDTO) => {
+    const verifyPendingOffer = async (pendingOffer: PendingOfferDTO) => {
         const buyerMessage = JSON.stringify({
-            amount: supplyContract.amount,
-            price: supplyContract.price,
-            sellerSignature: supplyContract.sellerSignature,
-            nonce: Number(supplyContract.nonce),
+            amount: pendingOffer.amount,
+            price: pendingOffer.price,
+            sellerSignature: pendingOffer.sellerSignature,
+            nonce: Number(pendingOffer.nonce),
         });
         const sellerMessage = JSON.stringify({
-            amount: supplyContract.amount,
-            price: supplyContract.price,
-            nonce: Number(supplyContract.nonce),
+            amount: pendingOffer.amount,
+            price: pendingOffer.price,
+            nonce: Number(pendingOffer.nonce),
         });
         let buyerSignatureVerified = await verify(
-            supplyContract.buyerSignature,
+            pendingOffer.buyerSignature,
             buyerMessage
         );
         let sellerSignatureVerified = await verify(
-            supplyContract.sellerSignature,
+            pendingOffer.sellerSignature,
             sellerMessage
         );
         console.log("Verify sellerMessage");
         console.log(
             JSON.stringify({
                 message: sellerMessage,
-                signature: supplyContract.sellerSignature,
+                signature: pendingOffer.sellerSignature,
             })
         );
         console.log("Verify buyerMessage");
         console.log(
             JSON.stringify({
                 message: buyerMessage,
-                signature: supplyContract.buyerSignature,
+                signature: pendingOffer.buyerSignature,
             })
         );
         console.log("buyerSignatureVerified", buyerSignatureVerified);
@@ -159,21 +133,21 @@ const MarketplacePage: FC = () => {
         }
     };
 
-    const revealIdentities = async (supplyContract: SupplyContractDTO) => {
+    const revealIdentities = async (approvedContract: ApprovedContractDTO) => {
         const sellerIdentity = await openSignature(
-            supplyContract.sellerSignature
+            approvedContract.sellerSignature
         );
         const buyerIdentity = await openSignature(
-            supplyContract.buyerSignature
+            approvedContract.buyerSignature
         );
 
         console.log("sellerIdentity", sellerIdentity);
         console.log(
-            JSON.stringify({ signature: supplyContract.sellerSignature })
+            JSON.stringify({ signature: approvedContract.sellerSignature })
         );
         console.log("buyerIdentity", buyerIdentity);
         console.log(
-            JSON.stringify({ signature: supplyContract.buyerSignature })
+            JSON.stringify({ signature: approvedContract.buyerSignature })
         );
 
         alert(
@@ -181,12 +155,15 @@ const MarketplacePage: FC = () => {
         );
     };
 
+    
+
     return (
         <div className={styles.container}>
             <MarketplacePageBody
                 offers={offers}
-                currentAccount={currentAccount}
-                supplyContractsDTO={supplyContractsDTO}
+                currentAccount={user.accountAddress}
+                pendingOffers={pendingOffers}
+                approvedContracts={approvedContracts}
                 setOpen={setOpen}
                 handleBuyOffer={handleBuyOffer}
                 removeOffer={handleRemoveOffer}
@@ -194,14 +171,14 @@ const MarketplacePage: FC = () => {
                 setLoading={setLoading}
                 suggestedPrice={suggestedPrice}
                 setOpenSupplyContractInfoModal={setOpenSupplyContractInfoModal}
-                setCurrentSupplyContract={setCurrentSupplyContract}
+                setCurrentItem={setCurrentItem}
             />
             <OfferModal open={open} handleClose={handleClose} />
             <SupplyContractInfoModal
                 open={openSupplyContractInfoModal}
                 handleClose={handleCloseSupplyContractInfoModal}
-                supplyContract={currentSupplyContract}
-                verifySupplyContract={verifySupplyContract}
+                currentItem={currentItem}
+                verifyPendingOffer={verifyPendingOffer}
                 revealIdentities={revealIdentities}
             />
         </div>

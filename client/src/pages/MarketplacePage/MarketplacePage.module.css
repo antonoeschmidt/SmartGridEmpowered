@@ -16,7 +16,6 @@
     /* width: 100%; */
 }
 
-
 .item {
     display: flex;
     flex-direction: column;
@@ -39,4 +38,12 @@
     height: 20em;
     flex-direction: column;
     gap: 20px;
+}
+
+.topButtons {
+    display: flex;
+    gap: 10px;
+    flex-direction: row-reverse;
+    max-height: 4em;
+    align-items: center;
 }

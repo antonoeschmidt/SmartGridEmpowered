@@ -2,12 +2,15 @@
 actor Prosumer
 participant GroupSignature
 participant Market #LightYellow
-participant SupplyContract #LightYellow
+participant DSO #LightYellow
+
+participant Blockchain #LightYellow
 
 skinparam dpi 300
 
 autonumber
 
+loop adding offers
 Prosumer -> GroupSignature ++: sign(offer)
 GroupSignature --> Prosumer --: signature
 
@@ -18,8 +21,13 @@ expiration > now
 owner != buyer
 end note
 
-Market -> SupplyContract ++: Deploy new SupplyContract
-SupplyContract --> Market --:
+Market -> Market: addPendingOffer(offer)
+end
+DSO -> Market: ApproveOffers(indicies, maxindex)
 
-Market --> Prosumer: SupplyContract created!
+loop indicies.length
+  Market -> Blockchain: Contract event emitted
+
+Blockchain-> Prosumer: Contract event emitted 
+end
 @enduml

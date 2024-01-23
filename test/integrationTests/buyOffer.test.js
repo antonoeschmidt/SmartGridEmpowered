@@ -1,51 +1,53 @@
+const { getSecrets } = require("../utils/hash");
 const Market = artifacts.require("Market");
-const CableCompany = artifacts.require("CableCompany");
+const DSO = artifacts.require("DSO");
 const SmartMeter = artifacts.require("SmartMeter");
-const encodedSecretString = web3.eth.abi.encodeParameters(
-    ["string"],
-    ["test1"]
-);
-const hash = web3.utils.soliditySha3(encodedSecretString);
+const { encodedSecret, hash } = getSecrets("test1");
 
 contract("Buy Offer", (accounts) => {
     let market;
-    let cableCompany;
+    let dso;
     let smartMeter;
 
     const admin = accounts[0];
     const user = accounts[1];
     const validBuyer = accounts[2];
+    const smartMeterAddress = accounts[3];
     const offerId = "id";
     const amount = 1;
     const price = 1;
-    const date = Date.now();
+    const date = Date.now() + 1000 * 60 * 60 * 24;
     const sellerSignature = "signature1";
     const buyerSignature = "signature2";
     const nonce = Math.floor(Math.random() * 1000);
 
     beforeEach(async () => {
-        cableCompany = await CableCompany.new({ from: admin });
-        market = await Market.new(cableCompany.address, { from: admin });
-        smartMeter = await SmartMeter.new(hash, { from: user });
-        await smartMeter.setCurrentMarketAddress(market.address, {
-            from: user,
+        dso = await DSO.new({ from: admin });
+        smartMeter = await SmartMeter.new({ from: user });
+        market = await Market.new(dso.address, smartMeter.address, {
+            from: admin,
         });
-        await cableCompany.registerKey(user, smartMeter.address, {
+
+        await smartMeter.createSmartMeter(market.address, hash, {
+            from: smartMeterAddress,
+        });
+
+        await dso.registerKey(user, smartMeterAddress, {
             from: admin,
         });
         await smartMeter.createLog(10, 50, {
-            from: user,
+            from: smartMeterAddress,
         });
         await market.addOffer(
             offerId,
             amount,
             price,
             date,
-            smartMeter.address,
+            smartMeterAddress,
             sellerSignature,
             nonce,
             user,
-            encodedSecretString,
+            encodedSecret,
             hash,
             {
                 from: user,
@@ -74,9 +76,10 @@ contract("Buy Offer", (accounts) => {
 
     it("Should fail to buy expired offer", async () => {
         const expiredOfferId = "expiredId";
-        const expiredDate = 1;
+        const expiredDate = Date.now() + 1;
         const validErrorMessage = "Cannot buy expired offer";
         const newNonce = Math.floor(Math.random() * 1000);
+        const anotherUser = accounts[4];
         let errorMessage;
 
         await market.addOffer(
@@ -84,11 +87,11 @@ contract("Buy Offer", (accounts) => {
             amount,
             price,
             expiredDate,
-            smartMeter.address,
+            smartMeterAddress,
             sellerSignature,
             newNonce,
             user,
-            encodedSecretString,
+            encodedSecret,
             hash,
             {
                 from: user,
@@ -96,14 +99,21 @@ contract("Buy Offer", (accounts) => {
         );
 
         try {
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+
             await market.buyOffer(expiredOfferId, buyerSignature, {
-                from: user,
+                from: anotherUser,
             });
+
+            // await market.buyOffer(expiredOfferId, buyerSignature, {
+            //     from: anotherUser,
+            // });
         } catch (error) {
             errorMessage = error.data.stack;
             if (!errorMessage) {
                 errorMessage = error.reason;
             }
+            console.log(error);
         }
 
         assert.equal(
@@ -121,8 +131,5 @@ contract("Buy Offer", (accounts) => {
 
         offers = await market.getOfferIDs();
         assert.equal(offers.length, 0, "Too many offers");
-
-        const latestSupplyContractId = await market.getLatestSupplyContract();
-        assert(latestSupplyContractId, "No supply contract found");
     });
 });
