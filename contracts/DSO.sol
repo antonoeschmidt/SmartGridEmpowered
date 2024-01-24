@@ -33,4 +33,4 @@ contract DSO {
     function removeRegisteredKey(address prosumerAddress) public isOwner {
         delete registeredAddresses[prosumerAddress];
     }
-}
+} 
