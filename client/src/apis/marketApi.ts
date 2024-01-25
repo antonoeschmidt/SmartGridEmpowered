@@ -128,7 +128,7 @@ const getPendingOffers = async (
     try {
         const response = await marketContract.methods
             // @ts-ignore
-            .getPendingOffers()
+            .getPendingSupplyContracts()
             .call({
                 from: sender
             }) as any[];

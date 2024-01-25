@@ -91,21 +91,21 @@ contract("State changes", (accounts) => {
     });
 
     it("Validate both offers", async () => {
-        const pendingOffers = await market.getPendingOffers();
+        const pendingSupplyContracts = await market.getPendingSupplyContracts();
 
-        assert.equal(pendingOffers.length, 2, "There is not 2 pending offers");
+        assert.equal(pendingSupplyContracts.length, 2, "There is not 2 pending supply contracts");
 
         const indicies = [true, true];
 
-        const result = await market.validatePendingOffers(indicies, {from: admin});
+        const result = await market.validatePendingSupplyContracts(indicies, {from: admin});
         
         result.logs.forEach(event => {
-            assert.equal(event.args.sellerSignature == pendingOffers[0].sellerSignature || event.args.buyerSignature == pendingOffers[1].buyerSignature, true, "Signatures didn't match");
+            assert.equal(event.args.sellerSignature == pendingSupplyContracts[0].sellerSignature || event.args.buyerSignature == pendingSupplyContracts[1].buyerSignature, true, "Signatures didn't match");
         });
 
-        const newPendingOffers = await market.getPendingOffers();
+        const newPendingSupplyContracts = await market.getPendingSupplyContracts();
 
-        assert.equal(newPendingOffers.length, 0, "There is still pending offers");
+        assert.equal(newPendingSupplyContracts.length, 0, "There is still pending supply contracts");
 
         const charge = await smartMeter.getBatteryCharge(smartMeterAddress);
         assert.equal(Number(charge), 39, "The battery charge was returned");
@@ -116,11 +116,11 @@ contract("State changes", (accounts) => {
 
         const indicies = [false, false];
 
-        await market.validatePendingOffers(indicies, {from: admin});
+        await market.validatePendingSupplyContracts(indicies, {from: admin});
 
-        const newPendingOffers = await market.getPendingOffers();
+        const newPendingSupplyContracts = await market.getPendingSupplyContracts();
 
-        assert.equal(newPendingOffers.length, 0, "There is still pending offers");
+        assert.equal(newPendingSupplyContracts.length, 0, "There is still pending supply contracts");
 
         const charge = await smartMeter.getBatteryCharge(smartMeterAddress);
         assert.equal(Number(charge), 40, "The battery charge was was not returned");
@@ -129,11 +129,11 @@ contract("State changes", (accounts) => {
     it("Should emit one event and return the battery charge to the other one", async () => {
         const indicies = [false, true];
 
-        await market.validatePendingOffers(indicies, {from: admin});
+        await market.validatePendingSupplyContracts(indicies, {from: admin});
 
-        const newPendingOffers = await market.getPendingOffers();
+        const newPendingSupplyContracts = await market.getPendingSupplyContracts();
 
-        assert.equal(newPendingOffers.length, 0, "There is still pending offers");
+        assert.equal(newPendingSupplyContracts.length, 0, "There is still pending supply contracts");
 
         const charge = await smartMeter.getBatteryCharge(smartMeterAddress);
         assert.equal(Number(charge), 40, "The battery charge was was not returned");
@@ -143,11 +143,11 @@ contract("State changes", (accounts) => {
     it ("Should still have 1 offer in pending after the other has been removed", async () => {
         const indicies = [false];
 
-        await market.validatePendingOffers(indicies, {from: admin});
+        await market.validatePendingSupplyContracts(indicies, {from: admin});
 
-        const newPendingOffers = await market.getPendingOffers();
+        const newPendingSupplyContracts = await market.getPendingSupplyContracts();
 
-        assert.equal(newPendingOffers.length, 1, "There is more or less than 1 pending offers");
+        assert.equal(newPendingSupplyContracts.length, 1, "There is more or less than 1 pending supply contract");
 
     });
 

@@ -52,7 +52,7 @@ contract Market {
         uint nonce;
     }
 
-    struct PendingConfirmationOffer {
+    struct PendingSupplyContract {
         string buyerSignature;
         string sellerSignature;
         address smartMeterAddress;
@@ -63,7 +63,7 @@ contract Market {
     }
 
     mapping(string => Offer) public offers;
-    PendingConfirmationOffer[] public pendingConfirmationOffers;
+    PendingSupplyContract[] public pendingSupplyContracts;
 
     string[] public offerIds;
 
@@ -157,10 +157,8 @@ contract Market {
     }
 
     function buyOffer(string memory id, string memory buyerSignature) public {
-        // Initialization
         Offer memory offer = offers[id];
 
-        // Require conditions
         require(
             keccak256(bytes(offer.id)) == keccak256(bytes(id)),
             "No offer found"
@@ -168,12 +166,9 @@ contract Market {
         require(offer.expiration > block.timestamp, "Cannot buy expired offer");
         require(msg.sender != offer.owner, "Owner cannot buy own offer");
 
-        // Buying offer
-
         delete offers[id];
-
-        pendingConfirmationOffers.push(
-            PendingConfirmationOffer({
+        pendingSupplyContracts.push(
+            PendingSupplyContract({
                 buyerSignature: buyerSignature,
                 sellerSignature: offer.sellerSignature,
                 amount: offer.amount,
@@ -185,7 +180,6 @@ contract Market {
         );
 
         for (uint i = 0; i < offerIds.length; i++) {
-            // String comparison to remove purchased offer
             if (keccak256(bytes(offerIds[i])) == keccak256(bytes(id))) {
                 offerIds[i] = offerIds[offerIds.length - 1];
                 offerIds.pop();
@@ -212,12 +206,12 @@ contract Market {
         return offerIds;
     }
 
-    function getPendingOffers()
+    function getPendingSupplyContracts()
         public
         view
-        returns (PendingConfirmationOffer[] memory)
+        returns (PendingSupplyContract[] memory)
     {
-        return pendingConfirmationOffers;
+        return pendingSupplyContracts;
     }
 
     event SupplyContract(
@@ -227,12 +221,12 @@ contract Market {
         uint timestamp,
         uint price
     );
-    function validatePendingOffers(
+    function validatePendingSupplyContracts(
         bool[] memory offerIndicies
     ) public {
         require(msg.sender == owner, "sender is not owner");
         for (uint i = 0; i < offerIndicies.length; i++) {
-            PendingConfirmationOffer memory offer = pendingConfirmationOffers[
+            PendingSupplyContract memory offer = pendingSupplyContracts[
                 i
             ];
             //if it's an accepted index we emit our event
@@ -255,13 +249,13 @@ contract Market {
         // we loop agian to clean up the list
         for (uint i = 0; i < offerIndicies.length; i++) {
             // We move the indicies not yet approved down.
-            if (offerIndicies.length < pendingConfirmationOffers.length - i) {
-                pendingConfirmationOffers[i] = pendingConfirmationOffers[
-                    pendingConfirmationOffers.length - 1 - i
+            if (offerIndicies.length < pendingSupplyContracts.length - i) {
+                pendingSupplyContracts[i] = pendingSupplyContracts[
+                    pendingSupplyContracts.length - 1 - i
                 ];
             }
             // And lastly we pop everytime.
-            pendingConfirmationOffers.pop();
+            pendingSupplyContracts.pop();
         } 
     }
 

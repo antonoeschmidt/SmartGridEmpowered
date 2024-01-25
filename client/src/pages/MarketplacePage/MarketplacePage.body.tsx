@@ -161,7 +161,7 @@ const MarketplacePageBody = ({
             )}
             {pendingOffers && (
                 <>
-                    <h3>Pending confirmation</h3>
+                    <h3>Pending supply contracts</h3>
                     <div className={styles.row}>
                         {pendingOffers.map((pendingOffer, index) => (
                             <SupplyContractComponent
