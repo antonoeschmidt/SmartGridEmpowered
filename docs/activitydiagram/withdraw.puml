@@ -1,19 +1,18 @@
 @startuml withdraw battery
 start
 :subtractBatteryCharge(amount, ots, nextOtsHash);
-if (hash(ots) == otsHash) then (true)
-:set otsHash = nextHash;
-    if (batteryCharge >= amount) then (true)
-        :set charge -= amount;
-        :return true;
-        stop
+if (is caller == Market) then (true)
+    if (hash(ots) == otsHash) then (true)
+    :set otsHash = nextHash;
+        if (batteryCharge >= amount) then (true)
+            :set charge -= amount;
+            :validation = true;
+        else (false)
+        endif
+    
     else (false)
-        :return false;
-        stop
     endif
 else (false)
-    :return false;
-    stop
 endif
-' stop
+stop
 @enduml
