@@ -12,10 +12,10 @@ GroupSignature --> Prosumer --: signature
 
 Prosumer -> Market ++: buyOffer(id, signature)
 note over Market #WhiteSmoke
-offer.expirationTime > now()
+offer.expirationTime > now()f
 owner != buyer
 end note
-Market -> Market: pendingOffers.add(offer)
+Market -> Market: pendingSupplyContracts.add(offer)
 Market --> Prosumer: Offer bought
 
 @enduml
