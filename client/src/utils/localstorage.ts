@@ -40,8 +40,10 @@ export const getSmartMeterSecrets = (account: string) => {
         // fetch secret
     const currentSecret = getUserKey(account, "secret") ?? "";
     const encodedCurrentSecretString = web3.eth.abi.encodeParameters(['string'],[currentSecret]);
-        // add the next key to local storage
-    addUserKey(account, "secret", nextSecretString);
 
-    return {currentSecret: encodedCurrentSecretString, nextSecretHash};
+    return {currentSecretEncoded: encodedCurrentSecretString, nextSecretHash, nextSecret: nextSecretString};
+}
+
+export const addPreviousSignature = (account: string, signature: string) => {
+    
 }

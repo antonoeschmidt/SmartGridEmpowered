@@ -23,11 +23,10 @@ type OfferModalProps = {
 
 export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
     const {
-        currentAccount,
         setOffers,
         addOffer,
-        currentAccountSignature,
-        newSignatureDialog,
+        newKeyDialog,
+        user
     } = useContext(EthereumContext);
 
     const [price, setPrice] = useState<number>(0);
@@ -36,7 +35,7 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
     const { setToastProps, onOpen } = useContext(ToastContext);
 
     const onSubmit = async () => {
-        if (!currentAccount) {
+        if (!user.accountAddress) {
             alert("Please select an account before creating new offer!");
             return;
         }
@@ -45,10 +44,10 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
             alert("Amount and price must have a value");
             return;
         }
-        let signature = currentAccountSignature;
-        if (!signature) {
-            signature = newSignatureDialog();
-            if (!signature) {
+        let key = user.groupSecretKey;
+        if (!key) {
+            key = newKeyDialog();
+            if (!key) {
                 return;
             }
         }
@@ -62,7 +61,7 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
                 price: price,
                 nonce: randomNonce,
             }),
-            signature
+            key
         );
 
         const newOffer: OfferDTO = {
@@ -70,7 +69,7 @@ export const OfferModal: FC<OfferModalProps> = ({ open, handleClose }) => {
             price: price,
             amount: amount,
             expiration: Date.now() + 6 * 24 * 60 * 60 * 1000, // 6 days in ms. 7 days exceeded the limit.
-            owner: currentAccount,
+            owner: user.accountAddress,
             active: true,
             sellerSignature: sellerSignature,
             nonce: randomNonce,

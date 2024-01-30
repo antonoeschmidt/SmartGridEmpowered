@@ -1,0 +1,33 @@
+@startuml BuyOffer
+actor Prosumer
+participant GroupSignature
+participant Market #LightYellow
+participant DSO #LightYellow
+
+participant Blockchain #LightYellow
+
+skinparam dpi 300
+
+autonumber
+
+loop adding offers
+Prosumer -> GroupSignature ++: sign(offer)
+GroupSignature --> Prosumer --: signature
+
+Prosumer -> Market ++: buyOffer(id, signature)
+Market -> Market: Check validity
+note over Market #WhiteSmoke
+expiration > now
+owner != buyer
+end note
+
+Market -> Market: addPendingOffer(offer)
+end
+DSO -> Market: ApproveOffers(indicies, maxindex)
+
+loop indicies.length
+  Market -> Blockchain: Contract event emitted
+
+Blockchain-> Prosumer: Contract event emitted 
+end
+@enduml

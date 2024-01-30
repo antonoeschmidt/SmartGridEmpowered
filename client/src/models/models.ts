@@ -19,3 +19,22 @@ export interface SupplyContractDTO {
     timestamp: number;
     nonce: number;
 }
+
+export interface PendingOfferDTO {
+    buyerSignature: string;
+    sellerSignature: string;
+    smartMeterAddress: string;
+    amount: number;
+    price: number;
+    timestamp: number;
+    nonce: number;
+}
+
+export interface ApprovedContractDTO {
+    buyerSignature: string;
+    sellerSignature: string;
+    price: number;
+    amount: number;
+    timestamp: number;
+    // id: string; //transaction hash.
+}
