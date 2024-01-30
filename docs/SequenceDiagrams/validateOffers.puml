@@ -1,4 +1,13 @@
-@startuml BuyOffer
+@startuml pendingSupplyContracts
+<style>
+sequenceDiagram  {
+  group {
+    FontColor white
+    FontStyle normal
+  }
+}
+</STYLE>
+
 actor DSO
 participant Market #LightYellow
 participant SmartMeter #LightYellow
@@ -8,17 +17,17 @@ skinparam dpi 300
 
 autonumber
 
-DSO -> Market ++: getPendingOffers
-Market --> DSO --: pendingOffers
-DSO -> Market ++: validateOffers(offers)
-loop offers
-alt offers[i] = ok
-Market -> SmartMeter ++: returnReservedBatteryCharge\n\t\t (address, amount)
-SmartMeter --> Market --: OK
-else
-Market -> Events: emit new contract(pendingOffer[i])
+DSO -> Market++: getPendingSupplyContracts
+Market --> DSO: pendingSupplyContracts
+DSO -> Market: validate(pendingSupplyContracts)
+loop <color:black>[pendingSupplyContracts]</color>
+alt <color:black>[pendingSupplyContracts[i] == true]</color>
+Market -> Events: emit new contract(pendingSupplyContracts[i])
+Events --> Market: ok
+else pendingSupp <color:black>[pendingSupplyContracts[i] == false]</color>
+Market -> SmartMeter ++: returnReservedBatteryCharge(address, amount)
+SmartMeter --> Market --: ok
 end
 end
-Market -> DSO --: OK
-
+Market --> DSO: supply contracts validated
 @enduml
