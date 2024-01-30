@@ -2,7 +2,7 @@
 // pragma experimental ABIEncoderV2;
 pragma solidity ^0.8.9;
 
-interface ICableCompany {
+interface IDSO {
     function registerKey(
         address smartMeterPubKey,
         address smartMeterAddress
@@ -17,12 +17,16 @@ interface ICableCompany {
 }
 
 interface ISmartMeter {
-    function returnReservedBatteryCharge(uint amount) external returns (bool);
+    function returnReservedBatteryCharge(
+        uint amount,
+        address smartMeterInstance
+    ) external returns (bool);
 
     function subtractBatteryCharge(
         uint amount,
         bytes memory ots,
-        bytes32 nextOtsHash
+        bytes32 nextOtsHash,
+        address smartMeterInstance
     ) external returns (bool);
 
     function getBatteryCharge() external view returns (uint);
@@ -30,8 +34,11 @@ interface ISmartMeter {
 
 contract Market {
     address owner;
-    ICableCompany cableCompany; // Maybe change the name of CableCompany to something else, like DSO
+    IDSO dso;
     uint maxOfferLivespan = 1000 * 60 * 60 * 24 * 7;
+    ISmartMeter smartMeter;
+    address dsoAddress;
+    string groupKey;
 
     struct Offer {
         string id;
@@ -45,11 +52,20 @@ contract Market {
         uint nonce;
     }
 
-    mapping(string => Offer) private offers;
-    mapping(string => Offer) private pendingConfirmation;
+    struct PendingSupplyContract {
+        string buyerSignature;
+        string sellerSignature;
+        address smartMeterAddress;
+        uint amount; // Wh
+        uint price; // Euro cents
+        uint timestamp; // Unix
+        uint nonce;
+    }
+
+    mapping(string => Offer) public offers;
+    PendingSupplyContract[] public pendingSupplyContracts;
 
     string[] public offerIds;
-    address public lastestSupplyChainAddress;
 
     // mapping is nonce to the timestamp it was used at.
     mapping(uint => uint) private usedNonces;
@@ -63,9 +79,14 @@ contract Market {
         _;
     }
 
-    constructor(address _cableCompanyAddress) payable {
+    constructor(
+        address _dsoAddress,
+        address _smartMeterContractAddress
+    ) payable {
         owner = msg.sender;
-        cableCompany = ICableCompany(_cableCompanyAddress);
+        dso = IDSO(_dsoAddress);
+        dsoAddress = _dsoAddress;
+        smartMeter = ISmartMeter(_smartMeterContractAddress);
     }
 
     function addOffer(
@@ -82,8 +103,8 @@ contract Market {
     ) public nonceGuard(nonce) returns (bool) {
         // Require conditions
         require(
-            cableCompany.isRegisteredKey(msg.sender, smartMeterAddress),
-            "Smart Meter not registered by Cable Company"
+            dso.isRegisteredKey(msg.sender, smartMeterAddress),
+            "Smart Meter not registered by DSO"
         );
         require(
             block.timestamp * 1000 + maxOfferLivespan > expiration,
@@ -91,9 +112,13 @@ contract Market {
         );
         require(sellerAddress == msg.sender, "Only owner can add offer");
 
-        ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);
         require(
-            smartMeter.subtractBatteryCharge(amount, ots, nextOtsHash),
+            smartMeter.subtractBatteryCharge(
+                amount,
+                ots,
+                nextOtsHash,
+                smartMeterAddress
+            ),
             "Not enough stored energy"
         );
 
@@ -116,64 +141,50 @@ contract Market {
     }
 
     function removeOffer(
-        string memory id,
-        address smartMeterAddress
+        string memory id
     ) public returns (bool) {
         // Initialization
         Offer memory offer = offers[id];
-        // ISmartMeter smartMeter = ISmartMeter(smartMeterAddress);
 
         // Require conditions
         require(msg.sender == offer.owner, "Only owner can remove offer");
 
         // Removing offer
-        // smartMeter.returnReservedBatteryCharge(offer.amount);
+        smartMeter.returnReservedBatteryCharge(offer.amount, offer.smartMeterAddress);
         delete offers[id];
 
         return true;
     }
 
-    function buyOffer(
-        string memory id,
-        string memory buyerSignature
-    ) public returns (address) {
-        // Initialization
+    function buyOffer(string memory id, string memory buyerSignature) public {
         Offer memory offer = offers[id];
 
-        // Require conditions
         require(
             keccak256(bytes(offer.id)) == keccak256(bytes(id)),
             "No offer found"
         );
-        string memory sellerSignature = offer.sellerSignature;
-        address seller = offer.owner;
-        uint amount = offer.amount;
-        uint price = offer.price;
-        uint expiration = offer.expiration;
-        uint offerNonce = offer.nonce;
-        require(expiration > block.timestamp, "Cannot buy expired offer");
-        require(msg.sender != seller, "Owner cannot buy own offer");
+        require(offer.expiration > block.timestamp, "Cannot buy expired offer");
+        require(msg.sender != offer.owner, "Owner cannot buy own offer");
 
-        // Buying offer and creating SupplyContract
-        SupplyContract sc = new SupplyContract({
-            _buyerSignature: buyerSignature,
-            _sellerSignature: sellerSignature,
-            _amount: amount,
-            _price: price,
-            _nonce: offerNonce
-        });
-        lastestSupplyChainAddress = address(sc);
         delete offers[id];
+        pendingSupplyContracts.push(
+            PendingSupplyContract({
+                buyerSignature: buyerSignature,
+                sellerSignature: offer.sellerSignature,
+                amount: offer.amount,
+                price: offer.price,
+                timestamp: block.timestamp,
+                nonce: offer.nonce,
+                smartMeterAddress: offer.smartMeterAddress
+            })
+        );
 
         for (uint i = 0; i < offerIds.length; i++) {
-            // String comparison to remove purchased offer
             if (keccak256(bytes(offerIds[i])) == keccak256(bytes(id))) {
                 offerIds[i] = offerIds[offerIds.length - 1];
                 offerIds.pop();
             }
         }
-
-        return address(sc);
     }
 
     function getOffer(string memory id) public view returns (Offer memory) {
@@ -195,75 +206,85 @@ contract Market {
         return offerIds;
     }
 
-    function getLatestSupplyContract() public view returns (address) {
-        return lastestSupplyChainAddress;
-    }
-}
-
-contract SupplyContract {
-    string buyerSignature;
-    string sellerSignature;
-    uint amount; // Wh
-    uint price; // Euro cents
-    uint timestamp; // Unix
-    bool confirmed;
-    uint nonce;
-
-    struct SupplyContractDTO {
-        address scAddress;
-        string buyerSignature;
-        string sellerSignature;
-        uint price;
-        uint amount;
-        uint timestamp;
-        bool confirmed;
-        uint nonce;
+    function getPendingSupplyContracts()
+        public
+        view
+        returns (PendingSupplyContract[] memory)
+    {
+        return pendingSupplyContracts;
     }
 
-    constructor(
-        string memory _buyerSignature,
-        string memory _sellerSignature,
-        uint _amount,
-        uint _price,
-        uint _nonce
-    ) {
-        buyerSignature = _buyerSignature;
-        sellerSignature = _sellerSignature;
-        amount = _amount;
-        price = _price;
-        timestamp = block.timestamp;
-        confirmed = false;
-        nonce = _nonce;
+    event SupplyContract(
+        string buyerSignature,
+        string sellerSignature,
+        uint amount,
+        uint timestamp,
+        uint price
+    );
+    function validatePendingSupplyContracts(
+        bool[] memory offerIndicies
+    ) public {
+        require(msg.sender == owner, "sender is not owner");
+        for (uint i = 0; i < offerIndicies.length; i++) {
+            PendingSupplyContract memory offer = pendingSupplyContracts[
+                i
+            ];
+            //if it's an accepted index we emit our event
+            if (offerIndicies[i] == true) {
+                emit SupplyContract(
+                    offer.buyerSignature,
+                    offer.sellerSignature,
+                    offer.amount,
+                    offer.timestamp,
+                    offer.price
+                );
+            } else {
+                // if not the owner gets their battery back.
+                smartMeter.returnReservedBatteryCharge(
+                    offer.amount,
+                    offer.smartMeterAddress
+                );
+            }
+        }
+        // we loop agian to clean up the list
+        for (uint i = 0; i < offerIndicies.length; i++) {
+            // We move the indicies not yet approved down.
+            if (offerIndicies.length < pendingSupplyContracts.length - i) {
+                pendingSupplyContracts[i] = pendingSupplyContracts[
+                    pendingSupplyContracts.length - 1 - i
+                ];
+            }
+            // And lastly we pop everytime.
+            pendingSupplyContracts.pop();
+        } 
     }
 
-    function getBuyer() public view returns (string memory) {
-        return buyerSignature;
+    function getGroupKey() public view returns (string memory) {
+        return groupKey;
     }
 
-    function getSeller() public view returns (string memory) {
-        return sellerSignature;
+    function setGroupKey(string memory _groupKey) public {
+        require(msg.sender == owner, "Only owner can update group key");
+        groupKey = _groupKey;
     }
 
-    function getAmount() public view returns (uint) {
-        return amount;
-    }
-
-    function getPrice() public view returns (uint) {
-        return price;
-    }
-
-    function getInfo() public view returns (SupplyContractDTO memory) {
-        SupplyContractDTO memory scDTO = SupplyContractDTO({
-            scAddress: address(this),
-            buyerSignature: buyerSignature,
-            sellerSignature: sellerSignature,
-            price: price,
-            amount: amount,
-            timestamp: timestamp,
-            confirmed: confirmed,
-            nonce: nonce
-        });
-
-        return scDTO;
-    }
+    //Approves one offer
+    // function validateOneOffer(uint nonce) public returns (bool) {
+    //     require(msg.sender == owner, "sender is not owner");
+    //     for (uint i = 0; i < pendingConfirmationOffers.length; i++) {
+    //         if (pendingConfirmationOffers[i].nonce == nonce) {
+    //             emit ApproveOffer(
+    //                 pendingConfirmationOffers[i].buyerSignature,
+    //                 pendingConfirmationOffers[i].sellerSignature,
+    //                 pendingConfirmationOffers[i].amount,
+    //                 pendingConfirmationOffers[i].timestamp,
+    //                 pendingConfirmationOffers[i].price
+    //             );
+    //             pendingConfirmationOffers[i] = pendingConfirmationOffers[pendingConfirmationOffers.length - 1];
+    //             pendingConfirmationOffers.pop();
+    //             return true;
+    //         }
+    //     }
+    //     return false;
+    // }
 }

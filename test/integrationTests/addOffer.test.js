@@ -1,32 +1,33 @@
 const Market = artifacts.require("Market");
-const CableCompany = artifacts.require("CableCompany");
+const DSO = artifacts.require("DSO");
 const SmartMeter = artifacts.require("SmartMeter");
-const encodedSecretString = web3.eth.abi.encodeParameters(
-    ["string"],
-    ["test1"]
-);
-const hash = web3.utils.soliditySha3(encodedSecretString);
+const { getSecrets } = require("../utils/hash");
+const {encodedSecret, hash} = getSecrets("secret");
+
 
 contract("Add Offer", (accounts) => {
     let market;
-    let cableCompany;
+    let dso;
     let smartMeter;
 
     const admin = accounts[0];
     const user = accounts[1];
+    const smartMeterAddress = accounts[2];
 
     beforeEach(async () => {
-        cableCompany = await CableCompany.new({ from: admin });
-        market = await Market.new(cableCompany.address, { from: admin });
-        smartMeter = await SmartMeter.new(hash, { from: user });
-        await smartMeter.setCurrentMarketAddress(market.address, {
-            from: user,
+        dso = await DSO.new({ from: admin });
+        smartMeter = await SmartMeter.new({ from: user });
+        market = await Market.new(dso.address, smartMeter.address, { from: admin });
+
+        await smartMeter.createSmartMeter(market.address, hash, {
+            from: smartMeterAddress,
         });
-        await cableCompany.registerKey(user, smartMeter.address, {
+        
+        await dso.registerKey(user, smartMeterAddress, {
             from: admin,
         });
         await smartMeter.createLog(10, 50, {
-            from: user,
+            from: smartMeterAddress,
         });
     });
 
@@ -42,11 +43,11 @@ contract("Add Offer", (accounts) => {
             amount,
             price,
             date,
-            smartMeter.address,
+            smartMeterAddress,
             sellerSignature,
             nonce,
             user,
-            encodedSecretString,
+            encodedSecret,
             hash,
             {
                 from: user,
@@ -78,11 +79,11 @@ contract("Add Offer", (accounts) => {
                 amount,
                 price,
                 date,
-                smartMeter.address,
+                smartMeterAddress,
                 sellerSignature,
                 nonce,
                 user,
-                encodedSecretString,
+                encodedSecret,
                 hash,
                 {
                     from: user,
@@ -117,11 +118,11 @@ contract("Add Offer", (accounts) => {
                 amount,
                 price,
                 date,
-                smartMeter.address,
+                smartMeterAddress,
                 sellerSignature,
                 nonce,
                 user,
-                encodedSecretString,
+                encodedSecret,
                 hash,
                 {
                     from: user,
@@ -153,11 +154,11 @@ contract("Add Offer", (accounts) => {
             amount,
             price,
             date,
-            smartMeter.address,
+            smartMeterAddress,
             sellerSignature,
             nonce,
             user,
-            encodedSecretString,
+            encodedSecret,
             hash,
             {
                 from: user,
@@ -169,11 +170,11 @@ contract("Add Offer", (accounts) => {
             amount,
             price,
             date,
-            smartMeter.address,
+            smartMeterAddress,
             sellerSignature,
             newNonce,
             user,
-            encodedSecretString,
+            encodedSecret,
             hash,
             {
                 from: user,
@@ -198,11 +199,11 @@ contract("Add Offer", (accounts) => {
                 amount,
                 price,
                 date,
-                smartMeter.address,
+                smartMeterAddress,
                 sellerSignature,
                 nonce,
                 user,
-                encodedSecretString,
+                encodedSecret,
                 hash,
                 {
                     from: user,
@@ -213,11 +214,11 @@ contract("Add Offer", (accounts) => {
                 amount,
                 price,
                 date,
-                smartMeter.address,
+                smartMeterAddress,
                 sellerSignature,
                 nonce,
                 user,
-                encodedSecretString,
+                encodedSecret,
                 hash,
                 {
                     from: user,
@@ -237,34 +238,27 @@ contract("Add Offer", (accounts) => {
         );
     });
 
-    it("Should fail to because hash is updated", async () => {
+    it("Should fail because hash is updated", async () => {
         const offerId = "id";
         const amount = 1; // Too much energy
         const price = 1;
         const date = Date.now();
         let errorMessage = "";
         const sellerSignature = "signature1";
-        const encodedSecretString = web3.eth.abi.encodeParameters(
-            ["string"],
-            ["test1"]
-        );
-        const encodedSecretString2 = web3.eth.abi.encodeParameters(
-            ["string"],
-            ["test2"]
-        );
 
-        const newHash = web3.utils.soliditySha3(encodedSecretString2);
+        const { hash: newHash} = getSecrets("test2");
+
         try {
             await market.addOffer(
                 offerId,
                 amount,
                 price,
                 date,
-                smartMeter.address,
+                smartMeterAddress,
                 sellerSignature,
                 Math.floor(Math.random() * 1000),
                 user,
-                encodedSecretString,
+                encodedSecret,
                 newHash,
                 {
                     from: user,
@@ -276,18 +270,19 @@ contract("Add Offer", (accounts) => {
                 amount,
                 price,
                 date,
-                smartMeter.address,
+                smartMeterAddress,
                 sellerSignature,
                 Math.floor(Math.random() * 1000),
                 user,
-                encodedSecretString,
+                encodedSecret,
                 hash,
                 {
                     from: user,
                 }
             );
         } catch (error) {
-            errorMessage = error.data.stack;
+            errorMessage = error?.data?.stack;
+            console.log('errorMessage', errorMessage)
             if (!errorMessage) {
                 errorMessage = error.reason;
             }
@@ -307,28 +302,19 @@ contract("Add Offer", (accounts) => {
         const date = Date.now();
         let errorMessage = "";
         const sellerSignature = "signature1";
-        const nonce = Math.floor(Math.random() * 1000);
-        const encodedSecretString = web3.eth.abi.encodeParameters(
-            ["string"],
-            ["test1"]
-        );
-        const encodedSecretString2 = web3.eth.abi.encodeParameters(
-            ["string"],
-            ["test2"]
-        );
 
-        const newHash = web3.utils.soliditySha3(encodedSecretString2);
+        const {encodedSecret: encodedSecret2, hash: newHash} = getSecrets("test2");
         try {
             await market.addOffer(
                 offerId,
                 amount,
                 price,
                 date,
-                smartMeter.address,
+                smartMeterAddress,
                 sellerSignature,
                 Math.floor(Math.random() * 1000),
                 user,
-                encodedSecretString,
+                encodedSecret,
                 newHash,
                 {
                     from: user,
@@ -339,11 +325,11 @@ contract("Add Offer", (accounts) => {
                 amount,
                 price,
                 date,
-                smartMeter.address,
+                smartMeterAddress,
                 sellerSignature,
                 Math.floor(Math.random() * 1000),
                 user,
-                encodedSecretString2,
+                encodedSecret2,
                 hash,
                 {
                     from: user,
@@ -352,7 +338,7 @@ contract("Add Offer", (accounts) => {
             // if no error is raised we get here
             assert.equal(true, true, "");
         } catch (error) {
-            errorMessage = error.data.stack ?? "";
+            errorMessage = error?.data?.stack ?? "";
         }
     });
 
@@ -368,11 +354,11 @@ contract("Add Offer", (accounts) => {
             amount,
             price,
             date,
-            smartMeter.address,
+            smartMeterAddress,
             sellerSignature,
             nonce,
             user,
-            encodedSecretString,
+            encodedSecret,
             hash,
             {
                 from: user,
@@ -382,7 +368,7 @@ contract("Add Offer", (accounts) => {
         const offers = await market.getOffers();
         assert.equal(offers.length, 1);
 
-        await market.removeOffer(offerId, user, {
+        await market.removeOffer(offerId, {
             from: user,
         });
     });

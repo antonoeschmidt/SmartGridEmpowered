@@ -1,9 +1,8 @@
-import React from "react";
 import styles from "./DashboardPage.module.css";
 import PickAccountsComponent from "../../components/Dashboard/PickAccountsComponent/PickAccountsComponent";
 import PickMarketComponent from "../../components/Dashboard/PickMarketComponent/PickMarketComponent";
 import ManageMarketsComponent from "../../components/Dashboard/ManageMarketsComponent/ManageMarketsComponent";
-import CableCompanyComponent from "../../components/Dashboard/CableCompanyComponent/CableCompanyComponent";
+import DSOComponent from "../../components/Dashboard/DSOComponent/DSOComponent";
 import ManageSmartMeterComponent from "../../components/Dashboard/ManageSmartMeterComponent/ManageSmartMeterComponent";
 import RegisterSmartMeterComponent from "../../components/Dashboard/RegisterSmartMeterComponent/RegisterSmartMeterComponent";
 import IsRegisteredSmartMeterComponent from "../../components/Dashboard/IsRegisteredSmartMeterComponent/IsRegisteredSmartMeterComponent";
@@ -33,11 +32,11 @@ const DashboardPage = () => {
                     <h3>Accounts</h3>
                     <DashboardItem
                         title="Choose user"
-                        content={<PickAccountsComponent type="user" />}
+                        content={<PickAccountsComponent type="user" onboarding={false} />}
                     />
                     <DashboardItem
                         title="Choose admin"
-                        content={<PickAccountsComponent type="admin" />}
+                        content={<PickAccountsComponent type="admin" onboarding={false} />}
                     />
                 </div>
                 <div className={styles.col}>
@@ -52,10 +51,10 @@ const DashboardPage = () => {
                     />
                 </div>
                 <div className={styles.col}>
-                    <h3>Cable Company</h3>
+                    <h3>DSO Company</h3>
                     <DashboardItem
-                        title="Cable Company"
-                        content={<CableCompanyComponent />}
+                        title="DSO Company"
+                        content={<DSOComponent />}
                     />
                     <DashboardItem
                         title="Smart Meter"

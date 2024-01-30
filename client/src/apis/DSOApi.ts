@@ -1,18 +1,18 @@
 import { getWeb3 } from "./web3";
-import CableCompany from "../contracts/CableCompany.json";
+import DSO from "../contracts/DSO.json";
 
-export const cableCompanyInstance = (address: string) => {
+export const DSOInstance = (address: string) => {
     const web3 = getWeb3();
-    return new web3.eth.Contract(CableCompany.abi, address);
+    return new web3.eth.Contract(DSO.abi, address);
 };
 
-const deployCableCompany = async (sender: string) => {
+const deployDSO = async (sender: string) => {
     const web3 = getWeb3();
-    let newContract = new web3.eth.Contract(CableCompany.abi);
-    let contract = newContract.deploy({
-        data: CableCompany.bytecode,
-    });
-    let res = await contract.send({
+    const newContract = new web3.eth.Contract(DSO.abi);
+    const contract = newContract.deploy({
+        data: DSO.bytecode,
+    }); 
+    const res = await contract.send({
         from: sender,
         gas: "2500000",
         gasPrice: "30000000000",
@@ -22,12 +22,12 @@ const deployCableCompany = async (sender: string) => {
 };
 
 const isRegisteredKey = async (
-    cableCompanyAddress: string,
+    DSOAddress: string,
     smartMeterPubKey: string,
     smartMeterAddress: string
 ) => {
     try {
-        const contract = cableCompanyInstance(cableCompanyAddress);
+        const contract = DSOInstance(DSOAddress);
         let res = await contract.methods
             // @ts-ignore
             .isRegisteredKey(smartMeterPubKey, smartMeterAddress)
@@ -38,7 +38,7 @@ const isRegisteredKey = async (
     }
 };
 
-export const cableCompanyApi = {
-    deployCableCompany,
+export const DSOApi = {
+    deployDSO,
     isRegisteredKey,
 };
