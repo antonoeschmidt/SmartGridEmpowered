@@ -6,25 +6,24 @@ import ToastContext from "../../../contexts/toastContext";
 
 const RegisterSmartMeterComponent = () => {
     const {
-        currentAccount,
         registerSmartMeter,
-        smartMeterAddress: contextSmartMeterAddress,
+        user
     } = useContext(EthereumContext);
     const [smartMeterPubKey, setSmartMeterPubKey] = useState<string>("");
     const [smartMeterAddress, setSmartMeterAddress] = useState<string>("");
 
     useEffect(() => {
-        setSmartMeterPubKey(currentAccount);
-    }, [currentAccount]);
+        setSmartMeterPubKey(user.accountAddress);
+    }, [user.accountAddress]);
 
     useEffect(() => {
-        setSmartMeterAddress(contextSmartMeterAddress);
-    }, [contextSmartMeterAddress]);
+        setSmartMeterAddress(user.smartMeterAddress);
+    }, [user.smartMeterAddress]);
 
     const { setToastProps, onOpen } = useContext(ToastContext);
 
     const handleRegisterSmartMeter = async () => {
-        if (!currentAccount) return;
+        if (!user.accountAddress) return;
         let res = await registerSmartMeter(smartMeterPubKey, smartMeterAddress);
         if (!res) return;
         if (res.status < 299) {
@@ -53,7 +52,7 @@ const RegisterSmartMeterComponent = () => {
                 onChange={(e) => setSmartMeterAddress(e.target.value)}
             />
             <Button
-                disabled={!currentAccount}
+                disabled={!user.accountAddress}
                 onClick={() => handleRegisterSmartMeter()}
                 text="Register Smart Meter"
             />

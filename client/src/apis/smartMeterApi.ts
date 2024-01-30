@@ -1,22 +1,32 @@
 import SmartMeter from "../contracts/SmartMeter.json";
 import { getWeb3 } from "./web3";
-import { cableCompanyInstance } from "./cableCompanyApi";
-import { getSmartMeterSecrets } from "../utils/localstorage";
+import { DSOInstance } from "./DSOApi";
 
 export const smartMeterInstance = (address: string) => {
     const web3 = getWeb3();
     return new web3.eth.Contract(SmartMeter.abi, address);
 };
 
+const createSmartMeter = async (marketAddress: string, smartMeterAddress: string, currentAccount: string, smartMeterContractAddress: string, nextSecretHash: string) => {
+    console.log('{marketAddress, smartMeterAddress, currentAccount, SmartmeterContractAddress, nextSecretHash}', {marketAddress, smartMeterAddress, currentAccount, smartMeterContractAddress, nextSecretHash})
+    return await smartMeterInstance(smartMeterContractAddress).methods.createSmartMeter(
+        // @ts-ignore
+        marketAddress,
+        nextSecretHash
+    )
+    .send({
+        from: smartMeterAddress,
+        gas: "2500000",
+        gasPrice: "30000000000",
+    });
+};
+
 const deploySmartMeter = async (sender: string) => {
     const web3 = getWeb3();
     const newSmartMeterContract = new web3.eth.Contract(SmartMeter.abi);
-    const { nextSecretHash } = getSmartMeterSecrets(sender);
 
     const deployedSmartMeterContract = newSmartMeterContract.deploy({
-        data: SmartMeter.bytecode,
-        // @ts-ignore
-        arguments: [nextSecretHash],
+        data: SmartMeter.bytecode
     });
     const res = await deployedSmartMeterContract.send({
         from: sender,
@@ -27,24 +37,27 @@ const deploySmartMeter = async (sender: string) => {
     return res.options.address;
 };
 
-const getBatteryCharge = async (address: string) => {
-    return await smartMeterInstance(address).methods.getBatteryCharge().call();
+const getBatteryCharge = async (smartMeterContractAddress, address: string) => {
+    return await smartMeterInstance(smartMeterContractAddress).methods.getBatteryCharge(
+        // @ts-ignore
+        address
+        ).call({from: address});
 };
 
-const setCurrentMarketAddress = async (
-    owner: string,
+const setMarketAddress = async (
     smartMeterAddress: string,
-    marketAddress: string
+    smartMeterContractAddress: string,
+    newMarketAddress: string
 ) => {
-    const smartMeterContract = smartMeterInstance(smartMeterAddress);
+    const smartMeterContract = smartMeterInstance(smartMeterContractAddress);
     try {
         const res = await smartMeterContract.methods
-            .setCurrentMarketAddress(
+            .setMarketAddress(
                 // @ts-ignore
-                marketAddress
+                newMarketAddress
             )
             .send({
-                from: owner,
+                from: smartMeterAddress,
                 gas: "1500000",
                 gasPrice: "30000000000",
             });
@@ -56,11 +69,11 @@ const setCurrentMarketAddress = async (
 
 const createLog = async (
     sender: string,
-    smartMeterAddress: string,
+    smartMeterContractAddress: string,
     intervalConsumption: number,
     intervalProduction: number
 ) => {
-    const smartMeterContract = smartMeterInstance(smartMeterAddress);
+    const smartMeterContract = smartMeterInstance(smartMeterContractAddress);
     try {
         let res = await smartMeterContract.methods
             .createLog(
@@ -82,22 +95,22 @@ const createLog = async (
 
 const registerSmartMeter = async (
     adminAccount: string,
-    cableCompanyAddress: string,
+    DSOAddress: string,
     smartMeterPubKey: string,
     smartMeterAddress: string
 ) => {
     if (
         !adminAccount ||
-        !cableCompanyAddress ||
+        !DSOAddress ||
         !smartMeterPubKey ||
         !smartMeterAddress
     ) {
         return;
     }
 
-    let cableCompanyContract = cableCompanyInstance(cableCompanyAddress);
+    let DSOContract = DSOInstance(DSOAddress);
     try {
-        const res = await cableCompanyContract.methods
+        const res = await DSOContract.methods
             .registerKey(
                 // @ts-ignore
                 smartMeterPubKey,
@@ -116,9 +129,10 @@ const registerSmartMeter = async (
 };
 
 export const smartMeterApi = {
-    deploySmartMeter,
+    createSmartMeter,
     getBatteryCharge,
-    setCurrentMarketAddress,
+    setMarketAddress,
     createLog,
     registerSmartMeter,
+    deploySmartMeter
 };
