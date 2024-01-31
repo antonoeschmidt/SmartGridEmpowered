@@ -1,0 +1,20 @@
+@startuml Onboarding
+actor DSOAdmin
+actor Prosumer
+participant Client
+participant SmartMeter #LightYellow
+participant DSO #LightYellow
+
+skinparam dpi 400
+autonumber
+
+DSOAdmin -> Client ++: onboarding request
+Client -> Client: generate secrets
+Client --> Prosumer: one time secret (ots)
+Client -> SmartMeter ++: create smart meter(smartMeterAddress, \n\t\t marketAddress, otsHash)
+SmartMeter --> Client --: creation ok
+Client -> DSO ++: register smart meter(smartMeterAddress, prosumerAddress)
+DSO --> Client --: registration ok
+Client --> DSOAdmin --: registration complete!
+
+@enduml

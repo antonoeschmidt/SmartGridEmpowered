@@ -20,7 +20,7 @@ export interface SupplyContractDTO {
     nonce: number;
 }
 
-export interface PendingOfferDTO {
+export interface PendingSupplyContractDTO {
     buyerSignature: string;
     sellerSignature: string;
     smartMeterAddress: string;
@@ -30,7 +30,7 @@ export interface PendingOfferDTO {
     nonce: number;
 }
 
-export interface ApprovedContractDTO {
+export interface ApprovedSupplyContractDTO {
     buyerSignature: string;
     sellerSignature: string;
     price: number;

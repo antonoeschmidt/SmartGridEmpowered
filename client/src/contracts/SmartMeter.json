@@ -7397,15 +7397,15 @@
     "absolutePath": "project:/contracts/SmartMeter.sol",
     "exportedSymbols": {
       "SmartMeter": [
-        1045
+        1037
       ]
     },
-    "id": 1046,
+    "id": 1038,
     "license": "GPL-3.0",
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 763,
+        "id": 755,
         "literals": [
           "solidity",
           "^",
@@ -7422,9 +7422,9 @@
         "contractDependencies": [],
         "contractKind": "contract",
         "fullyImplemented": true,
-        "id": 1045,
+        "id": 1037,
         "linearizedBaseContracts": [
-          1045
+          1037
         ],
         "name": "SmartMeter",
         "nameLocation": "107:10:2",
@@ -7432,16 +7432,16 @@
         "nodes": [
           {
             "canonicalName": "SmartMeter.SmartMeterInstance",
-            "id": 772,
+            "id": 764,
             "members": [
               {
                 "constant": false,
-                "id": 765,
+                "id": 757,
                 "mutability": "mutable",
                 "name": "otsHash",
                 "nameLocation": "168:7:2",
                 "nodeType": "VariableDeclaration",
-                "scope": 772,
+                "scope": 764,
                 "src": "160:15:2",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -7450,7 +7450,7 @@
                   "typeString": "bytes32"
                 },
                 "typeName": {
-                  "id": 764,
+                  "id": 756,
                   "name": "bytes32",
                   "nodeType": "ElementaryTypeName",
                   "src": "160:7:2",
@@ -7463,12 +7463,12 @@
               },
               {
                 "constant": false,
-                "id": 767,
+                "id": 759,
                 "mutability": "mutable",
                 "name": "batteryCharge",
                 "nameLocation": "190:13:2",
                 "nodeType": "VariableDeclaration",
-                "scope": 772,
+                "scope": 764,
                 "src": "185:18:2",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -7477,7 +7477,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 766,
+                  "id": 758,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "185:4:2",
@@ -7490,12 +7490,12 @@
               },
               {
                 "constant": false,
-                "id": 769,
+                "id": 761,
                 "mutability": "mutable",
                 "name": "lastDataSent",
                 "nameLocation": "218:12:2",
                 "nodeType": "VariableDeclaration",
-                "scope": 772,
+                "scope": 764,
                 "src": "213:17:2",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -7504,7 +7504,7 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 768,
+                  "id": 760,
                   "name": "uint",
                   "nodeType": "ElementaryTypeName",
                   "src": "213:4:2",
@@ -7517,12 +7517,12 @@
               },
               {
                 "constant": false,
-                "id": 771,
+                "id": 763,
                 "mutability": "mutable",
                 "name": "marketAddress",
                 "nameLocation": "248:13:2",
                 "nodeType": "VariableDeclaration",
-                "scope": 772,
+                "scope": 764,
                 "src": "240:21:2",
                 "stateVariable": false,
                 "storageLocation": "default",
@@ -7531,7 +7531,7 @@
                   "typeString": "address"
                 },
                 "typeName": {
-                  "id": 770,
+                  "id": 762,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
                   "src": "240:7:2",
@@ -7547,32 +7547,32 @@
             "name": "SmartMeterInstance",
             "nameLocation": "131:18:2",
             "nodeType": "StructDefinition",
-            "scope": 1045,
+            "scope": 1037,
             "src": "124:144:2",
             "visibility": "public"
           },
           {
             "constant": false,
             "functionSelector": "10f6a343",
-            "id": 777,
+            "id": 769,
             "mutability": "mutable",
             "name": "smartMeters",
             "nameLocation": "320:11:2",
             "nodeType": "VariableDeclaration",
-            "scope": 1045,
+            "scope": 1037,
             "src": "274:57:2",
             "stateVariable": true,
             "storageLocation": "default",
             "typeDescriptions": {
-              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+              "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
               "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance)"
             },
             "typeName": {
-              "id": 776,
+              "id": 768,
               "keyName": "",
               "keyNameLocation": "-1:-1:-1",
               "keyType": {
-                "id": 773,
+                "id": 765,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "282:7:2",
@@ -7584,28 +7584,28 @@
               "nodeType": "Mapping",
               "src": "274:38:2",
               "typeDescriptions": {
-                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                 "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance)"
               },
               "valueName": "",
               "valueNameLocation": "-1:-1:-1",
               "valueType": {
-                "id": 775,
+                "id": 767,
                 "nodeType": "UserDefinedTypeName",
                 "pathNode": {
-                  "id": 774,
+                  "id": 766,
                   "name": "SmartMeterInstance",
                   "nameLocations": [
                     "293:18:2"
                   ],
                   "nodeType": "IdentifierPath",
-                  "referencedDeclaration": 772,
+                  "referencedDeclaration": 764,
                   "src": "293:18:2"
                 },
-                "referencedDeclaration": 772,
+                "referencedDeclaration": 764,
                 "src": "293:18:2",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage_ptr",
+                  "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage_ptr",
                   "typeString": "struct SmartMeter.SmartMeterInstance"
                 }
               }
@@ -7614,12 +7614,12 @@
           },
           {
             "constant": false,
-            "id": 780,
+            "id": 772,
             "mutability": "mutable",
             "name": "transmissionInterval",
             "nameLocation": "347:20:2",
             "nodeType": "VariableDeclaration",
-            "scope": 1045,
+            "scope": 1037,
             "src": "342:38:2",
             "stateVariable": true,
             "storageLocation": "default",
@@ -7628,7 +7628,7 @@
               "typeString": "uint256"
             },
             "typeName": {
-              "id": 778,
+              "id": 770,
               "name": "uint",
               "nodeType": "ElementaryTypeName",
               "src": "342:4:2",
@@ -7639,7 +7639,7 @@
             },
             "value": {
               "hexValue": "3135",
-              "id": 779,
+              "id": 771,
               "isConstant": false,
               "isLValue": false,
               "isPure": true,
@@ -7659,23 +7659,23 @@
           {
             "anonymous": false,
             "eventSelector": "bd0faddf87043dd749c1b9d4dca8a12589b8cb5e2106832111ce23f219b14367",
-            "id": 786,
+            "id": 778,
             "name": "Log",
             "nameLocation": "393:3:2",
             "nodeType": "EventDefinition",
             "parameters": {
-              "id": 785,
+              "id": 777,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 782,
+                  "id": 774,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "c",
                   "nameLocation": "405:1:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 786,
+                  "scope": 778,
                   "src": "397:9:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -7684,7 +7684,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 781,
+                    "id": 773,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "397:7:2",
@@ -7697,13 +7697,13 @@
                 },
                 {
                   "constant": false,
-                  "id": 784,
+                  "id": 776,
                   "indexed": false,
                   "mutability": "mutable",
                   "name": "p",
                   "nameLocation": "416:1:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 786,
+                  "scope": 778,
                   "src": "408:9:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -7712,7 +7712,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 783,
+                    "id": 775,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "408:7:2",
@@ -7730,7 +7730,7 @@
           },
           {
             "body": {
-              "id": 880,
+              "id": 872,
               "nodeType": "Block",
               "src": "514:792:2",
               "statements": [
@@ -7742,7 +7742,7 @@
                           "typeIdentifier": "t_uint256",
                           "typeString": "uint256"
                         },
-                        "id": 803,
+                        "id": 795,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -7752,14 +7752,14 @@
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
                           },
-                          "id": 801,
+                          "id": 793,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
                           "lValueRequested": false,
                           "leftExpression": {
                             "expression": {
-                              "id": 794,
+                              "id": 786,
                               "name": "block",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
@@ -7770,7 +7770,7 @@
                                 "typeString": "block"
                               }
                             },
-                            "id": 795,
+                            "id": 787,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -7789,21 +7789,21 @@
                           "rightExpression": {
                             "expression": {
                               "baseExpression": {
-                                "id": 796,
+                                "id": 788,
                                 "name": "smartMeters",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 777,
+                                "referencedDeclaration": 769,
                                 "src": "563:11:2",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                                  "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                                   "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                                 }
                               },
-                              "id": 799,
+                              "id": 791,
                               "indexExpression": {
                                 "expression": {
-                                  "id": 797,
+                                  "id": 789,
                                   "name": "msg",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
@@ -7814,7 +7814,7 @@
                                     "typeString": "msg"
                                   }
                                 },
-                                "id": 798,
+                                "id": 790,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": false,
@@ -7835,11 +7835,11 @@
                               "nodeType": "IndexAccess",
                               "src": "563:23:2",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                                "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                                 "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                               }
                             },
-                            "id": 800,
+                            "id": 792,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
@@ -7847,7 +7847,7 @@
                             "memberLocation": "587:12:2",
                             "memberName": "lastDataSent",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 769,
+                            "referencedDeclaration": 761,
                             "src": "563:36:2",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
@@ -7863,11 +7863,11 @@
                         "nodeType": "BinaryOperation",
                         "operator": ">",
                         "rightExpression": {
-                          "id": 802,
+                          "id": 794,
                           "name": "transmissionInterval",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 780,
+                          "referencedDeclaration": 772,
                           "src": "618:20:2",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
@@ -7882,7 +7882,7 @@
                       },
                       {
                         "hexValue": "4c6f67732063616e6e6f7420617070656172206d6f7265206672657175656e746c79207468616e20746865207472616e736d697373696f6e20696e74657276616c",
-                        "id": 804,
+                        "id": 796,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -7908,7 +7908,7 @@
                           "typeString": "literal_string \"Logs cannot appear more frequently than the transmission interval\""
                         }
                       ],
-                      "id": 793,
+                      "id": 785,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
@@ -7922,7 +7922,7 @@
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 805,
+                    "id": 797,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -7938,23 +7938,23 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 806,
+                  "id": 798,
                   "nodeType": "ExpressionStatement",
                   "src": "524:205:2"
                 },
                 {
                   "assignments": [
-                    808
+                    800
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 808,
+                      "id": 800,
                       "mutability": "mutable",
                       "name": "netDifference",
                       "nameLocation": "744:13:2",
                       "nodeType": "VariableDeclaration",
-                      "scope": 880,
+                      "scope": 872,
                       "src": "740:17:2",
                       "stateVariable": false,
                       "storageLocation": "default",
@@ -7963,7 +7963,7 @@
                         "typeString": "int256"
                       },
                       "typeName": {
-                        "id": 807,
+                        "id": 799,
                         "name": "int",
                         "nodeType": "ElementaryTypeName",
                         "src": "740:3:2",
@@ -7975,13 +7975,13 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 818,
+                  "id": 810,
                   "initialValue": {
                     "commonType": {
                       "typeIdentifier": "t_int256",
                       "typeString": "int256"
                     },
-                    "id": 817,
+                    "id": 809,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -7989,11 +7989,11 @@
                     "leftExpression": {
                       "arguments": [
                         {
-                          "id": 811,
+                          "id": 803,
                           "name": "production",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 790,
+                          "referencedDeclaration": 782,
                           "src": "764:10:2",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
@@ -8008,7 +8008,7 @@
                             "typeString": "uint256"
                           }
                         ],
-                        "id": 810,
+                        "id": 802,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -8020,14 +8020,14 @@
                           "typeString": "type(int256)"
                         },
                         "typeName": {
-                          "id": 809,
+                          "id": 801,
                           "name": "int",
                           "nodeType": "ElementaryTypeName",
                           "src": "760:3:2",
                           "typeDescriptions": {}
                         }
                       },
-                      "id": 812,
+                      "id": 804,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -8048,11 +8048,11 @@
                     "rightExpression": {
                       "arguments": [
                         {
-                          "id": 815,
+                          "id": 807,
                           "name": "consumption",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 788,
+                          "referencedDeclaration": 780,
                           "src": "782:11:2",
                           "typeDescriptions": {
                             "typeIdentifier": "t_uint256",
@@ -8067,7 +8067,7 @@
                             "typeString": "uint256"
                           }
                         ],
-                        "id": 814,
+                        "id": 806,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -8079,14 +8079,14 @@
                           "typeString": "type(int256)"
                         },
                         "typeName": {
-                          "id": 813,
+                          "id": 805,
                           "name": "int",
                           "nodeType": "ElementaryTypeName",
                           "src": "778:3:2",
                           "typeDescriptions": {}
                         }
                       },
-                      "id": 816,
+                      "id": 808,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -8117,17 +8117,17 @@
                       "typeIdentifier": "t_int256",
                       "typeString": "int256"
                     },
-                    "id": 821,
+                    "id": 813,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftExpression": {
-                      "id": 819,
+                      "id": 811,
                       "name": "netDifference",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 808,
+                      "referencedDeclaration": 800,
                       "src": "809:13:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_int256",
@@ -8138,7 +8138,7 @@
                     "operator": ">",
                     "rightExpression": {
                       "hexValue": "30",
-                      "id": 820,
+                      "id": 812,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -8159,7 +8159,7 @@
                     }
                   },
                   "falseBody": {
-                    "id": 864,
+                    "id": 856,
                     "nodeType": "Block",
                     "src": "919:272:2",
                     "statements": [
@@ -8169,7 +8169,7 @@
                             "typeIdentifier": "t_uint256",
                             "typeString": "uint256"
                           },
-                          "id": 842,
+                          "id": 834,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -8179,17 +8179,17 @@
                               "typeIdentifier": "t_uint256",
                               "typeString": "uint256"
                             },
-                            "id": 836,
+                            "id": 828,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
                             "lValueRequested": false,
                             "leftExpression": {
-                              "id": 834,
+                              "id": 826,
                               "name": "consumption",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 788,
+                              "referencedDeclaration": 780,
                               "src": "937:11:2",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -8199,11 +8199,11 @@
                             "nodeType": "BinaryOperation",
                             "operator": "-",
                             "rightExpression": {
-                              "id": 835,
+                              "id": 827,
                               "name": "production",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 790,
+                              "referencedDeclaration": 782,
                               "src": "951:10:2",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_uint256",
@@ -8221,21 +8221,21 @@
                           "rightExpression": {
                             "expression": {
                               "baseExpression": {
-                                "id": 837,
+                                "id": 829,
                                 "name": "smartMeters",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 777,
+                                "referencedDeclaration": 769,
                                 "src": "964:11:2",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                                  "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                                   "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                                 }
                               },
-                              "id": 840,
+                              "id": 832,
                               "indexExpression": {
                                 "expression": {
-                                  "id": 838,
+                                  "id": 830,
                                   "name": "msg",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
@@ -8246,7 +8246,7 @@
                                     "typeString": "msg"
                                   }
                                 },
-                                "id": 839,
+                                "id": 831,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": false,
@@ -8267,11 +8267,11 @@
                               "nodeType": "IndexAccess",
                               "src": "964:23:2",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                                "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                                 "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                               }
                             },
-                            "id": 841,
+                            "id": 833,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
@@ -8279,7 +8279,7 @@
                             "memberLocation": "988:13:2",
                             "memberName": "batteryCharge",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 767,
+                            "referencedDeclaration": 759,
                             "src": "964:37:2",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
@@ -8293,13 +8293,13 @@
                           }
                         },
                         "falseBody": {
-                          "id": 862,
+                          "id": 854,
                           "nodeType": "Block",
                           "src": "1083:98:2",
                           "statements": [
                             {
                               "expression": {
-                                "id": 860,
+                                "id": 852,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": false,
@@ -8307,21 +8307,21 @@
                                 "leftHandSide": {
                                   "expression": {
                                     "baseExpression": {
-                                      "id": 852,
+                                      "id": 844,
                                       "name": "smartMeters",
                                       "nodeType": "Identifier",
                                       "overloadedDeclarations": [],
-                                      "referencedDeclaration": 777,
+                                      "referencedDeclaration": 769,
                                       "src": "1101:11:2",
                                       "typeDescriptions": {
-                                        "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                                        "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                                         "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                                       }
                                     },
-                                    "id": 855,
+                                    "id": 847,
                                     "indexExpression": {
                                       "expression": {
-                                        "id": 853,
+                                        "id": 845,
                                         "name": "msg",
                                         "nodeType": "Identifier",
                                         "overloadedDeclarations": [],
@@ -8332,7 +8332,7 @@
                                           "typeString": "msg"
                                         }
                                       },
-                                      "id": 854,
+                                      "id": 846,
                                       "isConstant": false,
                                       "isLValue": false,
                                       "isPure": false,
@@ -8353,11 +8353,11 @@
                                     "nodeType": "IndexAccess",
                                     "src": "1101:23:2",
                                     "typeDescriptions": {
-                                      "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                                      "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                                       "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                                     }
                                   },
-                                  "id": 856,
+                                  "id": 848,
                                   "isConstant": false,
                                   "isLValue": true,
                                   "isPure": false,
@@ -8365,7 +8365,7 @@
                                   "memberLocation": "1125:13:2",
                                   "memberName": "batteryCharge",
                                   "nodeType": "MemberAccess",
-                                  "referencedDeclaration": 767,
+                                  "referencedDeclaration": 759,
                                   "src": "1101:37:2",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_uint256",
@@ -8379,17 +8379,17 @@
                                     "typeIdentifier": "t_uint256",
                                     "typeString": "uint256"
                                   },
-                                  "id": 859,
+                                  "id": 851,
                                   "isConstant": false,
                                   "isLValue": false,
                                   "isPure": false,
                                   "lValueRequested": false,
                                   "leftExpression": {
-                                    "id": 857,
+                                    "id": 849,
                                     "name": "consumption",
                                     "nodeType": "Identifier",
                                     "overloadedDeclarations": [],
-                                    "referencedDeclaration": 788,
+                                    "referencedDeclaration": 780,
                                     "src": "1142:11:2",
                                     "typeDescriptions": {
                                       "typeIdentifier": "t_uint256",
@@ -8399,11 +8399,11 @@
                                   "nodeType": "BinaryOperation",
                                   "operator": "-",
                                   "rightExpression": {
-                                    "id": 858,
+                                    "id": 850,
                                     "name": "production",
                                     "nodeType": "Identifier",
                                     "overloadedDeclarations": [],
-                                    "referencedDeclaration": 790,
+                                    "referencedDeclaration": 782,
                                     "src": "1156:10:2",
                                     "typeDescriptions": {
                                       "typeIdentifier": "t_uint256",
@@ -8422,23 +8422,23 @@
                                   "typeString": "uint256"
                                 }
                               },
-                              "id": 861,
+                              "id": 853,
                               "nodeType": "ExpressionStatement",
                               "src": "1101:65:2"
                             }
                           ]
                         },
-                        "id": 863,
+                        "id": 855,
                         "nodeType": "IfStatement",
                         "src": "933:248:2",
                         "trueBody": {
-                          "id": 851,
+                          "id": 843,
                           "nodeType": "Block",
                           "src": "1003:74:2",
                           "statements": [
                             {
                               "expression": {
-                                "id": 849,
+                                "id": 841,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": false,
@@ -8446,21 +8446,21 @@
                                 "leftHandSide": {
                                   "expression": {
                                     "baseExpression": {
-                                      "id": 843,
+                                      "id": 835,
                                       "name": "smartMeters",
                                       "nodeType": "Identifier",
                                       "overloadedDeclarations": [],
-                                      "referencedDeclaration": 777,
+                                      "referencedDeclaration": 769,
                                       "src": "1021:11:2",
                                       "typeDescriptions": {
-                                        "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                                        "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                                         "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                                       }
                                     },
-                                    "id": 846,
+                                    "id": 838,
                                     "indexExpression": {
                                       "expression": {
-                                        "id": 844,
+                                        "id": 836,
                                         "name": "msg",
                                         "nodeType": "Identifier",
                                         "overloadedDeclarations": [],
@@ -8471,7 +8471,7 @@
                                           "typeString": "msg"
                                         }
                                       },
-                                      "id": 845,
+                                      "id": 837,
                                       "isConstant": false,
                                       "isLValue": false,
                                       "isPure": false,
@@ -8492,11 +8492,11 @@
                                     "nodeType": "IndexAccess",
                                     "src": "1021:23:2",
                                     "typeDescriptions": {
-                                      "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                                      "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                                       "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                                     }
                                   },
-                                  "id": 847,
+                                  "id": 839,
                                   "isConstant": false,
                                   "isLValue": true,
                                   "isPure": false,
@@ -8504,7 +8504,7 @@
                                   "memberLocation": "1045:13:2",
                                   "memberName": "batteryCharge",
                                   "nodeType": "MemberAccess",
-                                  "referencedDeclaration": 767,
+                                  "referencedDeclaration": 759,
                                   "src": "1021:37:2",
                                   "typeDescriptions": {
                                     "typeIdentifier": "t_uint256",
@@ -8515,7 +8515,7 @@
                                 "operator": "=",
                                 "rightHandSide": {
                                   "hexValue": "30",
-                                  "id": 848,
+                                  "id": 840,
                                   "isConstant": false,
                                   "isLValue": false,
                                   "isPure": true,
@@ -8535,7 +8535,7 @@
                                   "typeString": "uint256"
                                 }
                               },
-                              "id": 850,
+                              "id": 842,
                               "nodeType": "ExpressionStatement",
                               "src": "1021:41:2"
                             }
@@ -8544,17 +8544,17 @@
                       }
                     ]
                   },
-                  "id": 865,
+                  "id": 857,
                   "nodeType": "IfStatement",
                   "src": "805:386:2",
                   "trueBody": {
-                    "id": 833,
+                    "id": 825,
                     "nodeType": "Block",
                     "src": "828:85:2",
                     "statements": [
                       {
                         "expression": {
-                          "id": 831,
+                          "id": 823,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -8562,21 +8562,21 @@
                           "leftHandSide": {
                             "expression": {
                               "baseExpression": {
-                                "id": 822,
+                                "id": 814,
                                 "name": "smartMeters",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 777,
+                                "referencedDeclaration": 769,
                                 "src": "842:11:2",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                                  "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                                   "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                                 }
                               },
-                              "id": 825,
+                              "id": 817,
                               "indexExpression": {
                                 "expression": {
-                                  "id": 823,
+                                  "id": 815,
                                   "name": "msg",
                                   "nodeType": "Identifier",
                                   "overloadedDeclarations": [],
@@ -8587,7 +8587,7 @@
                                     "typeString": "msg"
                                   }
                                 },
-                                "id": 824,
+                                "id": 816,
                                 "isConstant": false,
                                 "isLValue": false,
                                 "isPure": false,
@@ -8608,11 +8608,11 @@
                               "nodeType": "IndexAccess",
                               "src": "842:23:2",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                                "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                                 "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                               }
                             },
-                            "id": 826,
+                            "id": 818,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
@@ -8620,7 +8620,7 @@
                             "memberLocation": "866:13:2",
                             "memberName": "batteryCharge",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 767,
+                            "referencedDeclaration": 759,
                             "src": "842:37:2",
                             "typeDescriptions": {
                               "typeIdentifier": "t_uint256",
@@ -8632,11 +8632,11 @@
                           "rightHandSide": {
                             "arguments": [
                               {
-                                "id": 829,
+                                "id": 821,
                                 "name": "netDifference",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 808,
+                                "referencedDeclaration": 800,
                                 "src": "888:13:2",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_int256",
@@ -8651,7 +8651,7 @@
                                   "typeString": "int256"
                                 }
                               ],
-                              "id": 828,
+                              "id": 820,
                               "isConstant": false,
                               "isLValue": false,
                               "isPure": true,
@@ -8663,14 +8663,14 @@
                                 "typeString": "type(uint256)"
                               },
                               "typeName": {
-                                "id": 827,
+                                "id": 819,
                                 "name": "uint",
                                 "nodeType": "ElementaryTypeName",
                                 "src": "883:4:2",
                                 "typeDescriptions": {}
                               }
                             },
-                            "id": 830,
+                            "id": 822,
                             "isConstant": false,
                             "isLValue": false,
                             "isPure": false,
@@ -8692,7 +8692,7 @@
                             "typeString": "uint256"
                           }
                         },
-                        "id": 832,
+                        "id": 824,
                         "nodeType": "ExpressionStatement",
                         "src": "842:60:2"
                       }
@@ -8703,11 +8703,11 @@
                   "eventCall": {
                     "arguments": [
                       {
-                        "id": 867,
+                        "id": 859,
                         "name": "consumption",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 788,
+                        "referencedDeclaration": 780,
                         "src": "1210:11:2",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -8715,11 +8715,11 @@
                         }
                       },
                       {
-                        "id": 868,
+                        "id": 860,
                         "name": "production",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 790,
+                        "referencedDeclaration": 782,
                         "src": "1223:10:2",
                         "typeDescriptions": {
                           "typeIdentifier": "t_uint256",
@@ -8738,18 +8738,18 @@
                           "typeString": "uint256"
                         }
                       ],
-                      "id": 866,
+                      "id": 858,
                       "name": "Log",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 786,
+                      "referencedDeclaration": 778,
                       "src": "1206:3:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_function_event_nonpayable$_t_uint256_$_t_uint256_$returns$__$",
                         "typeString": "function (uint256,uint256)"
                       }
                     },
-                    "id": 869,
+                    "id": 861,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -8765,13 +8765,13 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 870,
+                  "id": 862,
                   "nodeType": "EmitStatement",
                   "src": "1201:33:2"
                 },
                 {
                   "expression": {
-                    "id": 878,
+                    "id": 870,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -8779,21 +8779,21 @@
                     "leftHandSide": {
                       "expression": {
                         "baseExpression": {
-                          "id": 871,
+                          "id": 863,
                           "name": "smartMeters",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 777,
+                          "referencedDeclaration": 769,
                           "src": "1245:11:2",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                            "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                             "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                           }
                         },
-                        "id": 874,
+                        "id": 866,
                         "indexExpression": {
                           "expression": {
-                            "id": 872,
+                            "id": 864,
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
@@ -8804,7 +8804,7 @@
                               "typeString": "msg"
                             }
                           },
-                          "id": 873,
+                          "id": 865,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -8825,11 +8825,11 @@
                         "nodeType": "IndexAccess",
                         "src": "1245:23:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                          "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                           "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                         }
                       },
-                      "id": 875,
+                      "id": 867,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
@@ -8837,7 +8837,7 @@
                       "memberLocation": "1269:12:2",
                       "memberName": "lastDataSent",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 769,
+                      "referencedDeclaration": 761,
                       "src": "1245:36:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -8848,7 +8848,7 @@
                     "operator": "=",
                     "rightHandSide": {
                       "expression": {
-                        "id": 876,
+                        "id": 868,
                         "name": "block",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
@@ -8859,7 +8859,7 @@
                           "typeString": "block"
                         }
                       },
-                      "id": 877,
+                      "id": 869,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -8879,14 +8879,14 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 879,
+                  "id": 871,
                   "nodeType": "ExpressionStatement",
                   "src": "1245:54:2"
                 }
               ]
             },
             "functionSelector": "b9857d87",
-            "id": 881,
+            "id": 873,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -8894,17 +8894,17 @@
             "nameLocation": "434:9:2",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 791,
+              "id": 783,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 788,
+                  "id": 780,
                   "mutability": "mutable",
                   "name": "consumption",
                   "nameLocation": "461:11:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 881,
+                  "scope": 873,
                   "src": "453:19:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -8913,7 +8913,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 787,
+                    "id": 779,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "453:7:2",
@@ -8926,12 +8926,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 790,
+                  "id": 782,
                   "mutability": "mutable",
                   "name": "production",
                   "nameLocation": "490:10:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 881,
+                  "scope": 873,
                   "src": "482:18:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -8940,7 +8940,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 789,
+                    "id": 781,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
                     "src": "482:7:2",
@@ -8955,12 +8955,12 @@
               "src": "443:63:2"
             },
             "returnParameters": {
-              "id": 792,
+              "id": 784,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "514:0:2"
             },
-            "scope": 1045,
+            "scope": 1037,
             "src": "425:881:2",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -8968,7 +8968,7 @@
           },
           {
             "body": {
-              "id": 893,
+              "id": 885,
               "nodeType": "Block",
               "src": "1406:68:2",
               "statements": [
@@ -8976,24 +8976,24 @@
                   "expression": {
                     "expression": {
                       "baseExpression": {
-                        "id": 888,
+                        "id": 880,
                         "name": "smartMeters",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 777,
+                        "referencedDeclaration": 769,
                         "src": "1423:11:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                          "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                           "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                         }
                       },
-                      "id": 890,
+                      "id": 882,
                       "indexExpression": {
-                        "id": 889,
+                        "id": 881,
                         "name": "smartMeterAddress",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 883,
+                        "referencedDeclaration": 875,
                         "src": "1435:17:2",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
@@ -9007,11 +9007,11 @@
                       "nodeType": "IndexAccess",
                       "src": "1423:30:2",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                        "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                         "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                       }
                     },
-                    "id": 891,
+                    "id": 883,
                     "isConstant": false,
                     "isLValue": true,
                     "isPure": false,
@@ -9019,22 +9019,22 @@
                     "memberLocation": "1454:13:2",
                     "memberName": "batteryCharge",
                     "nodeType": "MemberAccess",
-                    "referencedDeclaration": 767,
+                    "referencedDeclaration": 759,
                     "src": "1423:44:2",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     }
                   },
-                  "functionReturnParameters": 887,
-                  "id": 892,
+                  "functionReturnParameters": 879,
+                  "id": 884,
                   "nodeType": "Return",
                   "src": "1416:51:2"
                 }
               ]
             },
             "functionSelector": "f7fb40be",
-            "id": 894,
+            "id": 886,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -9042,17 +9042,17 @@
             "nameLocation": "1321:16:2",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 884,
+              "id": 876,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 883,
+                  "id": 875,
                   "mutability": "mutable",
                   "name": "smartMeterAddress",
                   "nameLocation": "1355:17:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 894,
+                  "scope": 886,
                   "src": "1347:25:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -9061,7 +9061,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 882,
+                    "id": 874,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1347:7:2",
@@ -9077,17 +9077,17 @@
               "src": "1337:41:2"
             },
             "returnParameters": {
-              "id": 887,
+              "id": 879,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 886,
+                  "id": 878,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 894,
+                  "scope": 886,
                   "src": "1400:4:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -9096,7 +9096,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 885,
+                    "id": 877,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "1400:4:2",
@@ -9110,7 +9110,7 @@
               ],
               "src": "1399:6:2"
             },
-            "scope": 1045,
+            "scope": 1037,
             "src": "1312:162:2",
             "stateMutability": "view",
             "virtual": false,
@@ -9118,7 +9118,7 @@
           },
           {
             "body": {
-              "id": 926,
+              "id": 918,
               "nodeType": "Block",
               "src": "1627:202:2",
               "statements": [
@@ -9128,7 +9128,7 @@
                       "typeIdentifier": "t_bytes32",
                       "typeString": "bytes32"
                     },
-                    "id": 912,
+                    "id": 904,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -9136,11 +9136,11 @@
                     "leftExpression": {
                       "arguments": [
                         {
-                          "id": 906,
+                          "id": 898,
                           "name": "ots",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 896,
+                          "referencedDeclaration": 888,
                           "src": "1651:3:2",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bytes_memory_ptr",
@@ -9155,7 +9155,7 @@
                             "typeString": "bytes memory"
                           }
                         ],
-                        "id": 905,
+                        "id": 897,
                         "name": "keccak256",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
@@ -9166,7 +9166,7 @@
                           "typeString": "function (bytes memory) pure returns (bytes32)"
                         }
                       },
-                      "id": 907,
+                      "id": 899,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -9187,24 +9187,24 @@
                     "rightExpression": {
                       "expression": {
                         "baseExpression": {
-                          "id": 908,
+                          "id": 900,
                           "name": "smartMeters",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 777,
+                          "referencedDeclaration": 769,
                           "src": "1659:11:2",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                            "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                             "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                           }
                         },
-                        "id": 910,
+                        "id": 902,
                         "indexExpression": {
-                          "id": 909,
+                          "id": 901,
                           "name": "smartMeterAddress",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 900,
+                          "referencedDeclaration": 892,
                           "src": "1671:17:2",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
@@ -9218,11 +9218,11 @@
                         "nodeType": "IndexAccess",
                         "src": "1659:30:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                          "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                           "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                         }
                       },
-                      "id": 911,
+                      "id": 903,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
@@ -9230,7 +9230,7 @@
                       "memberLocation": "1690:7:2",
                       "memberName": "otsHash",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 765,
+                      "referencedDeclaration": 757,
                       "src": "1659:38:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_bytes32",
@@ -9243,17 +9243,17 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 923,
+                  "id": 915,
                   "nodeType": "IfStatement",
                   "src": "1637:164:2",
                   "trueBody": {
-                    "id": 922,
+                    "id": 914,
                     "nodeType": "Block",
                     "src": "1699:102:2",
                     "statements": [
                       {
                         "expression": {
-                          "id": 918,
+                          "id": 910,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -9261,24 +9261,24 @@
                           "leftHandSide": {
                             "expression": {
                               "baseExpression": {
-                                "id": 913,
+                                "id": 905,
                                 "name": "smartMeters",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 777,
+                                "referencedDeclaration": 769,
                                 "src": "1713:11:2",
                                 "typeDescriptions": {
-                                  "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                                  "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                                   "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                                 }
                               },
-                              "id": 915,
+                              "id": 907,
                               "indexExpression": {
-                                "id": 914,
+                                "id": 906,
                                 "name": "smartMeterAddress",
                                 "nodeType": "Identifier",
                                 "overloadedDeclarations": [],
-                                "referencedDeclaration": 900,
+                                "referencedDeclaration": 892,
                                 "src": "1725:17:2",
                                 "typeDescriptions": {
                                   "typeIdentifier": "t_address",
@@ -9292,11 +9292,11 @@
                               "nodeType": "IndexAccess",
                               "src": "1713:30:2",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                                "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                                 "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                               }
                             },
-                            "id": 916,
+                            "id": 908,
                             "isConstant": false,
                             "isLValue": true,
                             "isPure": false,
@@ -9304,7 +9304,7 @@
                             "memberLocation": "1744:7:2",
                             "memberName": "otsHash",
                             "nodeType": "MemberAccess",
-                            "referencedDeclaration": 765,
+                            "referencedDeclaration": 757,
                             "src": "1713:38:2",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -9314,11 +9314,11 @@
                           "nodeType": "Assignment",
                           "operator": "=",
                           "rightHandSide": {
-                            "id": 917,
+                            "id": 909,
                             "name": "nextOtsHash",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 898,
+                            "referencedDeclaration": 890,
                             "src": "1754:11:2",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -9331,14 +9331,14 @@
                             "typeString": "bytes32"
                           }
                         },
-                        "id": 919,
+                        "id": 911,
                         "nodeType": "ExpressionStatement",
                         "src": "1713:52:2"
                       },
                       {
                         "expression": {
                           "hexValue": "74727565",
-                          "id": 920,
+                          "id": 912,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -9352,8 +9352,8 @@
                           },
                           "value": "true"
                         },
-                        "functionReturnParameters": 904,
-                        "id": 921,
+                        "functionReturnParameters": 896,
+                        "id": 913,
                         "nodeType": "Return",
                         "src": "1779:11:2"
                       }
@@ -9363,7 +9363,7 @@
                 {
                   "expression": {
                     "hexValue": "66616c7365",
-                    "id": 924,
+                    "id": 916,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -9377,15 +9377,15 @@
                     },
                     "value": "false"
                   },
-                  "functionReturnParameters": 904,
-                  "id": 925,
+                  "functionReturnParameters": 896,
+                  "id": 917,
                   "nodeType": "Return",
                   "src": "1810:12:2"
                 }
               ]
             },
             "functionSelector": "36c73364",
-            "id": 927,
+            "id": 919,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -9393,17 +9393,17 @@
             "nameLocation": "1489:19:2",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 901,
+              "id": 893,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 896,
+                  "id": 888,
                   "mutability": "mutable",
                   "name": "ots",
                   "nameLocation": "1531:3:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 927,
+                  "scope": 919,
                   "src": "1518:16:2",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -9412,7 +9412,7 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
-                    "id": 895,
+                    "id": 887,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
                     "src": "1518:5:2",
@@ -9425,12 +9425,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 898,
+                  "id": 890,
                   "mutability": "mutable",
                   "name": "nextOtsHash",
                   "nameLocation": "1552:11:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 927,
+                  "scope": 919,
                   "src": "1544:19:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -9439,7 +9439,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 897,
+                    "id": 889,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "1544:7:2",
@@ -9452,12 +9452,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 900,
+                  "id": 892,
                   "mutability": "mutable",
                   "name": "smartMeterAddress",
                   "nameLocation": "1581:17:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 927,
+                  "scope": 919,
                   "src": "1573:25:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -9466,7 +9466,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 899,
+                    "id": 891,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1573:7:2",
@@ -9482,17 +9482,17 @@
               "src": "1508:96:2"
             },
             "returnParameters": {
-              "id": 904,
+              "id": 896,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 903,
+                  "id": 895,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 927,
+                  "scope": 919,
                   "src": "1621:4:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -9501,7 +9501,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 902,
+                    "id": 894,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1621:4:2",
@@ -9515,7 +9515,7 @@
               ],
               "src": "1620:6:2"
             },
-            "scope": 1045,
+            "scope": 1037,
             "src": "1480:349:2",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -9523,7 +9523,7 @@
           },
           {
             "body": {
-              "id": 979,
+              "id": 971,
               "nodeType": "Block",
               "src": "2005:503:2",
               "statements": [
@@ -9535,14 +9535,14 @@
                           "typeIdentifier": "t_address",
                           "typeString": "address"
                         },
-                        "id": 947,
+                        "id": 939,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "leftExpression": {
                           "expression": {
-                            "id": 941,
+                            "id": 933,
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
@@ -9553,7 +9553,7 @@
                               "typeString": "msg"
                             }
                           },
-                          "id": 942,
+                          "id": 934,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -9572,24 +9572,24 @@
                         "rightExpression": {
                           "expression": {
                             "baseExpression": {
-                              "id": 943,
+                              "id": 935,
                               "name": "smartMeters",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 777,
+                              "referencedDeclaration": 769,
                               "src": "2050:11:2",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                                 "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                               }
                             },
-                            "id": 945,
+                            "id": 937,
                             "indexExpression": {
-                              "id": 944,
+                              "id": 936,
                               "name": "smartMeterAddress",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 935,
+                              "referencedDeclaration": 927,
                               "src": "2062:17:2",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_address",
@@ -9603,11 +9603,11 @@
                             "nodeType": "IndexAccess",
                             "src": "2050:30:2",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                              "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                               "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                             }
                           },
-                          "id": 946,
+                          "id": 938,
                           "isConstant": false,
                           "isLValue": true,
                           "isPure": false,
@@ -9615,7 +9615,7 @@
                           "memberLocation": "2081:13:2",
                           "memberName": "marketAddress",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 771,
+                          "referencedDeclaration": 763,
                           "src": "2050:44:2",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
@@ -9630,7 +9630,7 @@
                       },
                       {
                         "hexValue": "4f6e6c792072656769737465726564206d61726b65742063616e2073756273747261637420656e65726779",
-                        "id": 948,
+                        "id": 940,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -9656,7 +9656,7 @@
                           "typeString": "literal_string \"Only registered market can substract energy\""
                         }
                       ],
-                      "id": 940,
+                      "id": 932,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
@@ -9670,7 +9670,7 @@
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 949,
+                    "id": 941,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -9686,7 +9686,7 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 950,
+                  "id": 942,
                   "nodeType": "ExpressionStatement",
                   "src": "2015:148:2"
                 },
@@ -9696,11 +9696,11 @@
                       {
                         "arguments": [
                           {
-                            "id": 953,
+                            "id": 945,
                             "name": "ots",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 931,
+                            "referencedDeclaration": 923,
                             "src": "2214:3:2",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes_memory_ptr",
@@ -9708,11 +9708,11 @@
                             }
                           },
                           {
-                            "id": 954,
+                            "id": 946,
                             "name": "nextOtsHash",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 933,
+                            "referencedDeclaration": 925,
                             "src": "2219:11:2",
                             "typeDescriptions": {
                               "typeIdentifier": "t_bytes32",
@@ -9720,11 +9720,11 @@
                             }
                           },
                           {
-                            "id": 955,
+                            "id": 947,
                             "name": "smartMeterAddress",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
-                            "referencedDeclaration": 935,
+                            "referencedDeclaration": 927,
                             "src": "2232:17:2",
                             "typeDescriptions": {
                               "typeIdentifier": "t_address",
@@ -9747,18 +9747,18 @@
                               "typeString": "address"
                             }
                           ],
-                          "id": 952,
+                          "id": 944,
                           "name": "checkHashAndSetHash",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 927,
+                          "referencedDeclaration": 919,
                           "src": "2194:19:2",
                           "typeDescriptions": {
                             "typeIdentifier": "t_function_internal_nonpayable$_t_bytes_memory_ptr_$_t_bytes32_$_t_address_$returns$_t_bool_$",
                             "typeString": "function (bytes memory,bytes32,address) returns (bool)"
                           }
                         },
-                        "id": 956,
+                        "id": 948,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -9776,7 +9776,7 @@
                       },
                       {
                         "hexValue": "54686520626c696e64696e6720666163746f7220776173206e6f7420636f7272656374",
-                        "id": 957,
+                        "id": 949,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -9802,7 +9802,7 @@
                           "typeString": "literal_string \"The blinding factor was not correct\""
                         }
                       ],
-                      "id": 951,
+                      "id": 943,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
@@ -9816,7 +9816,7 @@
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 958,
+                    "id": 950,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -9832,7 +9832,7 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 959,
+                  "id": 951,
                   "nodeType": "ExpressionStatement",
                   "src": "2173:138:2"
                 },
@@ -9842,7 +9842,7 @@
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
                     },
-                    "id": 965,
+                    "id": 957,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -9850,24 +9850,24 @@
                     "leftExpression": {
                       "expression": {
                         "baseExpression": {
-                          "id": 960,
+                          "id": 952,
                           "name": "smartMeters",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 777,
+                          "referencedDeclaration": 769,
                           "src": "2325:11:2",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                            "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                             "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                           }
                         },
-                        "id": 962,
+                        "id": 954,
                         "indexExpression": {
-                          "id": 961,
+                          "id": 953,
                           "name": "smartMeterAddress",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 935,
+                          "referencedDeclaration": 927,
                           "src": "2337:17:2",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
@@ -9881,11 +9881,11 @@
                         "nodeType": "IndexAccess",
                         "src": "2325:30:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                          "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                           "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                         }
                       },
-                      "id": 963,
+                      "id": 955,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
@@ -9893,7 +9893,7 @@
                       "memberLocation": "2356:13:2",
                       "memberName": "batteryCharge",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 767,
+                      "referencedDeclaration": 759,
                       "src": "2325:44:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -9903,11 +9903,11 @@
                     "nodeType": "BinaryOperation",
                     "operator": "<",
                     "rightExpression": {
-                      "id": 964,
+                      "id": 956,
                       "name": "amount",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 929,
+                      "referencedDeclaration": 921,
                       "src": "2372:6:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -9920,18 +9920,18 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 969,
+                  "id": 961,
                   "nodeType": "IfStatement",
                   "src": "2321:96:2",
                   "trueBody": {
-                    "id": 968,
+                    "id": 960,
                     "nodeType": "Block",
                     "src": "2380:37:2",
                     "statements": [
                       {
                         "expression": {
                           "hexValue": "66616c7365",
-                          "id": 966,
+                          "id": 958,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -9945,8 +9945,8 @@
                           },
                           "value": "false"
                         },
-                        "functionReturnParameters": 939,
-                        "id": 967,
+                        "functionReturnParameters": 931,
+                        "id": 959,
                         "nodeType": "Return",
                         "src": "2394:12:2"
                       }
@@ -9955,7 +9955,7 @@
                 },
                 {
                   "expression": {
-                    "id": 975,
+                    "id": 967,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -9963,24 +9963,24 @@
                     "leftHandSide": {
                       "expression": {
                         "baseExpression": {
-                          "id": 970,
+                          "id": 962,
                           "name": "smartMeters",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 777,
+                          "referencedDeclaration": 769,
                           "src": "2426:11:2",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                            "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                             "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                           }
                         },
-                        "id": 972,
+                        "id": 964,
                         "indexExpression": {
-                          "id": 971,
+                          "id": 963,
                           "name": "smartMeterAddress",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 935,
+                          "referencedDeclaration": 927,
                           "src": "2438:17:2",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
@@ -9994,11 +9994,11 @@
                         "nodeType": "IndexAccess",
                         "src": "2426:30:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                          "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                           "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                         }
                       },
-                      "id": 973,
+                      "id": 965,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
@@ -10006,7 +10006,7 @@
                       "memberLocation": "2457:13:2",
                       "memberName": "batteryCharge",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 767,
+                      "referencedDeclaration": 759,
                       "src": "2426:44:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -10016,11 +10016,11 @@
                     "nodeType": "Assignment",
                     "operator": "-=",
                     "rightHandSide": {
-                      "id": 974,
+                      "id": 966,
                       "name": "amount",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 929,
+                      "referencedDeclaration": 921,
                       "src": "2474:6:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -10033,14 +10033,14 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 976,
+                  "id": 968,
                   "nodeType": "ExpressionStatement",
                   "src": "2426:54:2"
                 },
                 {
                   "expression": {
                     "hexValue": "74727565",
-                    "id": 977,
+                    "id": 969,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -10054,15 +10054,15 @@
                     },
                     "value": "true"
                   },
-                  "functionReturnParameters": 939,
-                  "id": 978,
+                  "functionReturnParameters": 931,
+                  "id": 970,
                   "nodeType": "Return",
                   "src": "2490:11:2"
                 }
               ]
             },
             "functionSelector": "5847ebed",
-            "id": 980,
+            "id": 972,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -10070,17 +10070,17 @@
             "nameLocation": "1844:21:2",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 936,
+              "id": 928,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 929,
+                  "id": 921,
                   "mutability": "mutable",
                   "name": "amount",
                   "nameLocation": "1880:6:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 980,
+                  "scope": 972,
                   "src": "1875:11:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -10089,7 +10089,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 928,
+                    "id": 920,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "1875:4:2",
@@ -10102,12 +10102,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 931,
+                  "id": 923,
                   "mutability": "mutable",
                   "name": "ots",
                   "nameLocation": "1909:3:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 980,
+                  "scope": 972,
                   "src": "1896:16:2",
                   "stateVariable": false,
                   "storageLocation": "memory",
@@ -10116,7 +10116,7 @@
                     "typeString": "bytes"
                   },
                   "typeName": {
-                    "id": 930,
+                    "id": 922,
                     "name": "bytes",
                     "nodeType": "ElementaryTypeName",
                     "src": "1896:5:2",
@@ -10129,12 +10129,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 933,
+                  "id": 925,
                   "mutability": "mutable",
                   "name": "nextOtsHash",
                   "nameLocation": "1930:11:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 980,
+                  "scope": 972,
                   "src": "1922:19:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -10143,7 +10143,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 932,
+                    "id": 924,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "1922:7:2",
@@ -10156,12 +10156,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 935,
+                  "id": 927,
                   "mutability": "mutable",
                   "name": "smartMeterAddress",
                   "nameLocation": "1959:17:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 980,
+                  "scope": 972,
                   "src": "1951:25:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -10170,7 +10170,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 934,
+                    "id": 926,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "1951:7:2",
@@ -10186,17 +10186,17 @@
               "src": "1865:117:2"
             },
             "returnParameters": {
-              "id": 939,
+              "id": 931,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 938,
+                  "id": 930,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 980,
+                  "scope": 972,
                   "src": "1999:4:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -10205,7 +10205,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 937,
+                    "id": 929,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "1999:4:2",
@@ -10219,7 +10219,7 @@
               ],
               "src": "1998:6:2"
             },
-            "scope": 1045,
+            "scope": 1037,
             "src": "1835:673:2",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -10227,7 +10227,7 @@
           },
           {
             "body": {
-              "id": 1009,
+              "id": 1001,
               "nodeType": "Block",
               "src": "2650:262:2",
               "statements": [
@@ -10239,14 +10239,14 @@
                           "typeIdentifier": "t_address",
                           "typeString": "address"
                         },
-                        "id": 996,
+                        "id": 988,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "leftExpression": {
                           "expression": {
-                            "id": 990,
+                            "id": 982,
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
@@ -10257,7 +10257,7 @@
                               "typeString": "msg"
                             }
                           },
-                          "id": 991,
+                          "id": 983,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -10276,24 +10276,24 @@
                         "rightExpression": {
                           "expression": {
                             "baseExpression": {
-                              "id": 992,
+                              "id": 984,
                               "name": "smartMeters",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 777,
+                              "referencedDeclaration": 769,
                               "src": "2695:11:2",
                               "typeDescriptions": {
-                                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                                "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                                 "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                               }
                             },
-                            "id": 994,
+                            "id": 986,
                             "indexExpression": {
-                              "id": 993,
+                              "id": 985,
                               "name": "smartMeterAddress",
                               "nodeType": "Identifier",
                               "overloadedDeclarations": [],
-                              "referencedDeclaration": 984,
+                              "referencedDeclaration": 976,
                               "src": "2707:17:2",
                               "typeDescriptions": {
                                 "typeIdentifier": "t_address",
@@ -10307,11 +10307,11 @@
                             "nodeType": "IndexAccess",
                             "src": "2695:30:2",
                             "typeDescriptions": {
-                              "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                              "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                               "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                             }
                           },
-                          "id": 995,
+                          "id": 987,
                           "isConstant": false,
                           "isLValue": true,
                           "isPure": false,
@@ -10319,7 +10319,7 @@
                           "memberLocation": "2726:13:2",
                           "memberName": "marketAddress",
                           "nodeType": "MemberAccess",
-                          "referencedDeclaration": 771,
+                          "referencedDeclaration": 763,
                           "src": "2695:44:2",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
@@ -10334,7 +10334,7 @@
                       },
                       {
                         "hexValue": "4f6e6c792072656769737465726564206d61726b65742063616e2072657475726e20656e65726779",
-                        "id": 997,
+                        "id": 989,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -10360,7 +10360,7 @@
                           "typeString": "literal_string \"Only registered market can return energy\""
                         }
                       ],
-                      "id": 989,
+                      "id": 981,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
@@ -10374,7 +10374,7 @@
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 998,
+                    "id": 990,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -10390,13 +10390,13 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 999,
+                  "id": 991,
                   "nodeType": "ExpressionStatement",
                   "src": "2660:145:2"
                 },
                 {
                   "expression": {
-                    "id": 1005,
+                    "id": 997,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -10404,24 +10404,24 @@
                     "leftHandSide": {
                       "expression": {
                         "baseExpression": {
-                          "id": 1000,
+                          "id": 992,
                           "name": "smartMeters",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 777,
+                          "referencedDeclaration": 769,
                           "src": "2815:11:2",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                            "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                             "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                           }
                         },
-                        "id": 1002,
+                        "id": 994,
                         "indexExpression": {
-                          "id": 1001,
+                          "id": 993,
                           "name": "smartMeterAddress",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 984,
+                          "referencedDeclaration": 976,
                           "src": "2827:17:2",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
@@ -10435,11 +10435,11 @@
                         "nodeType": "IndexAccess",
                         "src": "2815:30:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                          "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                           "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                         }
                       },
-                      "id": 1003,
+                      "id": 995,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
@@ -10447,7 +10447,7 @@
                       "memberLocation": "2846:13:2",
                       "memberName": "batteryCharge",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 767,
+                      "referencedDeclaration": 759,
                       "src": "2815:44:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -10457,11 +10457,11 @@
                     "nodeType": "Assignment",
                     "operator": "+=",
                     "rightHandSide": {
-                      "id": 1004,
+                      "id": 996,
                       "name": "returnedBatteryCharge",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 982,
+                      "referencedDeclaration": 974,
                       "src": "2863:21:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_uint256",
@@ -10474,14 +10474,14 @@
                       "typeString": "uint256"
                     }
                   },
-                  "id": 1006,
+                  "id": 998,
                   "nodeType": "ExpressionStatement",
                   "src": "2815:69:2"
                 },
                 {
                   "expression": {
                     "hexValue": "74727565",
-                    "id": 1007,
+                    "id": 999,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": true,
@@ -10495,15 +10495,15 @@
                     },
                     "value": "true"
                   },
-                  "functionReturnParameters": 988,
-                  "id": 1008,
+                  "functionReturnParameters": 980,
+                  "id": 1000,
                   "nodeType": "Return",
                   "src": "2894:11:2"
                 }
               ]
             },
             "functionSelector": "24dee484",
-            "id": 1010,
+            "id": 1002,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -10511,17 +10511,17 @@
             "nameLocation": "2523:27:2",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 985,
+              "id": 977,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 982,
+                  "id": 974,
                   "mutability": "mutable",
                   "name": "returnedBatteryCharge",
                   "nameLocation": "2565:21:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1010,
+                  "scope": 1002,
                   "src": "2560:26:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -10530,7 +10530,7 @@
                     "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 981,
+                    "id": 973,
                     "name": "uint",
                     "nodeType": "ElementaryTypeName",
                     "src": "2560:4:2",
@@ -10543,12 +10543,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 984,
+                  "id": 976,
                   "mutability": "mutable",
                   "name": "smartMeterAddress",
                   "nameLocation": "2604:17:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1010,
+                  "scope": 1002,
                   "src": "2596:25:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -10557,7 +10557,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 983,
+                    "id": 975,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2596:7:2",
@@ -10573,17 +10573,17 @@
               "src": "2550:77:2"
             },
             "returnParameters": {
-              "id": 988,
+              "id": 980,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 987,
+                  "id": 979,
                   "mutability": "mutable",
                   "name": "",
                   "nameLocation": "-1:-1:-1",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1010,
+                  "scope": 1002,
                   "src": "2644:4:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -10592,7 +10592,7 @@
                     "typeString": "bool"
                   },
                   "typeName": {
-                    "id": 986,
+                    "id": 978,
                     "name": "bool",
                     "nodeType": "ElementaryTypeName",
                     "src": "2644:4:2",
@@ -10606,7 +10606,7 @@
               ],
               "src": "2643:6:2"
             },
-            "scope": 1045,
+            "scope": 1037,
             "src": "2514:398:2",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -10614,13 +10614,13 @@
           },
           {
             "body": {
-              "id": 1023,
+              "id": 1015,
               "nodeType": "Block",
               "src": "2975:71:2",
               "statements": [
                 {
                   "expression": {
-                    "id": 1021,
+                    "id": 1013,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -10628,21 +10628,21 @@
                     "leftHandSide": {
                       "expression": {
                         "baseExpression": {
-                          "id": 1015,
+                          "id": 1007,
                           "name": "smartMeters",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 777,
+                          "referencedDeclaration": 769,
                           "src": "2985:11:2",
                           "typeDescriptions": {
-                            "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                            "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                             "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                           }
                         },
-                        "id": 1018,
+                        "id": 1010,
                         "indexExpression": {
                           "expression": {
-                            "id": 1016,
+                            "id": 1008,
                             "name": "msg",
                             "nodeType": "Identifier",
                             "overloadedDeclarations": [],
@@ -10653,7 +10653,7 @@
                               "typeString": "msg"
                             }
                           },
-                          "id": 1017,
+                          "id": 1009,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": false,
@@ -10674,11 +10674,11 @@
                         "nodeType": "IndexAccess",
                         "src": "2985:23:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                          "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                           "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                         }
                       },
-                      "id": 1019,
+                      "id": 1011,
                       "isConstant": false,
                       "isLValue": true,
                       "isPure": false,
@@ -10686,7 +10686,7 @@
                       "memberLocation": "3009:13:2",
                       "memberName": "marketAddress",
                       "nodeType": "MemberAccess",
-                      "referencedDeclaration": 771,
+                      "referencedDeclaration": 763,
                       "src": "2985:37:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
@@ -10696,11 +10696,11 @@
                     "nodeType": "Assignment",
                     "operator": "=",
                     "rightHandSide": {
-                      "id": 1020,
+                      "id": 1012,
                       "name": "_marketAddress",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 1012,
+                      "referencedDeclaration": 1004,
                       "src": "3025:14:2",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
@@ -10713,14 +10713,14 @@
                       "typeString": "address"
                     }
                   },
-                  "id": 1022,
+                  "id": 1014,
                   "nodeType": "ExpressionStatement",
                   "src": "2985:54:2"
                 }
               ]
             },
             "functionSelector": "fae92612",
-            "id": 1024,
+            "id": 1016,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -10728,17 +10728,17 @@
             "nameLocation": "2927:16:2",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1013,
+              "id": 1005,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1012,
+                  "id": 1004,
                   "mutability": "mutable",
                   "name": "_marketAddress",
                   "nameLocation": "2952:14:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1024,
+                  "scope": 1016,
                   "src": "2944:22:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -10747,7 +10747,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1011,
+                    "id": 1003,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "2944:7:2",
@@ -10763,12 +10763,12 @@
               "src": "2943:24:2"
             },
             "returnParameters": {
-              "id": 1014,
+              "id": 1006,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "2975:0:2"
             },
-            "scope": 1045,
+            "scope": 1037,
             "src": "2918:128:2",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -10776,34 +10776,34 @@
           },
           {
             "body": {
-              "id": 1043,
+              "id": 1035,
               "nodeType": "Block",
               "src": "3127:206:2",
               "statements": [
                 {
                   "expression": {
-                    "id": 1041,
+                    "id": 1033,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
                     "lValueRequested": false,
                     "leftHandSide": {
                       "baseExpression": {
-                        "id": 1031,
+                        "id": 1023,
                         "name": "smartMeters",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 777,
+                        "referencedDeclaration": 769,
                         "src": "3137:11:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$772_storage_$",
+                          "typeIdentifier": "t_mapping$_t_address_$_t_struct$_SmartMeterInstance_$764_storage_$",
                           "typeString": "mapping(address => struct SmartMeter.SmartMeterInstance storage ref)"
                         }
                       },
-                      "id": 1034,
+                      "id": 1026,
                       "indexExpression": {
                         "expression": {
-                          "id": 1032,
+                          "id": 1024,
                           "name": "msg",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
@@ -10814,7 +10814,7 @@
                             "typeString": "msg"
                           }
                         },
-                        "id": 1033,
+                        "id": 1025,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
@@ -10835,7 +10835,7 @@
                       "nodeType": "IndexAccess",
                       "src": "3137:23:2",
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                        "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                         "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                       }
                     },
@@ -10844,11 +10844,11 @@
                     "rightHandSide": {
                       "arguments": [
                         {
-                          "id": 1036,
+                          "id": 1028,
                           "name": "_otsHash",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1028,
+                          "referencedDeclaration": 1020,
                           "src": "3205:8:2",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bytes32",
@@ -10856,11 +10856,11 @@
                           }
                         },
                         {
-                          "id": 1037,
+                          "id": 1029,
                           "name": "_marketAddress",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 1026,
+                          "referencedDeclaration": 1018,
                           "src": "3242:14:2",
                           "typeDescriptions": {
                             "typeIdentifier": "t_address",
@@ -10869,7 +10869,7 @@
                         },
                         {
                           "hexValue": "30",
-                          "id": 1038,
+                          "id": 1030,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -10885,7 +10885,7 @@
                         },
                         {
                           "hexValue": "30",
-                          "id": 1039,
+                          "id": 1031,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -10919,18 +10919,18 @@
                             "typeString": "int_const 0"
                           }
                         ],
-                        "id": 1035,
+                        "id": 1027,
                         "name": "SmartMeterInstance",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 772,
+                        "referencedDeclaration": 764,
                         "src": "3163:18:2",
                         "typeDescriptions": {
-                          "typeIdentifier": "t_type$_t_struct$_SmartMeterInstance_$772_storage_ptr_$",
+                          "typeIdentifier": "t_type$_t_struct$_SmartMeterInstance_$764_storage_ptr_$",
                           "typeString": "type(struct SmartMeter.SmartMeterInstance storage pointer)"
                         }
                       },
-                      "id": 1040,
+                      "id": 1032,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -10952,24 +10952,24 @@
                       "src": "3163:163:2",
                       "tryCall": false,
                       "typeDescriptions": {
-                        "typeIdentifier": "t_struct$_SmartMeterInstance_$772_memory_ptr",
+                        "typeIdentifier": "t_struct$_SmartMeterInstance_$764_memory_ptr",
                         "typeString": "struct SmartMeter.SmartMeterInstance memory"
                       }
                     },
                     "src": "3137:189:2",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_SmartMeterInstance_$772_storage",
+                      "typeIdentifier": "t_struct$_SmartMeterInstance_$764_storage",
                       "typeString": "struct SmartMeter.SmartMeterInstance storage ref"
                     }
                   },
-                  "id": 1042,
+                  "id": 1034,
                   "nodeType": "ExpressionStatement",
                   "src": "3137:189:2"
                 }
               ]
             },
             "functionSelector": "571f9782",
-            "id": 1044,
+            "id": 1036,
             "implemented": true,
             "kind": "function",
             "modifiers": [],
@@ -10977,17 +10977,17 @@
             "nameLocation": "3061:16:2",
             "nodeType": "FunctionDefinition",
             "parameters": {
-              "id": 1029,
+              "id": 1021,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 1026,
+                  "id": 1018,
                   "mutability": "mutable",
                   "name": "_marketAddress",
                   "nameLocation": "3086:14:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1044,
+                  "scope": 1036,
                   "src": "3078:22:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -10996,7 +10996,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 1025,
+                    "id": 1017,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "3078:7:2",
@@ -11010,12 +11010,12 @@
                 },
                 {
                   "constant": false,
-                  "id": 1028,
+                  "id": 1020,
                   "mutability": "mutable",
                   "name": "_otsHash",
                   "nameLocation": "3110:8:2",
                   "nodeType": "VariableDeclaration",
-                  "scope": 1044,
+                  "scope": 1036,
                   "src": "3102:16:2",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -11024,7 +11024,7 @@
                     "typeString": "bytes32"
                   },
                   "typeName": {
-                    "id": 1027,
+                    "id": 1019,
                     "name": "bytes32",
                     "nodeType": "ElementaryTypeName",
                     "src": "3102:7:2",
@@ -11039,19 +11039,19 @@
               "src": "3077:42:2"
             },
             "returnParameters": {
-              "id": 1030,
+              "id": 1022,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "3127:0:2"
             },
-            "scope": 1045,
+            "scope": 1037,
             "src": "3052:281:2",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 1046,
+        "scope": 1038,
         "src": "98:3237:2",
         "usedErrors": []
       }
@@ -11074,10 +11074,22 @@
       "links": {},
       "address": "0x4E2285Bf8bD587Fc09D8dFB02cAc6f0c20499A34",
       "transactionHash": "0x4c32c9b3021a035aa18e42739209c3f652b5eca95f3d574a0f631d088a778b13"
+    },
+    "1706695533989": {
+      "events": {},
+      "links": {},
+      "address": "0xDB2a9B79174A995B5147ea7ec40E86fA0821144D",
+      "transactionHash": "0x7b02bdc9cc748028e707ac735d334c9845df01e67672596f946cd96a3b91f2bc"
+    },
+    "1706698670583": {
+      "events": {},
+      "links": {},
+      "address": "0x21bD4948878F6461BE2E171fF861477839eb6502",
+      "transactionHash": "0x5482a8c53d686004366544bcdb1747ebc549f90ed6adb97651da388e4c4b975e"
     }
   },
   "schemaVersion": "3.4.16",
-  "updatedAt": "2024-01-21T09:35:10.176Z",
+  "updatedAt": "2024-01-31T11:01:47.731Z",
   "networkType": "ethereum",
   "devdoc": {
     "kind": "dev",

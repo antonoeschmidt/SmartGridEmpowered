@@ -2,7 +2,6 @@
 actor Prosumer
 participant GroupSignature
 participant Market #LightYellow
-participant SupplyContract #LightYellow
 
 skinparam dpi 300
 
@@ -12,14 +11,11 @@ Prosumer -> GroupSignature ++: sign(offer)
 GroupSignature --> Prosumer --: signature
 
 Prosumer -> Market ++: buyOffer(id, signature)
-Market -> Market: Check validity
 note over Market #WhiteSmoke
-expiration > now
+offer.expirationTime > now()f
 owner != buyer
 end note
+Market -> Market: pendingSupplyContracts.add(offer)
+Market --> Prosumer: Offer bought
 
-Market -> SupplyContract ++: Deploy new SupplyContract
-SupplyContract --> Market --:
-
-Market --> Prosumer: SupplyContract created!
 @enduml

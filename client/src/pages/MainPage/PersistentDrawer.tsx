@@ -8,6 +8,9 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import DrawerComponent from "../../components/Shared/DrawerComponent/DrawerComponent";
+// import { AccountCircle } from "@mui/icons-material";
+// import { ElectricBolt } from "@mui/icons-material";
+// import RoleContext from "../../contexts/roleContext";
 
 const drawerWidth = 240;
 
@@ -74,6 +77,8 @@ export default function PersistentDrawerLeft({ children }: Props) {
         setOpen(false);
     };
 
+    // const { currentRole, setCurrentRole} = React.useContext(RoleContext)
+
     return (
         <Box sx={{ display: "flex" }}>
             <CssBaseline />
@@ -84,7 +89,8 @@ export default function PersistentDrawerLeft({ children }: Props) {
                 sx={{ backgroundColor: "#523ffe" }}
             >
                 <Toolbar>
-                    <IconButton
+                <Box sx={{ display: 'flex' }}>                    
+                <IconButton
                         color="inherit"
                         aria-label="open drawer"
                         onClick={handleDrawerOpen}
@@ -96,6 +102,26 @@ export default function PersistentDrawerLeft({ children }: Props) {
                     <Typography variant="h6" noWrap component="div">
                         Smart Grid Empowered.
                     </Typography>
+                    </Box>
+                    <Box marginLeft={"auto"} sx={{display: 'flex'}}>
+                    {/* <IconButton
+                        color="inherit"
+                        aria-label="Select user"
+                        edge="start"
+                        onClick={_ => setCurrentRole(Roles.user)}
+                        sx={{...currentRole === Roles.user && {border: "solid"}}}
+                    >
+                        <AccountCircle />
+                    </IconButton>
+                    <IconButton
+                        color="inherit"
+                        aria-label="Select admin"
+                        onClick={_ => setCurrentRole(Roles.dso)}
+                        sx={{...currentRole === Roles.dso && {border: "solid"}}}
+                    >
+                        <ElectricBolt /> */}
+                    {/* </IconButton> */}
+                    </Box>
                 </Toolbar>
             </AppBar>
             <DrawerComponent

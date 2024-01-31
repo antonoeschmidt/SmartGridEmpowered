@@ -1,0 +1,33 @@
+@startuml pendingSupplyContracts
+<style>
+sequenceDiagram  {
+  group {
+    FontColor white
+    FontStyle normal
+  }
+}
+</STYLE>
+
+actor DSO
+participant Market #LightYellow
+participant SmartMeter #LightYellow
+participant Events #LightYellow 
+
+skinparam dpi 300
+
+autonumber
+
+DSO -> Market++: getPendingSupplyContracts
+Market --> DSO: pendingSupplyContracts
+DSO -> Market: validate(pendingSupplyContracts)
+loop <color:black>[pendingSupplyContracts]</color>
+alt <color:black>[pendingSupplyContracts[i] == true]</color>
+Market -> Events: emit new contract(pendingSupplyContracts[i])
+Events --> Market: ok
+else pendingSupp <color:black>[pendingSupplyContracts[i] == false]</color>
+Market -> SmartMeter ++: returnReservedBatteryCharge(address, amount)
+SmartMeter --> Market --: ok
+end
+end
+Market --> DSO: supply contracts validated
+@enduml
