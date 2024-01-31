@@ -6,7 +6,6 @@ import { OfferModal } from "../../components/Market/OfferModal/OfferModal";
 import MarketplacePageBody from "./MarketplacePage.body";
 import SupplyContractInfoModal from "../../components/Market/SupplyContractInfoModal/SupplyContractInfoModal";
 import { verify, openSignature } from "../../apis/groupSignature";
-import { Refresh } from "@mui/icons-material";
 
 const MarketplacePage: FC = () => {
     const {

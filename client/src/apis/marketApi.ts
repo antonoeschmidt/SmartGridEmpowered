@@ -155,7 +155,7 @@ const approvePendingSupplyContracts = async(sender: string,  indicies: boolean[]
 }
 
 const approvePendingSupplyContract = async(sender: string, marketAddress: string, nonce: number) => {
-    const marketContract = marketInstance(marketAddress);
+    // const marketContract = marketInstance(marketAddress);
     // try {
     //     return await marketContract.methods
     //     // @ts-ignore

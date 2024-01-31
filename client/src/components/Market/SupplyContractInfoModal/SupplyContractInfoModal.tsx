@@ -1,10 +1,7 @@
-import React, { useContext } from "react";
-
 import styles from "./SupplyContractInfoModal.module.css";
 import { Dialog, DialogTitle, TextField } from "@mui/material";
 import { ApprovedSupplyContractDTO, PendingSupplyContractDTO } from "../../../models/models";
 import Button from "../../Shared/Button/Button";
-import EthereumContext from "../../../contexts/ethereumContext";
 
 type SupplyContractInfoModalProps = {
     currentItem: ApprovedSupplyContractDTO | PendingSupplyContractDTO;
@@ -19,7 +16,6 @@ const SupplyContractInfoModal = ({
     open,
     handleClose,
     verifyPendingOffer,
-    revealIdentities,
 }: SupplyContractInfoModalProps) => {
     const timestampToDateString = (timestamp: number) => {
         const date = new Date(timestamp);

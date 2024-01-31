@@ -8,9 +8,9 @@ import Typography from "@mui/material/Typography";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import DrawerComponent from "../../components/Shared/DrawerComponent/DrawerComponent";
-import { AccountCircle } from "@mui/icons-material";
-import { ElectricBolt } from "@mui/icons-material";
-import RoleContext, { Roles } from "../../contexts/roleContext";
+// import { AccountCircle } from "@mui/icons-material";
+// import { ElectricBolt } from "@mui/icons-material";
+// import RoleContext from "../../contexts/roleContext";
 
 const drawerWidth = 240;
 
@@ -77,7 +77,7 @@ export default function PersistentDrawerLeft({ children }: Props) {
         setOpen(false);
     };
 
-    const { currentRole, setCurrentRole} = React.useContext(RoleContext)
+    // const { currentRole, setCurrentRole} = React.useContext(RoleContext)
 
     return (
         <Box sx={{ display: "flex" }}>
