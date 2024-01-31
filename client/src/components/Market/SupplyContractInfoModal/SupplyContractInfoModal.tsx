@@ -16,6 +16,7 @@ const SupplyContractInfoModal = ({
     open,
     handleClose,
     verifyPendingOffer,
+    revealIdentities
 }: SupplyContractInfoModalProps) => {
     const timestampToDateString = (timestamp: number) => {
         const date = new Date(timestamp);
