@@ -4,8 +4,8 @@ import { AddButton } from "../../components/common/AddButton";
 import OfferComponent from "../../components/Market/OfferComponent/OfferComponent";
 import {
     OfferDTO,
-    PendingOfferDTO,
-    ApprovedContractDTO,
+    PendingSupplyContractDTO,
+    ApprovedSupplyContractDTO,
 } from "../../models/models";
 import { CircularProgress } from "@mui/material";
 import SupplyContractComponent from "../../components/Market/SupplyContractComponent/SupplyContractComponent";
@@ -17,8 +17,8 @@ import Button from "../../components/Shared/Button/Button";
 type MarketplacePageBodyProps = {
     offers: OfferDTO[];
     currentAccount: string;
-    pendingOffers: PendingOfferDTO[];
-    approvedContracts: ApprovedContractDTO[];
+    pendingOffers: PendingSupplyContractDTO[];
+    approvedContracts: ApprovedSupplyContractDTO[];
     setOpen: React.Dispatch<React.SetStateAction<boolean>>;
     handleBuyOffer: () => (id: string, offer: OfferDTO) => Promise<void>;
     removeOffer: (id: string) => Promise<void>;
@@ -29,7 +29,7 @@ type MarketplacePageBodyProps = {
         React.SetStateAction<boolean>
     >;
     setCurrentItem: React.Dispatch<
-        React.SetStateAction<PendingOfferDTO | ApprovedContractDTO>
+        React.SetStateAction<PendingSupplyContractDTO | ApprovedSupplyContractDTO>
     >;
 };
 
@@ -54,8 +54,8 @@ const MarketplacePageBody = ({
     }, [setLoading]);
 
     const {
-        approvePendingOffers: approvePendingOffersContext,
-        getApprovedContracts,
+        approvePendingSupplyContracts,
+        getApprovedSupplyContracts,
         getPendingOffers,
         getOffers,
     } = useContext(EthereumContext);
@@ -70,7 +70,7 @@ const MarketplacePageBody = ({
     }
 
     const refresh = () => {
-        getApprovedContracts();
+        getApprovedSupplyContracts();
         getPendingOffers();
         getOffers();
     };
@@ -103,8 +103,10 @@ const MarketplacePageBody = ({
                 return buyerSignatureVerified && sellerSignatureVerified;
             })
         );
-        await approvePendingOffersContext(indicies);
-        refresh();
+        await approvePendingSupplyContracts(indicies);
+        setTimeout(() => {
+            refresh();
+        }, 1000);
     };
 
    

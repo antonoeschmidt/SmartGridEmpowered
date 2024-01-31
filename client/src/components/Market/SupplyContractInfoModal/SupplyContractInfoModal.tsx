@@ -1,16 +1,17 @@
-import React from "react";
+import React, { useContext } from "react";
 
 import styles from "./SupplyContractInfoModal.module.css";
 import { Dialog, DialogTitle, TextField } from "@mui/material";
-import { ApprovedContractDTO, PendingOfferDTO } from "../../../models/models";
+import { ApprovedSupplyContractDTO, PendingSupplyContractDTO } from "../../../models/models";
 import Button from "../../Shared/Button/Button";
+import EthereumContext from "../../../contexts/ethereumContext";
 
 type SupplyContractInfoModalProps = {
-    currentItem: ApprovedContractDTO | PendingOfferDTO;
+    currentItem: ApprovedSupplyContractDTO | PendingSupplyContractDTO;
     open: boolean;
     handleClose: () => void;
-    verifyPendingOffer: (pendingOffer: PendingOfferDTO) => void;
-    revealIdentities: (approvedContract: ApprovedContractDTO) => void;
+    verifyPendingOffer: (pendingOffer: PendingSupplyContractDTO) => void;
+    revealIdentities: (approvedContract: ApprovedSupplyContractDTO) => void;
 };
 
 const SupplyContractInfoModal = ({
@@ -24,6 +25,7 @@ const SupplyContractInfoModal = ({
         const date = new Date(timestamp);
         return `Energy bought ${date.toDateString()}`;
     };
+
 
     return (
         <Dialog open={open} onClose={handleClose}>
@@ -72,22 +74,6 @@ const SupplyContractInfoModal = ({
                                 onClick={() => revealIdentities(currentItem)}
                                 sx={{ width: "10em", marginTop: "2em" }}
                             />
-                        </div>
-                        <div>
-                            {'nonce' in currentItem && 
-                            <Button
-                                text="Verify"
-                                onClick={() => verifyPendingOffer(currentItem as PendingOfferDTO)}
-                                sx={{
-                                    width: "10em",
-                                    marginTop: "2em",
-                                    backgroundColor: "#32ba37",
-                                    "&:hover": {
-                                        backgroundColor: "#155417",
-                                    },
-                                }}
-                            />
-                        }
                         </div>
                     </div>
                 </div>

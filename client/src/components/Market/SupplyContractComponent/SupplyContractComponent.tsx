@@ -1,10 +1,10 @@
 import React from "react";
 import styles from "./SupplyContractComponent.module.css";
-import { ApprovedContractDTO, PendingOfferDTO } from "../../../models/models";
+import { ApprovedSupplyContractDTO, PendingSupplyContractDTO } from "../../../models/models";
 import Button from "../../Shared/Button/Button";
 
 type SupplyContractComponentProps = {
-    item: PendingOfferDTO | ApprovedContractDTO;
+    item: PendingSupplyContractDTO | ApprovedSupplyContractDTO;
     handleShowClick: () => void;
 };
 

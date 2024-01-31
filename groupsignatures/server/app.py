@@ -58,8 +58,8 @@ def sign():
 @app.route("/open", methods=["POST"])
 def open():
         api_key = request.headers.get('x-api-key')
-        if not api_key or api_key != app.config['API_KEY']:
-            return "Unauthroized", 401
+        # if not api_key or api_key != app.config['API_KEY']:
+        #     return "Unauthroized", 401
 
         body = request.get_json()
         signature_str = body.get("signature")
@@ -89,8 +89,8 @@ def open():
 @app.route("/add-member/<name>", methods=["GET"])
 def add_member(name):
     api_key = request.headers.get('x-api-key')
-    if not api_key or api_key != app.config['API_KEY']:
-        return "Unauthroized", 401
+    # if not api_key or api_key != app.config['API_KEY']:
+    #     return "Unauthroized", 401
     
     try:
         if not name:

@@ -1,5 +1,5 @@
 import { createContext, useCallback, useEffect, useRef, useState } from "react";
-import { ApprovedContractDTO, OfferDTO, PendingOfferDTO } from "../models/models";
+import { ApprovedSupplyContractDTO, OfferDTO, PendingSupplyContractDTO } from "../models/models";
 import { DSOApi } from "../apis/DSOApi";
 import { marketApi } from "../apis/marketApi";
 import { smartMeterApi } from "../apis/smartMeterApi";
@@ -65,15 +65,16 @@ export type EthereumContextType = {
     setUser: React.Dispatch<React.SetStateAction<User>>;
     user: User;
     changeUser: (address: string) => void;
-    approvePendingOffers: (offerIndicies: boolean[]) => Promise<any>;
     getPendingOffers: () => void;
-    getApprovedContracts: () => void;
+    getApprovedSupplyContracts: () => void;
 
-    pendingOffers: PendingOfferDTO[];
-    setPendingOffers: React.Dispatch<React.SetStateAction<PendingOfferDTO[]>>;
+    pendingOffers: PendingSupplyContractDTO[];
+    setPendingOffers: React.Dispatch<React.SetStateAction<PendingSupplyContractDTO[]>>;
 
-    approvedContracts: ApprovedContractDTO[];
-    setApprovedContracts: React.Dispatch<React.SetStateAction<ApprovedContractDTO[]>>;
+    approvePendingSupplyContract: (nonce: number) => Promise<any>;
+    approvePendingSupplyContracts: (indicies: boolean[]) => Promise<any>;
+    approvedContracts: ApprovedSupplyContractDTO[];
+    setApprovedContracts: React.Dispatch<React.SetStateAction<ApprovedSupplyContractDTO[]>>;
 };
 
 export const useEthereumContext = (): EthereumContextType => {
@@ -83,8 +84,8 @@ export const useEthereumContext = (): EthereumContextType => {
     const [offers, setOffers] = useState<OfferDTO[]>();
     const [DSOAddress, setDSOAddress] = useState<string>();
     const [loading, setLoading] = useState(false);
-    const [pendingOffers, setPendingOffers] = useState<PendingOfferDTO[]>([]);
-    const [approvedContracts, setApprovedContracts] = useState<ApprovedContractDTO[]>([]);
+    const [pendingOffers, setPendingOffers] = useState<PendingSupplyContractDTO[]>([]);
+    const [approvedContracts, setApprovedContracts] = useState<ApprovedSupplyContractDTO[]>([]);
 
     const [user, setUser] = useState<User>({
         smartMeterAddress: "",
@@ -256,7 +257,7 @@ export const useEthereumContext = (): EthereumContextType => {
         if (!con) {
             return;
         }
-        const key = prompt("Please enter your group secret key");
+        const key = prompt("Please enter your member secret key");
 
         // check formatting is base64
 
@@ -330,12 +331,15 @@ export const useEthereumContext = (): EthereumContextType => {
         setPendingOffers(pendingOffersResponse);
     }
 
-    const approvePendingOffers = async(offerIndicies: boolean[]) => {
-        console.log('{adminAccount, offerIndicies, user.market}', {adminAccount, offerIndicies, market: user.market})
-        return await marketApi.approvePendingOffers(adminAccount, offerIndicies, user.market)
+    const approvePendingSupplyContract = async(nonce: number) => {
+        return await marketApi.approvePendingSupplyContract(adminAccount, user.market, nonce);
     }
 
-    const getApprovedContracts = async() => {
+    const approvePendingSupplyContracts = async(indicies: boolean[]) => {
+        return await marketApi.approvePendingSupplyContracts(adminAccount, indicies, user.market);
+    }
+
+    const getApprovedSupplyContracts = async() => {
         const approvedContractsResponse =  await getPastEvents(user.market, Market.abi, "SupplyContract");
         console.log('approvedContractsResponse', approvedContractsResponse)
         if (!approvedContractsResponse) return;
@@ -382,13 +386,14 @@ export const useEthereumContext = (): EthereumContextType => {
         user,
         setUser,
         changeUser,
-        approvePendingOffers,
+        approvePendingSupplyContract,
+        approvePendingSupplyContracts,
 
         getPendingOffers,
         setPendingOffers,
         pendingOffers,
 
-        getApprovedContracts,
+        getApprovedSupplyContracts,
         approvedContracts,
         setApprovedContracts,        
     };
