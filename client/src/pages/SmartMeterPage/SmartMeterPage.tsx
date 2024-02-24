@@ -31,7 +31,7 @@ const SmartMeterPage = () => {
 
     const getBatteryLevel = async () => {
         let batteryLevel = await getBatteryCharge();
-        setToastProps(`battery level is ${batteryLevel}`, "info");
+        setToastProps(`Battery level is at ${batteryLevel} kWh`, "info");
         onOpen();
     };
 
@@ -43,14 +43,14 @@ const SmartMeterPage = () => {
                     <h3>Simulate power generation</h3>
                     <TextField
                         variant="outlined"
-                        label="Consumption"
+                        label="Consumption (kWh)"
                         onChange={(e) =>
                             setConsumption(parseInt(e.target.value))
                         }
                     ></TextField>
                     <TextField
                         variant="outlined"
-                        label="Production"
+                        label="Production (kWh)"
                         onChange={(e) =>
                             setProduction(parseInt(e.target.value))
                         }

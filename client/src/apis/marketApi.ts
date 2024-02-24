@@ -8,7 +8,11 @@ export const marketInstance = (address: string) => {
     return new web3.eth.Contract(Market.abi, address);
 };
 
-const deployMarket = async (sender: string, DSOAddress: string, smartMeterContractAddress) => {
+const deployMarket = async (
+    sender: string,
+    DSOAddress: string,
+    smartMeterContractAddress
+) => {
     const web3 = getWeb3();
     const newMarketContract = new web3.eth.Contract(Market.abi);
     const contract = newMarketContract.deploy({
@@ -126,35 +130,43 @@ const getPendingOffers = async (
 ): Promise<PendingSupplyContractDTO[]> => {
     const marketContract = marketInstance(marketAddress);
     try {
-        const response = await marketContract.methods
+        const response = (await marketContract.methods
             // @ts-ignore
             .getPendingSupplyContracts()
             .call({
-                from: sender
-            }) as any[];
-            return response.map((d) => pendingOfferParser(d));
+                from: sender,
+            })) as any[];
+        return response.map((d) => pendingOfferParser(d));
     } catch (err) {
         console.log("Remove offer err", err);
     }
-}
+};
 
-const approvePendingSupplyContracts = async(sender: string,  indicies: boolean[], marketAddress: string) => {
+const approvePendingSupplyContracts = async (
+    sender: string,
+    indicies: boolean[],
+    marketAddress: string
+) => {
     const marketContract = marketInstance(marketAddress);
     try {
         return await marketContract.methods
-        // @ts-ignore
-        .validatePendingSupplyContracts(indicies)
-        .send({
-            from: sender,
-            gas: "1500000",
-            gasPrice: "30000000000",
-        })
+            // @ts-ignore
+            .validatePendingSupplyContracts(indicies)
+            .send({
+                from: sender,
+                gas: "1500000",
+                gasPrice: "30000000000",
+            });
     } catch (err) {
-        console.log("Approve pending offers error", err)
+        console.error("Approve pending offers error", err);
     }
-}
+};
 
-const approvePendingSupplyContract = async(sender: string, marketAddress: string, nonce: number) => {
+const approvePendingSupplyContract = async (
+    sender: string,
+    marketAddress: string,
+    nonce: number
+) => {
     // const marketContract = marketInstance(marketAddress);
     // try {
     //     return await marketContract.methods
@@ -168,7 +180,7 @@ const approvePendingSupplyContract = async(sender: string, marketAddress: string
     // } catch (err) {
     //     console.log("Approve pending offers error", err)
     // }
-}
+};
 
 export const marketApi = {
     deployMarket,
@@ -178,5 +190,5 @@ export const marketApi = {
     removeOffer,
     getPendingOffers,
     approvePendingSupplyContract,
-    approvePendingSupplyContracts
+    approvePendingSupplyContracts,
 };

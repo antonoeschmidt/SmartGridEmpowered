@@ -10,40 +10,56 @@ export const loadFromLocalStorage: any = (account: string) => {
     const smartMeterAddress = parsedJson.smartMeterAddress
         ? parsedJson.smartMeterAddress
         : "";
-    const signature = parsedJson.signature ? parsedJson.signature : "";
+    const groupSecretKey = parsedJson.groupSecretKey ?? "";
     const secret = parsedJson.secret ?? "";
+    const sellerSignatures = parsedJson.sellerSignatures ?? [];
+    const buyerSignatures = parsedJson.buyerSignatures ?? [];
     return {
         smartMeterAddress,
-        signature,
-        secret
+        secret,
+        groupSecretKey,
+        sellerSignatures,
+        buyerSignatures,
     };
 };
 
 export const addUserKey: any = (account, keyName: string, keyValue: any) => {
     const storedJsonString = localStorage.getItem(account) ?? "{}";
     const parsedJson = JSON.parse(storedJsonString) ?? {};
-    localStorage.setItem(account, JSON.stringify({...parsedJson, [keyName]: keyValue}))
-}
+    localStorage.setItem(
+        account,
+        JSON.stringify({ ...parsedJson, [keyName]: keyValue })
+    );
+};
 
 export const getUserKey = (account: string, keyName: string) => {
     const storedJsonString = localStorage.getItem(account);
     if (!storedJsonString) return "";
     const parsedJson = JSON.parse(storedJsonString);
     return parsedJson[keyName] ?? "";
-}
+};
 
 export const getSmartMeterSecrets = (account: string) => {
     const web3 = getWeb3();
     const nextSecretString = crypto.randomUUID();
-    const encodedNextSecretString = web3.eth.abi.encodeParameters(['string'],[nextSecretString]);
+    const encodedNextSecretString = web3.eth.abi.encodeParameters(
+        ["string"],
+        [nextSecretString]
+    );
     const nextSecretHash = web3.utils.soliditySha3(encodedNextSecretString);
-        // fetch secret
+    // fetch secret
     const currentSecret = getUserKey(account, "secret") ?? "";
-    const encodedCurrentSecretString = web3.eth.abi.encodeParameters(['string'],[currentSecret]);
+    const encodedCurrentSecretString = web3.eth.abi.encodeParameters(
+        ["string"],
+        [currentSecret]
+    );
 
-    return {currentSecretEncoded: encodedCurrentSecretString, nextSecretHash, nextSecret: nextSecretString};
-}
+    return {
+        currentSecretEncoded: encodedCurrentSecretString,
+        currentSecret,
+        nextSecretHash,
+        nextSecret: nextSecretString,
+    };
+};
 
-export const addPreviousSignature = (account: string, signature: string) => {
-    
-}
+export const addPreviousSignature = (account: string, signature: string) => {};

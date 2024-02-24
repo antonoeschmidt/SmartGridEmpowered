@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // pragma experimental ABIEncoderV2;
 pragma solidity ^0.8.9;
+// import "truffle/console.sol";
 
 contract SmartMeter {
     struct SmartMeterInstance {
@@ -15,6 +16,10 @@ contract SmartMeter {
     uint transmissionInterval = 15 seconds;
 
     event Log(uint256 c, uint256 p);
+
+    // constructor() {
+    //     console.log("SmartMeter contract deployed");
+    // }
 
     function createLog(
         uint256 consumption,
