@@ -19,12 +19,12 @@ const AddOfferComponent: FC<AddOfferComponentProps> = ({
         <div className={`${styles.item}`}>
             <div className={styles.container}>
                 <TextField
-                    label="Amount (Wh)"
+                    label="Amount (kWh)"
                     variant="outlined"
                     onChange={(e) => setAmount(Number(e.target.value))}
                 />
                 <TextField
-                    label="Price (€ cents)"
+                    label="Price (€)"
                     variant="outlined"
                     onChange={(e) => setPrice(Number(e.target.value))}
                 />

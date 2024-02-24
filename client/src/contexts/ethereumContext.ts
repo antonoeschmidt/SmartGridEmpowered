@@ -1,10 +1,17 @@
 import { createContext, useCallback, useEffect, useRef, useState } from "react";
-import { ApprovedSupplyContractDTO, OfferDTO, PendingSupplyContractDTO } from "../models/models";
+import {
+    ApprovedSupplyContractDTO,
+    OfferDTO,
+    PendingSupplyContractDTO,
+} from "../models/models";
 import { DSOApi } from "../apis/DSOApi";
 import { marketApi } from "../apis/marketApi";
 import { smartMeterApi } from "../apis/smartMeterApi";
 import { sign } from "../apis/groupSignature";
-import { getSmartMeterSecrets, loadFromLocalStorage } from "../utils/localstorage";
+import {
+    getSmartMeterSecrets,
+    loadFromLocalStorage,
+} from "../utils/localstorage";
 import { getPastEvents } from "../apis/web3";
 import Market from "../contracts/Market.json";
 import { approvedContractParser } from "../utils/parsers";
@@ -17,7 +24,7 @@ export type User = {
     sellerSignatures: string[];
     buyerSignatures: string[];
     secret: string;
-}
+};
 
 export type EthereumContextType = {
     accounts: string[];
@@ -36,11 +43,19 @@ export type EthereumContextType = {
         smartMeterPubKey: string,
         smartMeterAddress: string
     ) => Promise<void | [] | (unknown[] & [])>;
-    deployMarket: (DSO?: string, admin?: string, smartMeterContract?: string) => Promise<string>;
+    deployMarket: (
+        DSO?: string,
+        admin?: string,
+        smartMeterContract?: string
+    ) => Promise<string>;
     addOffer: (offer: OfferDTO) => Promise<OfferDTO>;
     getOffers: () => Promise<OfferDTO[]>;
     buyOffer: (id: string, offer: OfferDTO) => Promise<any>;
-    createSmartMeter: (smartMeterAddress: string, acc?: string, market?: string) => Promise<any>;
+    createSmartMeter: (
+        smartMeterAddress: string,
+        acc?: string,
+        market?: string
+    ) => Promise<any>;
     getBatteryCharge: () => Promise<void | [] | (unknown[] & [])>;
     setSmartMeterMarketAddress: (
         smartMeterAddress?: string,
@@ -59,7 +74,7 @@ export type EthereumContextType = {
     removeOffer: (offerId: string) => any;
     newKeyDialog: () => string;
     deploySmartMeter: () => Promise<string>;
-    smartMeterContractAddress: React.MutableRefObject<string>
+    smartMeterContractAddress: React.MutableRefObject<string>;
     smartMeterAccounts: string[];
     setSmartMeterAccounts: React.Dispatch<React.SetStateAction<string[]>>;
     setUser: React.Dispatch<React.SetStateAction<User>>;
@@ -69,12 +84,16 @@ export type EthereumContextType = {
     getApprovedSupplyContracts: () => void;
 
     pendingOffers: PendingSupplyContractDTO[];
-    setPendingOffers: React.Dispatch<React.SetStateAction<PendingSupplyContractDTO[]>>;
+    setPendingOffers: React.Dispatch<
+        React.SetStateAction<PendingSupplyContractDTO[]>
+    >;
 
     approvePendingSupplyContract: (nonce: number) => Promise<any>;
     approvePendingSupplyContracts: (indicies: boolean[]) => Promise<any>;
     approvedContracts: ApprovedSupplyContractDTO[];
-    setApprovedContracts: React.Dispatch<React.SetStateAction<ApprovedSupplyContractDTO[]>>;
+    setApprovedContracts: React.Dispatch<
+        React.SetStateAction<ApprovedSupplyContractDTO[]>
+    >;
 };
 
 export const useEthereumContext = (): EthereumContextType => {
@@ -84,8 +103,12 @@ export const useEthereumContext = (): EthereumContextType => {
     const [offers, setOffers] = useState<OfferDTO[]>();
     const [DSOAddress, setDSOAddress] = useState<string>();
     const [loading, setLoading] = useState(false);
-    const [pendingOffers, setPendingOffers] = useState<PendingSupplyContractDTO[]>([]);
-    const [approvedContracts, setApprovedContracts] = useState<ApprovedSupplyContractDTO[]>([]);
+    const [pendingOffers, setPendingOffers] = useState<
+        PendingSupplyContractDTO[]
+    >([]);
+    const [approvedContracts, setApprovedContracts] = useState<
+        ApprovedSupplyContractDTO[]
+    >([]);
 
     const [user, setUser] = useState<User>({
         smartMeterAddress: "",
@@ -94,7 +117,7 @@ export const useEthereumContext = (): EthereumContextType => {
         market: "",
         sellerSignatures: [],
         buyerSignatures: [],
-        secret: ""
+        secret: "",
     });
 
     const [smartMeterAccounts, setSmartMeterAccounts] = useState<string[]>([]);
@@ -107,40 +130,49 @@ export const useEthereumContext = (): EthereumContextType => {
         localStorage.setItem("adminAccount", adminAccount);
     }, [adminAccount]);
 
-
     // saves data to localstorage when the user changes a setting
     useEffect(() => {
         if (!user.accountAddress) return;
         localStorage.setItem(user.accountAddress, JSON.stringify(user));
     }, [user]);
 
-    const registerSmartMeter = useCallback(async (
-        smartMeterPubKey: string,
-        smartMeterAddress: string
-    ) => {
-        return await smartMeterApi.registerSmartMeter(
-            adminAccount,
-            DSOAddress,
-            smartMeterPubKey,
-            smartMeterAddress
-        );
-    }, [DSOAddress, adminAccount]);
+    const registerSmartMeter = useCallback(
+        async (smartMeterPubKey: string, smartMeterAddress: string) => {
+            return await smartMeterApi.registerSmartMeter(
+                adminAccount,
+                DSOAddress,
+                smartMeterPubKey,
+                smartMeterAddress
+            );
+        },
+        [DSOAddress, adminAccount]
+    );
 
-    const changeUser = useCallback(async (address: string) => {
-        if (!address) return;
-        const loadedData = loadFromLocalStorage(address);
+    const changeUser = useCallback(
+        async (address: string) => {
+            if (!address) return;
+            const loadedData = loadFromLocalStorage(address);
             let smartMeterAddress: string = loadedData?.smartMeterAddress;
             let secret: string = loadedData?.secret;
             if (!smartMeterAddress) {
                 const addressIndex = accounts.indexOf(address);
                 smartMeterAddress = smartMeterAccounts[addressIndex];
-                const { nextSecret, nextSecretHash } = getSmartMeterSecrets(user.accountAddress);
+                const { nextSecret, nextSecretHash } = getSmartMeterSecrets(
+                    user.accountAddress
+                );
                 secret = nextSecret;
-                console.log('user.market', user.market);
-                await smartMeterApi.createSmartMeter(user.market, smartMeterAddress, address, smartMeterContractAddress.current, nextSecretHash);
+                console.log("user.market", user.market);
+                await smartMeterApi.createSmartMeter(
+                    user.market,
+                    smartMeterAddress,
+                    address,
+                    smartMeterContractAddress.current,
+                    nextSecretHash
+                );
                 await registerSmartMeter(address, smartMeterAddress);
             }
             localStorage.setItem("currentUser", address);
+            console.log(loadedData);
             setUser({
                 accountAddress: address,
                 smartMeterAddress: smartMeterAddress,
@@ -148,9 +180,17 @@ export const useEthereumContext = (): EthereumContextType => {
                 secret: secret,
                 sellerSignatures: loadedData?.sellerSignatures ?? [],
                 buyerSignatures: loadedData?.buyerSignatures ?? [],
-                market: user.market
+                market: user.market,
             });
-    }, [accounts, registerSmartMeter, smartMeterAccounts, user.accountAddress, user.market]);
+        },
+        [
+            accounts,
+            registerSmartMeter,
+            smartMeterAccounts,
+            user.accountAddress,
+            user.market,
+        ]
+    );
 
     // retrieves the admin account on first load.
     useEffect(() => {
@@ -158,16 +198,18 @@ export const useEthereumContext = (): EthereumContextType => {
         if (storedAdminAccount) setAdminAccount(storedAdminAccount);
         const storedDSOAddress = localStorage.getItem("DSO");
         if (storedDSOAddress) setDSOAddress(storedDSOAddress);
-        const storedSmartMeterContractAddress = localStorage.getItem("smartMeterContractAddress");
-        if (storedSmartMeterContractAddress) smartMeterContractAddress.current = storedSmartMeterContractAddress;
+        const storedSmartMeterContractAddress = localStorage.getItem(
+            "smartMeterContractAddress"
+        );
+        if (storedSmartMeterContractAddress)
+            smartMeterContractAddress.current = storedSmartMeterContractAddress;
         const currentUser = localStorage.getItem("currentUser");
         if (currentUser) changeUser(currentUser);
     }, [changeUser]);
 
-
     // DSOApi
     const deployDSO = async () => {
-        console.log('adminAccount deploy', adminAccount);
+        console.log("adminAccount deploy", adminAccount);
         return await DSOApi.deployDSO(adminAccount);
     };
 
@@ -183,7 +225,11 @@ export const useEthereumContext = (): EthereumContextType => {
     };
 
     // MarketApi
-    const deployMarket = async (_DSOAddress?: string, admin?: string, smartMeterContract?: string) => {
+    const deployMarket = async (
+        _DSOAddress?: string,
+        admin?: string,
+        smartMeterContract?: string
+    ) => {
         return await marketApi.deployMarket(
             admin ?? adminAccount,
             _DSOAddress ?? DSOAddress,
@@ -192,20 +238,45 @@ export const useEthereumContext = (): EthereumContextType => {
     };
 
     const addOffer = async (offer: OfferDTO) => {
-        const {currentSecretEncoded, nextSecret, nextSecretHash} = getSmartMeterSecrets(user.accountAddress);
-        setUser(prev => {
+        const {
+            currentSecretEncoded,
+            nextSecret,
+            nextSecretHash,
+            currentSecret,
+        } = getSmartMeterSecrets(user.accountAddress);
+
+        setUser((prev) => {
             const signatures = prev.sellerSignatures;
             signatures.push(offer.sellerSignature);
-            return {...prev, secret: nextSecret, sellerSignatures: signatures};
+            return {
+                ...prev,
+                secret: nextSecret,
+                sellerSignatures: signatures,
+            };
         });
-        return await marketApi.addOffer(
+
+        const res = await marketApi.addOffer(
             offer,
             user.market,
             user.accountAddress,
             user.smartMeterAddress,
             currentSecretEncoded,
-            nextSecretHash,
+            nextSecretHash
         );
+        if (res) {
+            return res;
+        } else {
+            setUser((prev) => {
+                const signatures = prev.sellerSignatures;
+                signatures.pop();
+                return {
+                    ...prev,
+                    secret: currentSecret,
+                    sellerSignatures: signatures,
+                };
+            });
+            return;
+        }
     };
 
     const getOffers = async () => {
@@ -235,10 +306,10 @@ export const useEthereumContext = (): EthereumContextType => {
             signature
         );
 
-        setUser(prev => {
+        setUser((prev) => {
             const buyerSignatures = prev.buyerSignatures;
             buyerSignatures.push(buyerSignature);
-            return {...prev, buyerSignatures};
+            return { ...prev, buyerSignatures };
         });
 
         return await marketApi.buyOffer(
@@ -264,16 +335,28 @@ export const useEthereumContext = (): EthereumContextType => {
         if (!key) {
             return;
         }
-        setUser(prev => ({...prev, groupSecretKey: key}));
+        setUser((prev) => ({ ...prev, groupSecretKey: key }));
         return key;
     };
 
     // SmartMeterApi
-    const createSmartMeter = async (smartMeterAddress: string, sender?: string, market?: string) => {
-        const { nextSecret, nextSecretHash } = getSmartMeterSecrets(user.accountAddress);
-        console.log('nextSecret', nextSecret);
-        setUser(prev => ({...prev, secret: nextSecret}));
-        return await smartMeterApi.createSmartMeter(market ?? user.market, smartMeterAddress, sender ?? user.accountAddress, smartMeterContractAddress.current, nextSecretHash);
+    const createSmartMeter = async (
+        smartMeterAddress: string,
+        sender?: string,
+        market?: string
+    ) => {
+        const { nextSecret, nextSecretHash } = getSmartMeterSecrets(
+            user.accountAddress
+        );
+        console.log("nextSecret", nextSecret);
+        setUser((prev) => ({ ...prev, secret: nextSecret }));
+        return await smartMeterApi.createSmartMeter(
+            market ?? user.market,
+            smartMeterAddress,
+            sender ?? user.accountAddress,
+            smartMeterContractAddress.current,
+            nextSecretHash
+        );
     };
 
     const getBatteryCharge = async () => {
@@ -281,7 +364,10 @@ export const useEthereumContext = (): EthereumContextType => {
             console.log("Get battery charge, No Smartmeter address");
             return;
         }
-        return await smartMeterApi.getBatteryCharge(smartMeterContractAddress.current, user.smartMeterAddress);
+        return await smartMeterApi.getBatteryCharge(
+            smartMeterContractAddress.current,
+            user.smartMeterAddress
+        );
     };
 
     const setSmartMeterMarketAddress = async (
@@ -307,9 +393,6 @@ export const useEthereumContext = (): EthereumContextType => {
         );
     };
 
-    
-
-
     const removeOffer = async (offerId: string) => {
         const res = await marketApi.removeOffer(
             user.market,
@@ -319,34 +402,51 @@ export const useEthereumContext = (): EthereumContextType => {
         return res;
     };
 
-    const deploySmartMeter = async() => {
+    const deploySmartMeter = async () => {
         const address = await smartMeterApi.deploySmartMeter(adminAccount);
         // setSmartMeterContractAddress(address);
         return address;
-    }
+    };
 
-    const getPendingOffers = async() => {
-        const pendingOffersResponse = await marketApi.getPendingOffers(user.market, user.accountAddress);
-        console.log('pendingOffersResponse', pendingOffersResponse)
+    const getPendingOffers = async () => {
+        const pendingOffersResponse = await marketApi.getPendingOffers(
+            user.market,
+            user.accountAddress
+        );
+        console.log("pendingOffersResponse", pendingOffersResponse);
         setPendingOffers(pendingOffersResponse);
-    }
+    };
 
-    const approvePendingSupplyContract = async(nonce: number) => {
-        return await marketApi.approvePendingSupplyContract(adminAccount, user.market, nonce);
-    }
+    const approvePendingSupplyContract = async (nonce: number) => {
+        return await marketApi.approvePendingSupplyContract(
+            adminAccount,
+            user.market,
+            nonce
+        );
+    };
 
-    const approvePendingSupplyContracts = async(indicies: boolean[]) => {
-        return await marketApi.approvePendingSupplyContracts(adminAccount, indicies, user.market);
-    }
+    const approvePendingSupplyContracts = async (indicies: boolean[]) => {
+        return await marketApi.approvePendingSupplyContracts(
+            adminAccount,
+            indicies,
+            user.market
+        );
+    };
 
-    const getApprovedSupplyContracts = async() => {
-        const approvedContractsResponse =  await getPastEvents(user.market, Market.abi, "SupplyContract");
-        console.log('approvedContractsResponse', approvedContractsResponse)
+    const getApprovedSupplyContracts = async () => {
+        const approvedContractsResponse = await getPastEvents(
+            user.market,
+            Market.abi,
+            "SupplyContract"
+        );
+        console.log("approvedContractsResponse", approvedContractsResponse);
         if (!approvedContractsResponse) return;
-        const parsedContracts = approvedContractsResponse.map(contract => approvedContractParser(contract));
-        console.log('parsedContracts', parsedContracts);
+        const parsedContracts = approvedContractsResponse.map((contract) =>
+            approvedContractParser(contract)
+        );
+        console.log("parsedContracts", parsedContracts);
         setApprovedContracts(parsedContracts);
-    }
+    };
 
     return {
         accounts,
@@ -395,7 +495,7 @@ export const useEthereumContext = (): EthereumContextType => {
 
         getApprovedSupplyContracts,
         approvedContracts,
-        setApprovedContracts,        
+        setApprovedContracts,
     };
 };
 

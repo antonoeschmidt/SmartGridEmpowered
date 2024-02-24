@@ -1,13 +1,17 @@
 import styles from "./SupplyContractInfoModal.module.css";
 import { Dialog, DialogTitle, TextField } from "@mui/material";
-import { ApprovedSupplyContractDTO, PendingSupplyContractDTO } from "../../../models/models";
+import {
+    ApprovedSupplyContractDTO,
+    PendingSupplyContractDTO,
+    SupplyContractDTO,
+} from "../../../models/models";
 import Button from "../../Shared/Button/Button";
 
 type SupplyContractInfoModalProps = {
     currentItem: ApprovedSupplyContractDTO | PendingSupplyContractDTO;
     open: boolean;
     handleClose: () => void;
-    verifyPendingOffer: (pendingOffer: PendingSupplyContractDTO) => void;
+    verifySupplyContract: (supplyContract: SupplyContractDTO) => Promise<void>;
     revealIdentities: (approvedContract: ApprovedSupplyContractDTO) => void;
 };
 
@@ -15,14 +19,13 @@ const SupplyContractInfoModal = ({
     currentItem,
     open,
     handleClose,
-    verifyPendingOffer,
-    revealIdentities
+    verifySupplyContract,
+    revealIdentities,
 }: SupplyContractInfoModalProps) => {
     const timestampToDateString = (timestamp: number) => {
         const date = new Date(timestamp);
         return `Energy bought ${date.toDateString()}`;
     };
-
 
     return (
         <Dialog open={open} onClose={handleClose}>
@@ -30,9 +33,9 @@ const SupplyContractInfoModal = ({
             {currentItem && (
                 <div className={styles.container}>
                     <div className={styles.top}>
-                        {'nonce' in currentItem &&
-                        <div>Nonce: {currentItem.nonce}</div>
-                        }
+                        {"nonce" in currentItem && (
+                            <div>Nonce: {currentItem.nonce}</div>
+                        )}
                         {/* <span>
                             Supply Contract #{currentItem.id.slice(0, 7)}
                         </span> */}
@@ -72,6 +75,26 @@ const SupplyContractInfoModal = ({
                                 sx={{ width: "10em", marginTop: "2em" }}
                             />
                         </div>
+                        {"nonce" in currentItem && (
+                            <div>
+                                <Button
+                                    text="Verify"
+                                    onClick={() =>
+                                        verifySupplyContract(
+                                            currentItem as unknown as SupplyContractDTO
+                                        )
+                                    }
+                                    sx={{
+                                        width: "10em",
+                                        marginTop: "2em",
+                                        backgroundColor: "#32ba37",
+                                        "&:hover": {
+                                            backgroundColor: "#155417",
+                                        },
+                                    }}
+                                />
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

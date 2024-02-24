@@ -29,7 +29,9 @@ type MarketplacePageBodyProps = {
         React.SetStateAction<boolean>
     >;
     setCurrentItem: React.Dispatch<
-        React.SetStateAction<PendingSupplyContractDTO | ApprovedSupplyContractDTO>
+        React.SetStateAction<
+            PendingSupplyContractDTO | ApprovedSupplyContractDTO
+        >
     >;
 };
 
@@ -76,6 +78,7 @@ const MarketplacePageBody = ({
     };
 
     const approvePendingOffers = async () => {
+        debugger;
         const indicies = await Promise.all(
             pendingOffers.map(async (pendingOffer) => {
                 const buyerMessage = JSON.stringify({
@@ -106,10 +109,8 @@ const MarketplacePageBody = ({
         await approvePendingSupplyContracts(indicies);
         setTimeout(() => {
             refresh();
-        }, 1000);
+        }, 700);
     };
-
-   
 
     return (
         <>

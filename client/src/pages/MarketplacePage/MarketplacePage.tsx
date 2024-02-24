@@ -1,7 +1,12 @@
 import { useContext, useEffect, useState, FC, useCallback } from "react";
 import styles from "./MarketplacePage.module.css";
 import EthereumContext from "../../contexts/ethereumContext";
-import { ApprovedSupplyContractDTO, OfferDTO, PendingSupplyContractDTO } from "../../models/models";
+import {
+    ApprovedSupplyContractDTO,
+    OfferDTO,
+    PendingSupplyContractDTO,
+    SupplyContractDTO,
+} from "../../models/models";
 import { OfferModal } from "../../components/Market/OfferModal/OfferModal";
 import MarketplacePageBody from "./MarketplacePage.body";
 import SupplyContractInfoModal from "../../components/Market/SupplyContractInfoModal/SupplyContractInfoModal";
@@ -21,7 +26,7 @@ const MarketplacePage: FC = () => {
         approvedContracts,
         getApprovedSupplyContracts,
         getPendingOffers,
-        approvePendingSupplyContract
+        // approvePendingSupplyContract,
     } = useContext(EthereumContext);
 
     const roundToDecimalPlaces = (number, decimalPlaces) => {
@@ -46,7 +51,13 @@ const MarketplacePage: FC = () => {
         if (!user.market) return;
         if (!approvedContracts) getApprovedSupplyContracts();
         if (!pendingOffers) getPendingOffers();
-    }, [approvedContracts, getApprovedSupplyContracts, getPendingOffers, pendingOffers, user.market]);
+    }, [
+        approvedContracts,
+        getApprovedSupplyContracts,
+        getPendingOffers,
+        pendingOffers,
+        user.market,
+    ]);
 
     useEffect(() => {
         refresh();
@@ -92,8 +103,9 @@ const MarketplacePage: FC = () => {
         setOpenSupplyContractInfoModal(false);
     };
 
-    const [currentItem, setCurrentItem] =
-        useState<PendingSupplyContractDTO | ApprovedSupplyContractDTO>();
+    const [currentItem, setCurrentItem] = useState<
+        PendingSupplyContractDTO | ApprovedSupplyContractDTO
+    >();
 
     if (!user.market) {
         return (
@@ -103,53 +115,57 @@ const MarketplacePage: FC = () => {
         );
     }
 
-    const verifyPendingSupplyContracts = async (pendingOffer: PendingSupplyContractDTO) => {
+    const verifySupplyContract = async (
+        // pendingOffer: PendingSupplyContractDTO
+        supplyContract: SupplyContractDTO
+    ) => {
         const buyerMessage = JSON.stringify({
-            amount: pendingOffer.amount,
-            price: pendingOffer.price,
-            sellerSignature: pendingOffer.sellerSignature,
-            nonce: Number(pendingOffer.nonce),
+            amount: supplyContract.amount,
+            price: supplyContract.price,
+            sellerSignature: supplyContract.sellerSignature,
+            nonce: Number(supplyContract.nonce),
         });
         const sellerMessage = JSON.stringify({
-            amount: pendingOffer.amount,
-            price: pendingOffer.price,
-            nonce: Number(pendingOffer.nonce),
+            amount: supplyContract.amount,
+            price: supplyContract.price,
+            nonce: Number(supplyContract.nonce),
         });
         let buyerSignatureVerified = await verify(
-            pendingOffer.buyerSignature,
+            supplyContract.buyerSignature,
             buyerMessage
         );
         let sellerSignatureVerified = await verify(
-            pendingOffer.sellerSignature,
+            supplyContract.sellerSignature,
             sellerMessage
         );
         console.log("Verify sellerMessage");
         console.log(
             JSON.stringify({
                 message: sellerMessage,
-                signature: pendingOffer.sellerSignature,
+                signature: supplyContract.sellerSignature,
             })
         );
         console.log("Verify buyerMessage");
         console.log(
             JSON.stringify({
                 message: buyerMessage,
-                signature: pendingOffer.buyerSignature,
+                signature: supplyContract.buyerSignature,
             })
         );
         console.log("buyerSignatureVerified", buyerSignatureVerified);
         console.log("sellerSignatureVerified", sellerSignatureVerified);
 
         if (buyerSignatureVerified && sellerSignatureVerified) {
-            approvePendingSupplyContract(pendingOffer.nonce).then(_ => getApprovedSupplyContracts());
+            // approvePendingSupplyContract(pendingOffer.nonce).then(_ => getApprovedSupplyContracts());
             alert("Supply Contract is verified!");
-
         } else {
             alert("Supply Contract is not verified!");
         }
     };
 
-    const revealIdentities = async (approvedContract: ApprovedSupplyContractDTO) => {
+    const revealIdentities = async (
+        approvedContract: ApprovedSupplyContractDTO
+    ) => {
         const sellerIdentity = await openSignature(
             approvedContract.sellerSignature
         );
@@ -170,8 +186,6 @@ const MarketplacePage: FC = () => {
             `Seller identity: ${sellerIdentity}\nBuyer identity: ${buyerIdentity}`
         );
     };
-
-    
 
     return (
         <div className={styles.container}>
@@ -194,7 +208,7 @@ const MarketplacePage: FC = () => {
                 open={openSupplyContractInfoModal}
                 handleClose={handleCloseSupplyContractInfoModal}
                 currentItem={currentItem}
-                verifyPendingOffer={verifyPendingSupplyContracts}
+                verifySupplyContract={verifySupplyContract}
                 revealIdentities={revealIdentities}
             />
         </div>

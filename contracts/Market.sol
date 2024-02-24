@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: GPL-3.0
 // pragma experimental ABIEncoderV2;
 pragma solidity ^0.8.9;
+// import "truffle/console.sol";
 
 interface IDSO {
     function registerKey(
@@ -225,10 +226,11 @@ contract Market {
         bool[] memory offerIndicies
     ) public {
         require(msg.sender == owner, "sender is not owner");
+
+        // console.log("Called");
+
         for (uint i = 0; i < offerIndicies.length; i++) {
-            PendingSupplyContract memory offer = pendingSupplyContracts[
-                i
-            ];
+            PendingSupplyContract memory offer = pendingSupplyContracts[i];
             //if it's an accepted index we emit our event
             if (offerIndicies[i] == true) {
                 emit SupplyContract(
